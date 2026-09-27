@@ -1,0 +1,12 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?team ?name (SUM(?goals) AS ?totalHomeGoals)
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:homeTeam ?team ;
+           foot:homeGoals ?goals .
+    ?team schema:name ?name .
+}
+GROUP BY ?team ?name
+ORDER BY DESC(?totalHomeGoals) ?name

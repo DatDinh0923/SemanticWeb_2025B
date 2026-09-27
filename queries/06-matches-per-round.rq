@@ -1,0 +1,9 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+
+SELECT ?round (COUNT(?match) AS ?matchCount)
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:roundNumber ?round .
+}
+GROUP BY ?round
+ORDER BY ?round

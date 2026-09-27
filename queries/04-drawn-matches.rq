@@ -1,0 +1,15 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?date ?homeName ?awayName ?goals
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:matchDate ?date ;
+           foot:homeTeam ?homeTeam ;
+           foot:awayTeam ?awayTeam ;
+           foot:homeGoals ?goals ;
+           foot:awayGoals ?goals .
+    ?homeTeam schema:name ?homeName .
+    ?awayTeam schema:name ?awayName .
+}
+ORDER BY ?date

@@ -1,0 +1,114 @@
+@prefix foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+<https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+    a owl:Ontology ;
+    dcterms:title "Football Linked Open Data Ontology"@en ;
+    dcterms:description
+        "An ontology for Premier League competitions, seasons, teams, and match results."@en ;
+    dcterms:created "2026-09-27"^^xsd:date ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:label "Football Linked Open Data Ontology"@en .
+
+
+# Classes
+
+foot:FootballMatch
+    a owl:Class ;
+    rdfs:label "Football match"@en ;
+    rdfs:comment "A scheduled association football match between a home team and an away team."@en ;
+    rdfs:subClassOf schema:SportsEvent .
+
+foot:FootballTeam
+    a owl:Class ;
+    rdfs:label "Football team"@en ;
+    rdfs:comment "A football club or team participating in a competition."@en ;
+    rdfs:subClassOf schema:SportsTeam .
+
+foot:Competition
+    a owl:Class ;
+    rdfs:label "Football competition"@en ;
+    rdfs:comment "An organized football competition, such as the English Premier League."@en ;
+    rdfs:subClassOf schema:SportsEvent .
+
+foot:Season
+    a owl:Class ;
+    rdfs:label "Football season"@en ;
+    rdfs:comment "A time-bounded edition of a football competition."@en ;
+    rdfs:subClassOf schema:Event .
+
+
+# Object properties
+
+foot:homeTeam
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "home team"@en ;
+    rdfs:comment "Relates a football match to its home team."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam ;
+    rdfs:subPropertyOf schema:homeTeam .
+
+foot:awayTeam
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "away team"@en ;
+    rdfs:comment "Relates a football match to its away team."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam ;
+    rdfs:subPropertyOf schema:awayTeam .
+
+foot:playedInSeason
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "played in season"@en ;
+    rdfs:comment "Relates a football match to the season in which it was played."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:Season ;
+    rdfs:subPropertyOf dcterms:isPartOf .
+
+foot:partOfCompetition
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "part of competition"@en ;
+    rdfs:comment "Relates a match or season to its football competition."@en ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf (foot:FootballMatch foot:Season)
+    ] ;
+    rdfs:range foot:Competition ;
+    rdfs:subPropertyOf dcterms:isPartOf .
+
+
+# Datatype properties
+
+foot:matchDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "match date"@en ;
+    rdfs:comment "The calendar date on which a football match was played."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:date ;
+    rdfs:subPropertyOf schema:startDate .
+
+foot:roundNumber
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "round number"@en ;
+    rdfs:comment "The numbered league round to which a match belongs."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:positiveInteger .
+
+foot:homeGoals
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "home goals"@en ;
+    rdfs:comment "The number of full-time goals scored by the home team."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:nonNegativeInteger .
+
+foot:awayGoals
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "away goals"@en ;
+    rdfs:comment "The number of full-time goals scored by the away team."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:nonNegativeInteger .

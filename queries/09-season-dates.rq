@@ -1,0 +1,11 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?season ?name ?startDate ?endDate
+WHERE {
+    ?season a foot:Season ;
+            schema:name ?name ;
+            schema:startDate ?startDate ;
+            schema:endDate ?endDate .
+}
+ORDER BY ?startDate

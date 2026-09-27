@@ -1,0 +1,13 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?match ?label ?homeGoals ?awayGoals ?totalGoals
+WHERE {
+    ?match a foot:FootballMatch ;
+           rdfs:label ?label ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
+    BIND(?homeGoals + ?awayGoals AS ?totalGoals)
+}
+ORDER BY DESC(?totalGoals) ?match
+LIMIT 10

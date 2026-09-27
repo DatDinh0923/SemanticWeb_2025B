@@ -1,0 +1,9 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?team ?name
+WHERE {
+    ?team a foot:FootballTeam ;
+          schema:name ?name .
+}
+ORDER BY LCASE(STR(?name))

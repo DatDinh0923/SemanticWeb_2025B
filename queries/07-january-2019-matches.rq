@@ -1,0 +1,15 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?date ?match ?label
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:matchDate ?date ;
+           rdfs:label ?label .
+    FILTER(
+        ?date >= "2019-01-01"^^xsd:date &&
+        ?date <= "2019-01-31"^^xsd:date
+    )
+}
+ORDER BY ?date ?match
