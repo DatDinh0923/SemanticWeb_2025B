@@ -1,0 +1,13 @@
+# Ten largest winning margins in the dataset.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?date ?competition ?home ?homeGoals ?awayGoals ?away (ABS(?homeGoals - ?awayGoals) AS ?margin)
+WHERE {
+  ?m fb:matchDate ?date ; fb:homeGoals ?homeGoals ; fb:awayGoals ?awayGoals ;
+     fb:homeTeam/rdfs:label ?home ; fb:awayTeam/rdfs:label ?away ;
+     fb:inSeason/fb:seasonOf/rdfs:label ?competition .
+}
+ORDER BY DESC(?margin) DESC(?homeGoals + ?awayGoals)
+LIMIT 10

@@ -1,0 +1,25 @@
+# Federated query: our Premier League 2018/19 clubs enriched live from Wikidata
+# (stadium, founding year) through the owl:sameAs links. Needs internet access;
+# query.wikidata.org may rate-limit, so retry if it fails.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:    <http://www.w3.org/2002/07/owl#>
+PREFIX wdt:    <http://www.wikidata.org/prop/direct/>
+
+SELECT ?team ?stadiumName ?founded
+WHERE {
+  {
+    SELECT DISTINCT ?t ?team ?wd WHERE {
+      ?m fb:inSeason res:season\/premier-league-2018-19 ; fb:homeTeam ?t .
+      ?t rdfs:label ?team ; owl:sameAs ?wd .
+      FILTER(STRSTARTS(STR(?wd), "http://www.wikidata.org/"))
+    }
+  }
+  SERVICE <https://query.wikidata.org/sparql> {
+    OPTIONAL { ?wd wdt:P115 ?stadium . ?stadium rdfs:label ?stadiumName FILTER(LANG(?stadiumName) = "en") }
+    OPTIONAL { ?wd wdt:P571 ?inception }
+    BIND(YEAR(?inception) AS ?founded)
+  }
+}
+ORDER BY ?team

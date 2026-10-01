@@ -1,0 +1,15 @@
+# Clubs that played in all four Football League tiers (1-4) since 1992.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?team (COUNT(DISTINCT ?tier) AS ?tiers) (COUNT(DISTINCT ?season) AS ?seasons)
+WHERE {
+  ?m fb:homeTeam|fb:awayTeam ?t ; fb:inSeason ?season .
+  ?season fb:seasonOf/fb:tier ?tier .
+  FILTER(?tier <= 4)
+  ?t rdfs:label ?team .
+}
+GROUP BY ?team
+HAVING (COUNT(DISTINCT ?tier) = 4)
+ORDER BY DESC(?seasons)

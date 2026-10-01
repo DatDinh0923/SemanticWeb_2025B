@@ -1,0 +1,18 @@
+# Home win / draw / away win percentages per Premier League season.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?season (COUNT(?m) AS ?matches)
+       (ROUND(100 * SUM(?hw) / COUNT(?m)) AS ?homeWinPct)
+       (ROUND(100 * SUM(?dr) / COUNT(?m)) AS ?drawPct)
+       (ROUND(100 * SUM(?aw) / COUNT(?m)) AS ?awayWinPct)
+WHERE {
+  ?m fb:inSeason ?s ; fb:homeGoals ?h ; fb:awayGoals ?a .
+  ?s fb:seasonOf res:competition\/premier-league ; fb:seasonLabel ?season .
+  BIND(IF(?h > ?a, 1, 0) AS ?hw)
+  BIND(IF(?h = ?a, 1, 0) AS ?dr)
+  BIND(IF(?h < ?a, 1, 0) AS ?aw)
+}
+GROUP BY ?season
+ORDER BY ?season

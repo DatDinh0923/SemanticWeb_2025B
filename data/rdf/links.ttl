@@ -1,0 +1,500 @@
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix schema: <https://schema.org/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+
+<http://example.org/football/resource/competition/championship> owl:sameAs dbr:EFL_Championship,
+        wd:Q19510 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/fa-cup> owl:sameAs dbr:FA_Cup,
+        wd:Q11151 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/first-division> owl:sameAs dbr:Football_League_First_Division,
+        wd:Q754839 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/league-one> owl:sameAs dbr:EFL_League_One,
+        wd:Q19565 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/league-two> owl:sameAs dbr:EFL_League_Two,
+        wd:Q48837 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/national-league> owl:sameAs dbr:National_League_\(division\),
+        wd:Q58916 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/premier-league> owl:sameAs dbr:Premier_League,
+        wd:Q9448 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/second-division> owl:sameAs dbr:Football_League_Second_Division,
+        wd:Q769744 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/competition/third-division> owl:sameAs dbr:Football_League_Third_Division,
+        wd:Q1436448 ;
+    schema:location wd:Q21 .
+
+<http://example.org/football/resource/team/accrington-stanley> owl:sameAs <http://dbpedia.org/resource/Accrington_Stanley_F.C.>,
+        wd:Q48843 .
+
+<http://example.org/football/resource/team/afc-wimbledon> owl:sameAs dbr:AFC_Wimbledon,
+        wd:Q48851 .
+
+<http://example.org/football/resource/team/aldershot-town> owl:sameAs <http://dbpedia.org/resource/Aldershot_Town_F.C.>,
+        wd:Q48862 .
+
+<http://example.org/football/resource/team/alfreton-town> owl:sameAs <http://dbpedia.org/resource/Alfreton_Town_F.C.>,
+        wd:Q18506 .
+
+<http://example.org/football/resource/team/altrincham> owl:sameAs <http://dbpedia.org/resource/Altrincham_F.C.>,
+        wd:Q18660 .
+
+<http://example.org/football/resource/team/arsenal> owl:sameAs <http://dbpedia.org/resource/Arsenal_F.C.>,
+        wd:Q9617 .
+
+<http://example.org/football/resource/team/aston-villa> owl:sameAs <http://dbpedia.org/resource/Aston_Villa_F.C.>,
+        wd:Q18711 .
+
+<http://example.org/football/resource/team/barnet> owl:sameAs <http://dbpedia.org/resource/Barnet_F.C.>,
+        wd:Q9408 .
+
+<http://example.org/football/resource/team/barnsley> owl:sameAs <http://dbpedia.org/resource/Barnsley_F.C.>,
+        wd:Q19442 .
+
+<http://example.org/football/resource/team/barrow> owl:sameAs <http://dbpedia.org/resource/Barrow_A.F.C.>,
+        wd:Q18507 .
+
+<http://example.org/football/resource/team/billericay-town> owl:sameAs <http://dbpedia.org/resource/Billericay_Town_F.C.>,
+        wd:Q4086727 .
+
+<http://example.org/football/resource/team/birmingham-city> owl:sameAs <http://dbpedia.org/resource/Birmingham_City_F.C.>,
+        wd:Q19444 .
+
+<http://example.org/football/resource/team/blackburn-rovers> owl:sameAs <http://dbpedia.org/resource/Blackburn_Rovers_F.C.>,
+        wd:Q19446 .
+
+<http://example.org/football/resource/team/blackpool> owl:sameAs <http://dbpedia.org/resource/Blackpool_F.C.>,
+        wd:Q19449 .
+
+<http://example.org/football/resource/team/bolton-wanderers> owl:sameAs <http://dbpedia.org/resource/Bolton_Wanderers_F.C.>,
+        wd:Q19451 .
+
+<http://example.org/football/resource/team/boreham-wood> owl:sameAs <http://dbpedia.org/resource/Boreham_Wood_F.C.>,
+        wd:Q4094837 .
+
+<http://example.org/football/resource/team/boston-united> owl:sameAs <http://dbpedia.org/resource/Boston_United_F.C.>,
+        wd:Q894605 .
+
+<http://example.org/football/resource/team/bournemouth> owl:sameAs dbr:AFC_Bournemouth,
+        wd:Q19568 .
+
+<http://example.org/football/resource/team/bradford-city> owl:sameAs <http://dbpedia.org/resource/Bradford_City_A.F.C.>,
+        wd:Q48879 .
+
+<http://example.org/football/resource/team/braintree-town> owl:sameAs <http://dbpedia.org/resource/Braintree_Town_F.C.>,
+        wd:Q18508 .
+
+<http://example.org/football/resource/team/brentford> owl:sameAs <http://dbpedia.org/resource/Brentford_F.C.>,
+        wd:Q19571 .
+
+<http://example.org/football/resource/team/brighton-and-hove-albion> owl:sameAs <http://dbpedia.org/resource/Brighton_&_Hove_Albion_F.C.>,
+        wd:Q19453 .
+
+<http://example.org/football/resource/team/bristol-city> owl:sameAs <http://dbpedia.org/resource/Bristol_City_F.C.>,
+        wd:Q19456 .
+
+<http://example.org/football/resource/team/bristol-rovers> owl:sameAs <http://dbpedia.org/resource/Bristol_Rovers_F.C.>,
+        wd:Q48925 .
+
+<http://example.org/football/resource/team/bromley> owl:sameAs <http://dbpedia.org/resource/Bromley_F.C.>,
+        wd:Q1584552 .
+
+<http://example.org/football/resource/team/burnley> owl:sameAs <http://dbpedia.org/resource/Burnley_F.C.>,
+        wd:Q19458 .
+
+<http://example.org/football/resource/team/burton-albion> owl:sameAs <http://dbpedia.org/resource/Burton_Albion_F.C.>,
+        wd:Q48929 .
+
+<http://example.org/football/resource/team/bury> owl:sameAs <http://dbpedia.org/resource/Bury_F.C.>,
+        wd:Q19573 .
+
+<http://example.org/football/resource/team/cambridge-united> owl:sameAs <http://dbpedia.org/resource/Cambridge_United_F.C.>,
+        wd:Q18509 .
+
+<http://example.org/football/resource/team/cardiff-city> owl:sameAs <http://dbpedia.org/resource/Cardiff_City_F.C.>,
+        wd:Q18662 .
+
+<http://example.org/football/resource/team/carlisle-united> owl:sameAs <http://dbpedia.org/resource/Carlisle_United_F.C.>,
+        wd:Q19575 .
+
+<http://example.org/football/resource/team/carshalton-athletic> owl:sameAs <http://dbpedia.org/resource/Carshalton_Athletic_F.C.>,
+        wd:Q3657748 .
+
+<http://example.org/football/resource/team/charlton-athletic> owl:sameAs <http://dbpedia.org/resource/Charlton_Athletic_F.C.>,
+        wd:Q19462 .
+
+<http://example.org/football/resource/team/chelsea> owl:sameAs <http://dbpedia.org/resource/Chelsea_F.C.>,
+        wd:Q9616 .
+
+<http://example.org/football/resource/team/cheltenham-town> owl:sameAs <http://dbpedia.org/resource/Cheltenham_Town_F.C.>,
+        wd:Q48932 .
+
+<http://example.org/football/resource/team/chester> owl:sameAs <http://dbpedia.org/resource/Chester_F.C.>,
+        wd:Q2041933 .
+
+<http://example.org/football/resource/team/chesterfield> owl:sameAs <http://dbpedia.org/resource/Chesterfield_F.C.>,
+        wd:Q48935 .
+
+<http://example.org/football/resource/team/chichester-city> owl:sameAs <http://dbpedia.org/resource/Chichester_City_F.C.>,
+        wd:Q5095988 .
+
+<http://example.org/football/resource/team/chippenham-town> owl:sameAs <http://dbpedia.org/resource/Chippenham_Town_F.C.>,
+        wd:Q5101644 .
+
+<http://example.org/football/resource/team/chorley> owl:sameAs <http://dbpedia.org/resource/Chorley_F.C.>,
+        wd:Q18287 .
+
+<http://example.org/football/resource/team/colchester-united> owl:sameAs <http://dbpedia.org/resource/Colchester_United_F.C.>,
+        wd:Q19578 .
+
+<http://example.org/football/resource/team/coventry-city> owl:sameAs <http://dbpedia.org/resource/Coventry_City_F.C.>,
+        wd:Q19580 .
+
+<http://example.org/football/resource/team/crawley-town> owl:sameAs <http://dbpedia.org/resource/Crawley_Town_F.C.>,
+        wd:Q19584 .
+
+<http://example.org/football/resource/team/crewe-alexandra> owl:sameAs <http://dbpedia.org/resource/Crewe_Alexandra_F.C.>,
+        wd:Q19587 .
+
+<http://example.org/football/resource/team/crystal-palace> owl:sameAs <http://dbpedia.org/resource/Crystal_Palace_F.C.>,
+        wd:Q19467 .
+
+<http://example.org/football/resource/team/dagenham-and-redbridge> owl:sameAs <http://dbpedia.org/resource/Dagenham_&_Redbridge_F.C.>,
+        wd:Q48938 .
+
+<http://example.org/football/resource/team/darlington> owl:sameAs <http://dbpedia.org/resource/Darlington_F.C.>,
+        wd:Q909189 .
+
+<http://example.org/football/resource/team/derby-county> owl:sameAs <http://dbpedia.org/resource/Derby_County_F.C.>,
+        wd:Q19470 .
+
+<http://example.org/football/resource/team/doncaster-rovers> owl:sameAs <http://dbpedia.org/resource/Doncaster_Rovers_F.C.>,
+        wd:Q19589 .
+
+<http://example.org/football/resource/team/dover-athletic> owl:sameAs <http://dbpedia.org/resource/Dover_Athletic_F.C.>,
+        wd:Q2658370 .
+
+<http://example.org/football/resource/team/dulwich-hamlet> owl:sameAs <http://dbpedia.org/resource/Dulwich_Hamlet_F.C.>,
+        wd:Q5313546 .
+
+<http://example.org/football/resource/team/eastleigh> owl:sameAs <http://dbpedia.org/resource/Eastleigh_F.C.>,
+        wd:Q2303493 .
+
+<http://example.org/football/resource/team/ebbsfleet-united> owl:sameAs <http://dbpedia.org/resource/Ebbsfleet_United_F.C.>,
+        wd:Q18511 .
+
+<http://example.org/football/resource/team/everton> owl:sameAs <http://dbpedia.org/resource/Everton_F.C.>,
+        wd:Q5794 .
+
+<http://example.org/football/resource/team/exeter-city> owl:sameAs <http://dbpedia.org/resource/Exeter_City_F.C.>,
+        wd:Q48939 .
+
+<http://example.org/football/resource/team/fleetwood-town> owl:sameAs <http://dbpedia.org/resource/Fleetwood_Town_F.C.>,
+        wd:Q48941 .
+
+<http://example.org/football/resource/team/forest-green-rovers> owl:sameAs <http://dbpedia.org/resource/Forest_Green_Rovers_F.C.>,
+        wd:Q18512 .
+
+<http://example.org/football/resource/team/fulham> owl:sameAs <http://dbpedia.org/resource/Fulham_F.C.>,
+        wd:Q18708 .
+
+<http://example.org/football/resource/team/fylde> owl:sameAs dbr:AFC_Fylde,
+        wd:Q18280 .
+
+<http://example.org/football/resource/team/gateshead> owl:sameAs <http://dbpedia.org/resource/Gateshead_F.C.>,
+        wd:Q18513 .
+
+<http://example.org/football/resource/team/gillingham> owl:sameAs <http://dbpedia.org/resource/Gillingham_F.C.>,
+        wd:Q48943 .
+
+<http://example.org/football/resource/team/grimsby-town> owl:sameAs <http://dbpedia.org/resource/Grimsby_Town_F.C.>,
+        wd:Q18515 .
+
+<http://example.org/football/resource/team/guiseley> owl:sameAs <http://dbpedia.org/resource/Guiseley_A.F.C.>,
+        wd:Q4132020 .
+
+<http://example.org/football/resource/team/halifax-town> owl:sameAs dbr:FC_Halifax_Town,
+        wd:Q5214935 .
+
+<http://example.org/football/resource/team/hampton-and-richmond-borough> owl:sameAs <http://dbpedia.org/resource/Hampton_&_Richmond_Borough_F.C.>,
+        wd:Q2307965 .
+
+<http://example.org/football/resource/team/haringey-borough> owl:sameAs <http://dbpedia.org/resource/Haringey_Borough_F.C.>,
+        wd:Q6417465 .
+
+<http://example.org/football/resource/team/harrogate-town> owl:sameAs <http://dbpedia.org/resource/Harrogate_Town_A.F.C.>,
+        wd:Q2219286 .
+
+<http://example.org/football/resource/team/hartlepool-united> owl:sameAs <http://dbpedia.org/resource/Hartlepool_United_F.C.>,
+        wd:Q19592 .
+
+<http://example.org/football/resource/team/havant-and-waterlooville> owl:sameAs <http://dbpedia.org/resource/Havant_&_Waterlooville_F.C.>,
+        wd:Q2028870 .
+
+<http://example.org/football/resource/team/hayes-and-yeading-united> owl:sameAs <http://dbpedia.org/resource/Hayes_&_Yeading_United_F.C.>,
+        wd:Q1591915 .
+
+<http://example.org/football/resource/team/hereford> owl:sameAs <http://dbpedia.org/resource/Hereford_F.C.>,
+        wd:Q18711379 .
+
+<http://example.org/football/resource/team/hitchin-town> owl:sameAs <http://dbpedia.org/resource/Hitchin_Town_F.C.>,
+        wd:Q5871864 .
+
+<http://example.org/football/resource/team/huddersfield-town> owl:sameAs <http://dbpedia.org/resource/Huddersfield_Town_A.F.C.>,
+        wd:Q19473 .
+
+<http://example.org/football/resource/team/hull-city> owl:sameAs <http://dbpedia.org/resource/Hull_City_A.F.C.>,
+        wd:Q19477 .
+
+<http://example.org/football/resource/team/ipswich-town> owl:sameAs <http://dbpedia.org/resource/Ipswich_Town_F.C.>,
+        wd:Q9653 .
+
+<http://example.org/football/resource/team/kidderminster-harriers> owl:sameAs <http://dbpedia.org/resource/Kidderminster_Harriers_F.C.>,
+        wd:Q18518 .
+
+<http://example.org/football/resource/team/king-s-lynn> owl:sameAs <http://dbpedia.org/resource/King's_Lynn_F.C.>,
+        wd:Q2494190 .
+
+<http://example.org/football/resource/team/kingstonian> owl:sameAs <http://dbpedia.org/resource/Kingstonian_F.C.>,
+        wd:Q1988619 .
+
+<http://example.org/football/resource/team/leeds-united> owl:sameAs <http://dbpedia.org/resource/Leeds_United_F.C.>,
+        wd:Q1128631 .
+
+<http://example.org/football/resource/team/leicester-city> owl:sameAs <http://dbpedia.org/resource/Leicester_City_F.C.>,
+        wd:Q19481 .
+
+<http://example.org/football/resource/team/leyton-orient> owl:sameAs <http://dbpedia.org/resource/Leyton_Orient_F.C.>,
+        wd:Q19595 .
+
+<http://example.org/football/resource/team/lincoln-city> owl:sameAs <http://dbpedia.org/resource/Lincoln_City_F.C.>,
+        wd:Q18519 .
+
+<http://example.org/football/resource/team/liverpool> owl:sameAs <http://dbpedia.org/resource/Liverpool_F.C.>,
+        wd:Q1130849 .
+
+<http://example.org/football/resource/team/luton-town> owl:sameAs <http://dbpedia.org/resource/Luton_Town_F.C.>,
+        wd:Q18520 .
+
+<http://example.org/football/resource/team/macclesfield-town> owl:sameAs <http://dbpedia.org/resource/Macclesfield_Town_F.C.>,
+        wd:Q18521 .
+
+<http://example.org/football/resource/team/maidenhead-united> owl:sameAs <http://dbpedia.org/resource/Maidenhead_United_F.C.>,
+        wd:Q1131109 .
+
+<http://example.org/football/resource/team/maidstone-united> owl:sameAs <http://dbpedia.org/resource/Maidstone_United_F.C.>,
+        wd:Q1764590 .
+
+<http://example.org/football/resource/team/maldon-and-tiptree> owl:sameAs <http://dbpedia.org/resource/Maldon_&_Tiptree_F.C.>,
+        wd:Q5212954 .
+
+<http://example.org/football/resource/team/manchester-city> owl:sameAs <http://dbpedia.org/resource/Manchester_City_F.C.>,
+        wd:Q50602 .
+
+<http://example.org/football/resource/team/manchester-united> owl:sameAs <http://dbpedia.org/resource/Manchester_United_F.C.>,
+        wd:Q18656 .
+
+<http://example.org/football/resource/team/mansfield-town> owl:sameAs <http://dbpedia.org/resource/Mansfield_Town_F.C.>,
+        wd:Q18522 .
+
+<http://example.org/football/resource/team/metropolitan-police> owl:sameAs <http://dbpedia.org/resource/Metropolitan_Police_F.C.>,
+        wd:Q6400810 .
+
+<http://example.org/football/resource/team/middlesbrough> owl:sameAs <http://dbpedia.org/resource/Middlesbrough_F.C.>,
+        wd:Q18661 .
+
+<http://example.org/football/resource/team/millwall> owl:sameAs <http://dbpedia.org/resource/Millwall_F.C.>,
+        wd:Q19487 .
+
+<http://example.org/football/resource/team/milton-keynes-dons> owl:sameAs <http://dbpedia.org/resource/Milton_Keynes_Dons_F.C.>,
+        wd:Q248188 .
+
+<http://example.org/football/resource/team/morecambe> owl:sameAs <http://dbpedia.org/resource/Morecambe_F.C.>,
+        wd:Q48944 .
+
+<http://example.org/football/resource/team/nantwich-town> owl:sameAs <http://dbpedia.org/resource/Nantwich_Town_F.C.>,
+        wd:Q18300 .
+
+<http://example.org/football/resource/team/newcastle-united> owl:sameAs <http://dbpedia.org/resource/Newcastle_United_F.C.>,
+        wd:Q18716 .
+
+<http://example.org/football/resource/team/newport-county> owl:sameAs <http://dbpedia.org/resource/Newport_County_A.F.C.>,
+        wd:Q18523 .
+
+<http://example.org/football/resource/team/northampton-town> owl:sameAs <http://dbpedia.org/resource/Northampton_Town_F.C.>,
+        wd:Q48945 .
+
+<http://example.org/football/resource/team/norwich-city> owl:sameAs <http://dbpedia.org/resource/Norwich_City_F.C.>,
+        wd:Q18721 .
+
+<http://example.org/football/resource/team/nottingham-forest> owl:sameAs <http://dbpedia.org/resource/Nottingham_Forest_F.C.>,
+        wd:Q19490 .
+
+<http://example.org/football/resource/team/notts-county> owl:sameAs <http://dbpedia.org/resource/Notts_County_F.C.>,
+        wd:Q19598 .
+
+<http://example.org/football/resource/team/oldham-athletic> owl:sameAs <http://dbpedia.org/resource/Oldham_Athletic_A.F.C.>,
+        wd:Q19601 .
+
+<http://example.org/football/resource/team/oxford-city> owl:sameAs <http://dbpedia.org/resource/Oxford_City_F.C.>,
+        wd:Q5213276 .
+
+<http://example.org/football/resource/team/oxford-united> owl:sameAs <http://dbpedia.org/resource/Oxford_United_F.C.>,
+        wd:Q48946 .
+
+<http://example.org/football/resource/team/peterborough-united> owl:sameAs <http://dbpedia.org/resource/Peterborough_United_F.C.>,
+        wd:Q19495 .
+
+<http://example.org/football/resource/team/plymouth-argyle> owl:sameAs <http://dbpedia.org/resource/Plymouth_Argyle_F.C.>,
+        wd:Q48947 .
+
+<http://example.org/football/resource/team/port-vale> owl:sameAs <http://dbpedia.org/resource/Port_Vale_F.C.>,
+        wd:Q48948 .
+
+<http://example.org/football/resource/team/portsmouth> owl:sameAs <http://dbpedia.org/resource/Portsmouth_F.C.>,
+        wd:Q19604 .
+
+<http://example.org/football/resource/team/preston-north-end> owl:sameAs <http://dbpedia.org/resource/Preston_North_End_F.C.>,
+        wd:Q19612 .
+
+<http://example.org/football/resource/team/queens-park-rangers> owl:sameAs <http://dbpedia.org/resource/Queens_Park_Rangers_F.C.>,
+        wd:Q18723 .
+
+<http://example.org/football/resource/team/reading> owl:sameAs <http://dbpedia.org/resource/Reading_F.C.>,
+        wd:Q18729 .
+
+<http://example.org/football/resource/team/rochdale> owl:sameAs <http://dbpedia.org/resource/Rochdale_A.F.C.>,
+        wd:Q48949 .
+
+<http://example.org/football/resource/team/rotherham-united> owl:sameAs <http://dbpedia.org/resource/Rotherham_United_F.C.>,
+        wd:Q48950 .
+
+<http://example.org/football/resource/team/rushden-and-diamonds> owl:sameAs <http://dbpedia.org/resource/Rushden_&_Diamonds_F.C.>,
+        wd:Q1138515 .
+
+<http://example.org/football/resource/team/salford-city> owl:sameAs <http://dbpedia.org/resource/Salford_City_F.C.>,
+        wd:Q18460 .
+
+<http://example.org/football/resource/team/scarborough> owl:sameAs <http://dbpedia.org/resource/Scarborough_F.C.>,
+        wd:Q1237961 .
+
+<http://example.org/football/resource/team/scunthorpe-united> owl:sameAs <http://dbpedia.org/resource/Scunthorpe_United_F.C.>,
+        wd:Q19615 .
+
+<http://example.org/football/resource/team/sheffield-united> owl:sameAs <http://dbpedia.org/resource/Sheffield_United_F.C.>,
+        wd:Q19607 .
+
+<http://example.org/football/resource/team/sheffield-wednesday> owl:sameAs <http://dbpedia.org/resource/Sheffield_Wednesday_F.C.>,
+        wd:Q19498 .
+
+<http://example.org/football/resource/team/shrewsbury-town> owl:sameAs <http://dbpedia.org/resource/Shrewsbury_Town_F.C.>,
+        wd:Q19626 .
+
+<http://example.org/football/resource/team/slough-town> owl:sameAs <http://dbpedia.org/resource/Slough_Town_F.C.>,
+        wd:Q2306118 .
+
+<http://example.org/football/resource/team/solihull-moors> owl:sameAs <http://dbpedia.org/resource/Solihull_Moors_F.C.>,
+        wd:Q2975959 .
+
+<http://example.org/football/resource/team/southampton> owl:sameAs <http://dbpedia.org/resource/Southampton_F.C.>,
+        wd:Q18732 .
+
+<http://example.org/football/resource/team/southend-united> owl:sameAs <http://dbpedia.org/resource/Southend_United_F.C.>,
+        wd:Q48951 .
+
+<http://example.org/football/resource/team/southport> owl:sameAs <http://dbpedia.org/resource/Southport_F.C.>,
+        wd:Q18525 .
+
+<http://example.org/football/resource/team/stevenage> owl:sameAs <http://dbpedia.org/resource/Stevenage_F.C.>,
+        wd:Q9426 .
+
+<http://example.org/football/resource/team/stockport-county> owl:sameAs <http://dbpedia.org/resource/Stockport_County_F.C.>,
+        wd:Q18526 .
+
+<http://example.org/football/resource/team/stoke-city> owl:sameAs <http://dbpedia.org/resource/Stoke_City_F.C.>,
+        wd:Q18736 .
+
+<http://example.org/football/resource/team/stourbridge> owl:sameAs <http://dbpedia.org/resource/Stourbridge_F.C.>,
+        wd:Q4383877 .
+
+<http://example.org/football/resource/team/sunderland> owl:sameAs <http://dbpedia.org/resource/Sunderland_A.F.C.>,
+        wd:Q18739 .
+
+<http://example.org/football/resource/team/sutton-united> owl:sameAs <http://dbpedia.org/resource/Sutton_United_F.C.>,
+        wd:Q2454929 .
+
+<http://example.org/football/resource/team/swansea-city> owl:sameAs <http://dbpedia.org/resource/Swansea_City_A.F.C.>,
+        wd:Q18659 .
+
+<http://example.org/football/resource/team/swindon-town> owl:sameAs <http://dbpedia.org/resource/Swindon_Town_F.C.>,
+        wd:Q19634 .
+
+<http://example.org/football/resource/team/torquay-united> owl:sameAs <http://dbpedia.org/resource/Torquay_United_F.C.>,
+        wd:Q47965 .
+
+<http://example.org/football/resource/team/tottenham-hotspur> owl:sameAs <http://dbpedia.org/resource/Tottenham_Hotspur_F.C.>,
+        wd:Q18741 .
+
+<http://example.org/football/resource/team/tranmere-rovers> owl:sameAs <http://dbpedia.org/resource/Tranmere_Rovers_F.C.>,
+        wd:Q19637 .
+
+<http://example.org/football/resource/team/walsall> owl:sameAs <http://dbpedia.org/resource/Walsall_F.C.>,
+        wd:Q19644 .
+
+<http://example.org/football/resource/team/watford> owl:sameAs <http://dbpedia.org/resource/Watford_F.C.>,
+        wd:Q2714 .
+
+<http://example.org/football/resource/team/wealdstone> owl:sameAs <http://dbpedia.org/resource/Wealdstone_F.C.>,
+        wd:Q9437 .
+
+<http://example.org/football/resource/team/west-bromwich-albion> owl:sameAs <http://dbpedia.org/resource/West_Bromwich_Albion_F.C.>,
+        wd:Q18744 .
+
+<http://example.org/football/resource/team/west-ham-united> owl:sameAs <http://dbpedia.org/resource/West_Ham_United_F.C.>,
+        wd:Q18747 .
+
+<http://example.org/football/resource/team/weston-super-mare> owl:sameAs <http://dbpedia.org/resource/Weston-super-Mare_A.F.C.>,
+        wd:Q2343389 .
+
+<http://example.org/football/resource/team/weymouth> owl:sameAs <http://dbpedia.org/resource/Weymouth_F.C.>,
+        wd:Q599356 .
+
+<http://example.org/football/resource/team/wigan-athletic> owl:sameAs <http://dbpedia.org/resource/Wigan_Athletic_F.C.>,
+        wd:Q18750 .
+
+<http://example.org/football/resource/team/wimbledon> owl:sameAs <http://dbpedia.org/resource/Wimbledon_F.C.>,
+        wd:Q19482 .
+
+<http://example.org/football/resource/team/woking> owl:sameAs <http://dbpedia.org/resource/Woking_F.C.>,
+        wd:Q18528 .
+
+<http://example.org/football/resource/team/wolverhampton-wanderers> owl:sameAs <http://dbpedia.org/resource/Wolverhampton_Wanderers_F.C.>,
+        wd:Q19500 .
+
+<http://example.org/football/resource/team/wrexham> owl:sameAs <http://dbpedia.org/resource/Wrexham_A.F.C.>,
+        wd:Q18529 .
+
+<http://example.org/football/resource/team/wycombe-wanderers> owl:sameAs <http://dbpedia.org/resource/Wycombe_Wanderers_F.C.>,
+        wd:Q48953 .
+
+<http://example.org/football/resource/team/yeovil-town> owl:sameAs <http://dbpedia.org/resource/Yeovil_Town_F.C.>,
+        wd:Q19651 .
+
+<http://example.org/football/resource/team/york-city> owl:sameAs <http://dbpedia.org/resource/York_City_F.C.>,
+        wd:Q48954 .
+

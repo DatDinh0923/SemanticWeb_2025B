@@ -1,0 +1,14 @@
+# Uses the ontology at query time (no reasoner needed): every fb:Match is a
+# schema:SportsEvent via rdfs:subClassOf, and fb:homeTeam/fb:awayTeam/fb:winner
+# are sub-properties of fb:participant.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?class (COUNT(DISTINCT ?x) AS ?instances)
+WHERE {
+  VALUES ?class { schema:SportsEvent schema:SportsTeam schema:SportsOrganization schema:EventSeries }
+  ?x a/rdfs:subClassOf* ?class .
+}
+GROUP BY ?class

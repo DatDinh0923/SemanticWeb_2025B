@@ -1,0 +1,20 @@
+# League table of Premier League 2018/19 computed from match results.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?team (COUNT(?m) AS ?P) (SUM(?w) AS ?W) (SUM(?d) AS ?D) (SUM(?l) AS ?L)
+       (SUM(?gf) AS ?GF) (SUM(?ga) AS ?GA) (SUM(?gf) - SUM(?ga) AS ?GD)
+       (3 * SUM(?w) + SUM(?d) AS ?Pts)
+WHERE {
+  ?m fb:inSeason <http://example.org/football/resource/season/premier-league-2018-19> .
+  { ?m fb:homeTeam ?t ; fb:homeGoals ?gf ; fb:awayGoals ?ga }
+  UNION
+  { ?m fb:awayTeam ?t ; fb:awayGoals ?gf ; fb:homeGoals ?ga }
+  BIND(IF(?gf > ?ga, 1, 0) AS ?w)
+  BIND(IF(?gf = ?ga, 1, 0) AS ?d)
+  BIND(IF(?gf < ?ga, 1, 0) AS ?l)
+  ?t rdfs:label ?team .
+}
+GROUP BY ?team
+ORDER BY DESC(?Pts) DESC(?GD) DESC(?GF)

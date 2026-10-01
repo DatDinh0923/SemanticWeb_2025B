@@ -1,2 +1,10 @@
-competition_id,name,country
-premier-league,English Premier League,England
+competition_id,name,tier
+premier-league,Premier League,1
+first-division,Football League First Division,2
+second-division,Football League Second Division,3
+third-division,Football League Third Division,4
+championship,EFL Championship,2
+league-one,EFL League One,3
+league-two,EFL League Two,4
+national-league,National League,5
+fa-cup,FA Cup,

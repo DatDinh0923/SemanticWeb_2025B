@@ -1,0 +1,14 @@
+# 5-star links: each club and competition with its Wikidata and DBpedia twin.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:    <http://www.w3.org/2002/07/owl#>
+
+SELECT ?label ?wikidata ?dbpedia
+WHERE {
+  ?x rdfs:label ?label .
+  { ?x a fb:Team } UNION { ?x a fb:League } UNION { ?x a fb:Cup }
+  OPTIONAL { ?x owl:sameAs ?wikidata FILTER(STRSTARTS(STR(?wikidata), "http://www.wikidata.org/")) }
+  OPTIONAL { ?x owl:sameAs ?dbpedia  FILTER(STRSTARTS(STR(?dbpedia),  "http://dbpedia.org/")) }
+}
+ORDER BY ?label

@@ -1,0 +1,14 @@
+# All-time head-to-head between Arsenal and Tottenham across every competition.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?winnerName (COUNT(?m) AS ?matches)
+WHERE {
+  VALUES (?x ?y) { (<http://example.org/football/resource/team/arsenal> <http://example.org/football/resource/team/tottenham-hotspur>) }
+  { ?m fb:homeTeam ?x ; fb:awayTeam ?y } UNION { ?m fb:homeTeam ?y ; fb:awayTeam ?x }
+  OPTIONAL { ?m fb:winner/rdfs:label ?w }
+  BIND(COALESCE(?w, "Draw") AS ?winnerName)
+}
+GROUP BY ?winnerName
+ORDER BY DESC(?matches)

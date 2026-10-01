@@ -1,0 +1,23 @@
+# Fuseki server: read-only SPARQL endpoint over the football dataset.
+# Run from the project root:
+#   java -jar tools/apache-jena-fuseki-6.2.0/fuseki-server.jar --config fuseki/config.ttl
+# Endpoint: http://localhost:3030/football/sparql   UI: http://localhost:3030
+PREFIX fuseki: <http://jena.apache.org/fuseki#>
+PREFIX ja:     <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+[] rdf:type fuseki:Server ;
+    # allow federated SERVICE <https://query.wikidata.org/sparql> queries
+    ja:context [ ja:cxtName "arq:httpServiceAllowed" ; ja:cxtValue "true" ] .
+
+<#service> rdf:type fuseki:Service ;
+    fuseki:name "football" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "sparql" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-r ; fuseki:name "get" ] ;
+    fuseki:dataset <#dataset> .
+
+<#dataset> rdf:type ja:MemoryDataset ;
+    ja:data "ontology/football.ttl" ;
+    ja:data "data/rdf/football.ttl" ;
+    ja:data "data/rdf/links.ttl" .

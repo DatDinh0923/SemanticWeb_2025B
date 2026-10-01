@@ -1,0 +1,10 @@
+competition_id,wikidata,dbpedia
+premier-league,Q9448,Premier_League
+first-division,Q754839,Football_League_First_Division
+second-division,Q769744,Football_League_Second_Division
+third-division,Q1436448,Football_League_Third_Division
+championship,Q19510,EFL_Championship
+league-one,Q19565,EFL_League_One
+league-two,Q48837,EFL_League_Two
+national-league,Q58916,National_League_(division)
+fa-cup,Q11151,FA_Cup

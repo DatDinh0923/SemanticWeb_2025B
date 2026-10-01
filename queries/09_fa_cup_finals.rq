@@ -1,0 +1,12 @@
+# FA Cup finals in the dataset.
+PREFIX fb:     <http://example.org/football/ontology#>
+PREFIX res:    <http://example.org/football/resource/>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?season ?date ?home ?homeGoals ?awayGoals ?away
+WHERE {
+  ?m fb:stage "Final" ; fb:matchDate ?date ; fb:inSeason/fb:seasonLabel ?season ;
+     fb:homeTeam/rdfs:label ?home ; fb:awayTeam/rdfs:label ?away ;
+     fb:homeGoals ?homeGoals ; fb:awayGoals ?awayGoals .
+}
+ORDER BY ?date

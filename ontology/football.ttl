@@ -1,0 +1,177 @@
+@prefix fb:     <http://example.org/football/ontology#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://example.org/football/ontology> a owl:Ontology ;
+    rdfs:label "English Football Ontology"@en ;
+    dcterms:description "Competitions, seasons, clubs and match results of English football, 1992-2021."@en ;
+    dcterms:source <https://github.com/footballcsv/england> ;
+    owl:versionInfo "1.0" .
+
+# Reused schema.org terms, declared so OWL 2 DL tools (Protégé/HermiT) type them.
+schema:SportsOrganization a owl:Class .
+schema:SportsTeam a owl:Class .
+schema:SportsEvent a owl:Class .
+schema:EventSeries a owl:Class .
+schema:homeTeam a owl:ObjectProperty .
+schema:awayTeam a owl:ObjectProperty .
+schema:superEvent a owl:ObjectProperty .
+schema:location a owl:ObjectProperty .
+schema:startDate a owl:DatatypeProperty .
+schema:endDate a owl:DatatypeProperty .
+
+#################################################################
+# Classes
+#################################################################
+
+fb:Competition a owl:Class ;
+    rdfs:subClassOf schema:SportsOrganization ;
+    rdfs:label "Competition"@en ;
+    rdfs:comment "A football competition such as a league division or a knockout cup."@en .
+
+fb:League a owl:Class ;
+    rdfs:subClassOf fb:Competition ,
+        [ a owl:Restriction ; owl:onProperty fb:tier ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:label "League"@en ;
+    rdfs:comment "A round-robin competition at a fixed tier of the English football pyramid."@en .
+
+fb:Cup a owl:Class ;
+    rdfs:subClassOf fb:Competition ;
+    owl:disjointWith fb:League ;
+    rdfs:label "Cup"@en ;
+    rdfs:comment "A knockout competition."@en .
+
+fb:Season a owl:Class ;
+    rdfs:subClassOf schema:EventSeries ,
+        [ a owl:Restriction ; owl:onProperty fb:seasonOf ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:label "Season"@en ;
+    rdfs:comment "One edition of a competition, e.g. Premier League 2018/19."@en .
+
+fb:Team a owl:Class ;
+    rdfs:subClassOf schema:SportsTeam ;
+    rdfs:label "Team"@en ;
+    rdfs:comment "A football club."@en .
+
+fb:Match a owl:Class ;
+    rdfs:subClassOf schema:SportsEvent ,
+        [ a owl:Restriction ; owl:onProperty fb:homeTeam ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+        [ a owl:Restriction ; owl:onProperty fb:awayTeam ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ,
+        [ a owl:Restriction ; owl:onProperty fb:inSeason ; owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
+    rdfs:label "Match"@en ;
+    rdfs:comment "A single played football match with a full-time result."@en .
+
+fb:Draw a owl:Class ;
+    rdfs:subClassOf fb:Match ;
+    owl:disjointWith [ a owl:Restriction ; owl:onProperty fb:winner ; owl:someValuesFrom fb:Team ] ;
+    rdfs:label "Draw"@en ;
+    rdfs:comment "A match that ended level; it has no winner."@en .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( fb:Competition fb:Season fb:Team fb:Match ) .
+
+#################################################################
+# Object properties
+#################################################################
+
+fb:participant a owl:ObjectProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range fb:Team ;
+    rdfs:label "participant"@en .
+
+fb:homeTeam a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf fb:participant , schema:homeTeam ;
+    rdfs:label "home team"@en .
+
+fb:awayTeam a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf fb:participant , schema:awayTeam ;
+    rdfs:label "away team"@en .
+
+fb:winner a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf fb:participant ;
+    rdfs:label "winner"@en .
+
+fb:loser a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf fb:participant ;
+    owl:propertyDisjointWith fb:winner ;
+    rdfs:label "loser"@en .
+
+fb:inSeason a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range fb:Season ;
+    rdfs:subPropertyOf schema:superEvent ;
+    rdfs:label "in season"@en .
+
+fb:seasonOf a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Season ;
+    rdfs:range fb:Competition ;
+    rdfs:label "season of"@en .
+
+fb:hasSeason a owl:ObjectProperty ;
+    owl:inverseOf fb:seasonOf ;
+    rdfs:label "has season"@en .
+
+fb:inCompetition a owl:ObjectProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range fb:Competition ;
+    owl:propertyChainAxiom ( fb:inSeason fb:seasonOf ) ;
+    rdfs:label "in competition"@en ;
+    rdfs:comment "Inferred by an OWL 2 reasoner from inSeason followed by seasonOf."@en .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+fb:homeGoals a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "home goals"@en .
+
+fb:awayGoals a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "away goals"@en .
+
+fb:matchDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range xsd:date ;
+    rdfs:label "match date"@en .
+
+fb:matchday a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range xsd:positiveInteger ;
+    rdfs:label "matchday"@en ;
+    rdfs:comment "Round number of a league match."@en .
+
+fb:stage a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Match ;
+    rdfs:range xsd:string ;
+    rdfs:label "stage"@en ;
+    rdfs:comment "Named round of a cup match, e.g. 'Final'."@en .
+
+fb:tier a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:League ;
+    rdfs:range xsd:positiveInteger ;
+    rdfs:label "tier"@en ;
+    rdfs:comment "Level in the English football pyramid (1 = top)."@en .
+
+fb:seasonLabel a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain fb:Season ;
+    rdfs:range xsd:string ;
+    rdfs:label "season label"@en ;
+    rdfs:comment "Season years such as '2018/19'."@en .
+
+fb:startDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf schema:startDate ;
+    rdfs:domain fb:Season ;
+    rdfs:range xsd:date ;
+    rdfs:label "start date"@en .
+
+fb:endDate a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:subPropertyOf schema:endDate ;
+    rdfs:domain fb:Season ;
+    rdfs:range xsd:date ;
+    rdfs:label "end date"@en .
