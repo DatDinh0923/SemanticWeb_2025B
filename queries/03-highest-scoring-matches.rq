@@ -8,6 +8,19 @@ WHERE {
            foot:homeGoals ?homeGoals ;
            foot:awayGoals ?awayGoals .
     BIND(?homeGoals + ?awayGoals AS ?totalGoals)
+
+    {
+        SELECT
+            (?candidateHomeGoals + ?candidateAwayGoals AS ?maximumTotal)
+        WHERE {
+            ?candidate a foot:FootballMatch ;
+                       foot:homeGoals ?candidateHomeGoals ;
+                       foot:awayGoals ?candidateAwayGoals .
+        }
+        ORDER BY DESC(?maximumTotal)
+        LIMIT 1
+    }
+
+    FILTER(?totalGoals = ?maximumTotal)
 }
-ORDER BY DESC(?totalGoals) ?match
-LIMIT 10
+ORDER BY ?match

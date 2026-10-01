@@ -1,8 +1,20 @@
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
 
-SELECT ?team ?name
+SELECT DISTINCT ?team ?name
 WHERE {
+    ?match a foot:FootballMatch ;
+           foot:playedInSeason
+               <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/2018-19> .
+
+    {
+        ?match foot:homeTeam ?team .
+    }
+    UNION
+    {
+        ?match foot:awayTeam ?team .
+    }
+
     ?team a foot:FootballTeam ;
           schema:name ?name .
 }

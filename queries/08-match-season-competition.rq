@@ -12,4 +12,3 @@ WHERE {
     ?competition schema:name ?competitionName .
 }
 ORDER BY ?match
-LIMIT 25
