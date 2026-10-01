@@ -10,6 +10,8 @@ Football League, National League, FA Cup), xây dựng từ
 | 2. Thu thập + làm sạch | 97 file CSV → 45.849 trận, 153 đội, 97 mùa, 9 giải | [src/clean_data.py](src/clean_data.py) → `data/processed/` |
 | 3. 4★ (RDF) | ~447k triple, URI cho mọi thực thể | [src/to_rdf.py](src/to_rdf.py) → `data/rdf/football.ttl` |
 | 4. 5★ (liên kết) | `owl:sameAs` tới Wikidata + DBpedia cho đội và giải | [src/link_wikidata.py](src/link_wikidata.py) → `data/links/` → `data/rdf/links.ttl` |
+| Kiểm định | SHACL: mỗi trận đúng 1 đội nhà/khách, có matchday *hoặc* stage, là Draw *hoặc* có winner/loser; mọi đội/giải có đúng 1 link Wikidata | [shapes/football-shapes.ttl](shapes/football-shapes.ttl), [src/validate.py](src/validate.py) |
+| Metadata | VoID/DCAT: số triple, số thực thể theo class, linkset Wikidata/DBpedia, license, endpoint | `data/rdf/void.ttl` |
 | 5. Truy vấn | Fuseki SPARQL endpoint + CLI | [fuseki/config.ttl](fuseki/config.ttl), [src/query.py](src/query.py), [queries/](queries/) |
 
 ## Chạy từ đầu
@@ -19,7 +21,8 @@ pip install -r requirements.txt
 
 python src/clean_data.py        # england_csv/ -> data/processed/*.csv
 python src/link_wikidata.py     # -> data/links/team_links.csv (chạy lại được, giữ kết quả cũ)
-python src/to_rdf.py            # -> data/rdf/football.ttl + links.ttl  (~1 phút)
+python src/to_rdf.py            # -> data/rdf/football.ttl + links.ttl + void.ttl  (~1 phút)
+python src/validate.py          # kiểm tra SHACL (shapes/football-shapes.ttl), ~2 phút
 
 python -m unittest discover -s src -p "test_*.py"
 ```

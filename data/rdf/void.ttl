@@ -1,0 +1,57 @@
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fb: <http://example.org/football/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix res: <http://example.org/football/resource/> .
+@prefix schema: <https://schema.org/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/football/resource/dataset/Cup> void:class fb:Cup ;
+    void:entities 1 .
+
+<http://example.org/football/resource/dataset/League> void:class fb:League ;
+    void:entities 8 .
+
+<http://example.org/football/resource/dataset/Match> void:class fb:Match ;
+    void:entities 45849 .
+
+<http://example.org/football/resource/dataset/Season> void:class fb:Season ;
+    void:entities 97 .
+
+<http://example.org/football/resource/dataset/Team> void:class fb:Team ;
+    void:entities 153 .
+
+<http://example.org/football/resource/dataset/linkset-dbpedia> a void:Linkset ;
+    void:linkPredicate owl:sameAs ;
+    void:target dbr:,
+        res:dataset ;
+    void:triples 162 .
+
+<http://example.org/football/resource/dataset/linkset-wikidata> a void:Linkset ;
+    void:linkPredicate owl:sameAs ;
+    void:target res:dataset,
+        wd: ;
+    void:triples 162 .
+
+res:dataset a void:Dataset,
+        dcat:Dataset ;
+    dcterms:description "Competitions, seasons, clubs and match results of English football, 1992-2021."@en ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcterms:source <https://github.com/footballcsv/england> ;
+    dcterms:title "English Football Linked Data"@en ;
+    void:classPartition <http://example.org/football/resource/dataset/Cup>,
+        <http://example.org/football/resource/dataset/League>,
+        <http://example.org/football/resource/dataset/Match>,
+        <http://example.org/football/resource/dataset/Season>,
+        <http://example.org/football/resource/dataset/Team> ;
+    void:sparqlEndpoint <http://localhost:3030/football/sparql> ;
+    void:subset <http://example.org/football/resource/dataset/linkset-dbpedia>,
+        <http://example.org/football/resource/dataset/linkset-wikidata> ;
+    void:triples 447315 ;
+    void:uriSpace "http://example.org/football/resource/" ;
+    void:vocabulary fb:,
+        schema: .
+

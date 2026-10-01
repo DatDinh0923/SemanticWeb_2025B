@@ -2,9 +2,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rdflib.namespace import OWL, RDF
+from rdflib.namespace import OWL, RDF, VOID
 
-from to_rdf import FB, WD, build_data_graph, build_links_graph, uri
+from to_rdf import FB, WD, build_data_graph, build_links_graph, build_void_graph, uri
 
 
 TABLES = {
@@ -40,6 +40,11 @@ class ToRdfTests(unittest.TestCase):
         self.assertEqual(data.value(uri("match", "m1"), FB.matchday).toPython(), 1)
         self.assertEqual(len(list(data.subjects(RDF.type, FB.Cup))), 1)
         self.assertIn((uri("team", "arsenal"), OWL.sameAs, WD.Q9617), links)
+
+        void = build_void_graph(data, links)
+        linkset = uri("dataset", "linkset-wikidata")
+        self.assertEqual(void.value(linkset, VOID.triples).toPython(), 1)
+        self.assertEqual(void.value(uri("dataset", "Match"), VOID.entities).toPython(), 2)
 
 
 if __name__ == "__main__":

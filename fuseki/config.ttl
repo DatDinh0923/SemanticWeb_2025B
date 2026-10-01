@@ -20,4 +20,5 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 <#dataset> rdf:type ja:MemoryDataset ;
     ja:data "ontology/football.ttl" ;
     ja:data "data/rdf/football.ttl" ;
-    ja:data "data/rdf/links.ttl" .
+    ja:data "data/rdf/links.ttl" ;
+    ja:data "data/rdf/void.ttl" .

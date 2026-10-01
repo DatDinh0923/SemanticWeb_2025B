@@ -8,7 +8,7 @@ import csv
 from pathlib import Path
 
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import OWL, RDF, RDFS, XSD
+from rdflib.namespace import DCAT, DCTERMS, OWL, RDF, RDFS, VOID, XSD
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROCESSED_DIR = PROJECT_ROOT / "data/processed"
@@ -124,6 +124,44 @@ def build_links_graph(processed_dir: Path, links_dir: Path) -> Graph:
     return graph
 
 
+def build_void_graph(data: Graph, links: Graph) -> Graph:
+    """VoID/DCAT description of the dataset, so it is discoverable as Linked Data."""
+    graph = new_graph()
+    graph.bind("void", VOID)
+    graph.bind("dcat", DCAT)
+    graph.bind("dcterms", DCTERMS)
+    dataset = RES["dataset"]
+
+    graph.add((dataset, RDF.type, VOID.Dataset))
+    graph.add((dataset, RDF.type, DCAT.Dataset))
+    graph.add((dataset, DCTERMS.title, Literal("English Football Linked Data", lang="en")))
+    graph.add((dataset, DCTERMS.description, Literal(
+        "Competitions, seasons, clubs and match results of English football, 1992-2021.", lang="en")))
+    graph.add((dataset, DCTERMS.source, URIRef("https://github.com/footballcsv/england")))
+    graph.add((dataset, DCTERMS.license, URIRef("https://creativecommons.org/publicdomain/zero/1.0/")))
+    graph.add((dataset, VOID.sparqlEndpoint, URIRef("http://localhost:3030/football/sparql")))
+    graph.add((dataset, VOID.uriSpace, Literal(str(RES))))
+    graph.add((dataset, VOID.vocabulary, URIRef(str(FB))))
+    graph.add((dataset, VOID.vocabulary, URIRef(str(SCHEMA))))
+    graph.add((dataset, VOID.triples, Literal(len(data) + len(links))))
+    for cls in (FB.Match, FB.Team, FB.Season, FB.League, FB.Cup):
+        partition = RES[f"dataset/{cls.fragment}"]
+        graph.add((dataset, VOID.classPartition, partition))
+        graph.add((partition, VOID["class"], cls))
+        graph.add((partition, VOID.entities, Literal(len(set(data.subjects(RDF.type, cls))))))
+
+    for name, target in (("wikidata", "http://www.wikidata.org/entity/"), ("dbpedia", "http://dbpedia.org/resource/")):
+        linkset = RES[f"dataset/linkset-{name}"]
+        count = sum(1 for o in links.objects(None, OWL.sameAs) if str(o).startswith(target))
+        graph.add((dataset, VOID.subset, linkset))
+        graph.add((linkset, RDF.type, VOID.Linkset))
+        graph.add((linkset, VOID.linkPredicate, OWL.sameAs))
+        graph.add((linkset, VOID.target, dataset))
+        graph.add((linkset, VOID.target, URIRef(target)))
+        graph.add((linkset, VOID.triples, Literal(count)))
+    return graph
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--processed-dir", type=Path, default=DEFAULT_PROCESSED_DIR)
@@ -132,9 +170,12 @@ def main() -> int:
     args = parser.parse_args()
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    data = build_data_graph(args.processed_dir)
+    links = build_links_graph(args.processed_dir, args.links_dir)
     for name, graph in (
-        ("football.ttl", build_data_graph(args.processed_dir)),
-        ("links.ttl", build_links_graph(args.processed_dir, args.links_dir)),
+        ("football.ttl", data),
+        ("links.ttl", links),
+        ("void.ttl", build_void_graph(data, links)),
     ):
         output = args.output_dir / name
         graph.serialize(output, format="turtle", encoding="utf-8")

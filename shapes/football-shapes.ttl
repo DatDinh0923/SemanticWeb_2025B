@@ -1,0 +1,51 @@
+@prefix fb:   <http://example.org/football/ontology#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# Closed-world checks on the generated data (OWL alone cannot reject missing values).
+
+fb:MatchShape a sh:NodeShape ;
+    sh:targetClass fb:Match ;
+    sh:property [ sh:path fb:inSeason ; sh:minCount 1 ; sh:maxCount 1 ; sh:class fb:Season ] ;
+    sh:property [ sh:path fb:homeTeam ; sh:minCount 1 ; sh:maxCount 1 ; sh:class fb:Team ;
+                  sh:disjoint fb:awayTeam ] ;
+    sh:property [ sh:path fb:awayTeam ; sh:minCount 1 ; sh:maxCount 1 ; sh:class fb:Team ] ;
+    sh:property [ sh:path fb:homeGoals ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path fb:awayGoals ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path fb:matchDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    # a league match has a matchday, a cup match has a named stage - never both
+    sh:xone (
+        [ sh:path fb:matchday ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ]
+        [ sh:path fb:stage ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ]
+    ) ;
+    # a match either is a Draw or has exactly one winner and one loser
+    sh:xone (
+        [ sh:path rdf:type ; sh:hasValue fb:Draw ]
+        [ sh:and (
+            [ sh:path fb:winner ; sh:minCount 1 ; sh:maxCount 1 ]
+            [ sh:path fb:loser ; sh:minCount 1 ; sh:maxCount 1 ]
+        ) ]
+    ) .
+
+fb:SeasonShape a sh:NodeShape ;
+    sh:targetClass fb:Season ;
+    sh:property [ sh:path fb:seasonOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class fb:Competition ] ;
+    sh:property [ sh:path fb:seasonLabel ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[0-9]{4}/[0-9]{2}$" ] ;
+    sh:property [ sh:path fb:startDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:lessThanOrEquals fb:endDate ] ;
+    sh:property [ sh:path fb:endDate ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+fb:LeagueShape a sh:NodeShape ;
+    sh:targetClass fb:League ;
+    sh:property [ sh:path fb:tier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ] .
+
+# 5-star check: every team and competition is linked to exactly one Wikidata item.
+fb:LinkedShape a sh:NodeShape ;
+    sh:targetClass fb:Team , fb:League , fb:Cup ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path owl:sameAs ;
+                  sh:qualifiedValueShape [ sh:pattern "^http://www\\.wikidata\\.org/entity/Q[0-9]+$" ] ;
+                  sh:qualifiedMinCount 1 ; sh:qualifiedMaxCount 1 ] .
