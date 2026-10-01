@@ -1,0 +1,37 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
+
+SELECT ?team ?teamName
+       (COUNT(?match) AS ?played)
+       (SUM(?win) AS ?won)
+       (SUM(?draw) AS ?drawn)
+       (SUM(?loss) AS ?lost)
+       (SUM(?goalsFor) AS ?goalsFor)
+       (SUM(?goalsAgainst) AS ?goalsAgainst)
+       ((SUM(?goalsFor) - SUM(?goalsAgainst)) AS ?goalDifference)
+       ((SUM(?win) * 3 + SUM(?draw)) AS ?points)
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:playedInSeason season:2018-19 .
+
+    {
+        ?match foot:homeTeam ?team ;
+               foot:homeGoals ?goalsFor ;
+               foot:awayGoals ?goalsAgainst .
+    }
+    UNION
+    {
+        ?match foot:awayTeam ?team ;
+               foot:awayGoals ?goalsFor ;
+               foot:homeGoals ?goalsAgainst .
+    }
+
+    ?team a foot:FootballTeam ;
+          schema:name ?teamName .
+    BIND(IF(?goalsFor > ?goalsAgainst, 1, 0) AS ?win)
+    BIND(IF(?goalsFor = ?goalsAgainst, 1, 0) AS ?draw)
+    BIND(IF(?goalsFor < ?goalsAgainst, 1, 0) AS ?loss)
+}
+GROUP BY ?team ?teamName
+ORDER BY DESC(?points) DESC(?goalDifference) DESC(?goalsFor) ?teamName

@@ -2,3 +2,4 @@ __pycache__/
 *.py[cod]
 .semweb/
 _site/
+data/links/wikidata-suggestions.csv

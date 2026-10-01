@@ -1,6 +1,6 @@
 # SPARQL queries
 
-The ten saved queries correspond to the competency questions in
+The twelve saved queries correspond to the competency questions in
 `docs/competency-questions.md`.
 
 Run one query locally:

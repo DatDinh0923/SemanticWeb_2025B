@@ -52,6 +52,8 @@ class CleanerUnitTests(unittest.TestCase):
                 competition_id="premier-league",
                 competition_name="English Premier League",
                 country="England",
+                competition_type="league",
+                tier=1,
                 season_id="2018-19",
                 season_label="2018/19",
                 expected_matches=1,
@@ -65,6 +67,11 @@ class CleanerUnitTests(unittest.TestCase):
             self.assertTrue((output_dir / "teams.csv").is_file())
             self.assertTrue((output_dir / "competitions.csv").is_file())
             self.assertTrue((output_dir / "seasons.csv").is_file())
+            competitions = (output_dir / "competitions.csv").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("competition_type,tier", competitions)
+            self.assertIn("league,1", competitions)
 
 
 if __name__ == "__main__":

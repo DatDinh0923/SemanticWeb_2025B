@@ -181,7 +181,8 @@ def add_external_links(
 
 def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int]]:
     competition_rows = read_csv(
-        input_dir / "competitions.csv", {"competition_id", "name", "country"}
+        input_dir / "competitions.csv",
+        {"competition_id", "name", "country", "competition_type", "tier"},
     )
     season_rows = read_csv(
         input_dir / "seasons.csv",
@@ -215,6 +216,7 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
     graph = Graph()
     bind_namespaces(graph)
     local_resources: dict[tuple[str, str], URIRef] = {}
+    draw_count = 0
 
     dataset_uri = DATASET["premier-league-2018-19"]
     distribution_uri = DATASET["premier-league-2018-19/turtle"]
@@ -245,7 +247,7 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
     graph.add((dataset_uri, DCTERMS.creator, PUBLISHER_URL))
     graph.add((dataset_uri, DCTERMS.publisher, PUBLISHER_URL))
     graph.add((dataset_uri, DCTERMS.issued, Literal("2026-09-27", datatype=XSD.date)))
-    graph.add((dataset_uri, DCTERMS.modified, Literal("2026-10-01", datatype=XSD.date)))
+    graph.add((dataset_uri, DCTERMS.modified, Literal("2026-10-02", datatype=XSD.date)))
     graph.add((dataset_uri, DCAT.landingPage, URIRef(BASE_URL)))
     graph.add((dataset_uri, DCAT.distribution, distribution_uri))
     graph.add((dataset_uri, VOID.dataDump, PUBLIC_DATA_URL))
@@ -273,7 +275,7 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
         (
             activity_uri,
             PROV.endedAtTime,
-            Literal("2026-10-01T00:00:00+07:00", datatype=XSD.dateTime),
+            Literal("2026-10-02T00:00:00+07:00", datatype=XSD.dateTime),
         )
     )
     graph.add((URIRef(f"{BASE_URL}ontology/"), RDFS.seeAlso, PUBLIC_ONTOLOGY_URL))
@@ -281,8 +283,29 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
 
     for competition_id, row in competitions.items():
         resource = COMPETITION[competition_id]
+        competition_type = row["competition_type"].strip().lower()
         local_resources[("competition", competition_id)] = resource
         graph.add((resource, RDF.type, FOOT.Competition))
+        if competition_type == "league":
+            graph.add((resource, RDF.type, FOOT.League))
+            graph.add(
+                (
+                    resource,
+                    FOOT.tier,
+                    parse_positive_integer(row["tier"], "tier"),
+                )
+            )
+        elif competition_type == "cup":
+            if row["tier"].strip():
+                raise ConversionError(
+                    f"Cup competition {competition_id} must not define a league tier"
+                )
+            graph.add((resource, RDF.type, FOOT.Cup))
+        else:
+            raise ConversionError(
+                f"Unsupported competition_type for {competition_id}: "
+                f"{competition_type!r}"
+            )
         graph.add((resource, SCHEMA.name, Literal(row["name"].strip(), lang="en")))
         graph.add(
             (resource, SCHEMA.spatialCoverage, Literal(row["country"].strip(), lang="en"))
@@ -350,6 +373,17 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
         graph.add((resource, FOOT.roundNumber, parse_positive_integer(row["round"], "round")))
         graph.add((resource, FOOT.playedInSeason, SEASON[season_id]))
         graph.add((resource, FOOT.partOfCompetition, COMPETITION[competition_id]))
+        home_goal_count = int(home_goals)
+        away_goal_count = int(away_goals)
+        if home_goal_count == away_goal_count:
+            graph.add((resource, RDF.type, FOOT.Draw))
+            draw_count += 1
+        elif home_goal_count > away_goal_count:
+            graph.add((resource, FOOT.winner, TEAM[home_team_id]))
+            graph.add((resource, FOOT.loser, TEAM[away_team_id]))
+        else:
+            graph.add((resource, FOOT.winner, TEAM[away_team_id]))
+            graph.add((resource, FOOT.loser, TEAM[home_team_id]))
 
     linked_entity_count = add_external_links(graph, link_rows, local_resources)
     for linkset_id, target_dataset in (
@@ -370,6 +404,8 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
         "seasons": len(seasons),
         "teams": len(teams),
         "matches": len(matches),
+        "draws": draw_count,
+        "decisive_matches": len(matches) - draw_count,
         "linked_entities": linked_entity_count,
         "triples": len(graph),
     }

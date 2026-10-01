@@ -46,6 +46,26 @@ competition, or season. The mappings and verification method are recorded in
 The conversion rejects missing mappings, duplicate external targets, malformed
 Wikidata identifiers, and non-DBpedia resource URIs.
 
+## Optional candidate discovery
+
+`src/suggest_links.py` can query the Wikidata search API for possible mappings:
+
+```bash
+make suggest-links
+```
+
+The command writes a separate ignored file,
+`data/links/wikidata-suggestions.csv`. Candidate rank, label, and description
+are retained, and every row starts with `verification_status=unverified`.
+The tool refuses to overwrite `data/links/entity-links.csv`, even with
+`--force`.
+
+Candidate discovery is not entity resolution. Before promoting a candidate,
+compare its description, country, competition, active years, and official
+site with the local entity. Then add the verified Wikidata and DBpedia pair to
+`entity-links.csv` and run the complete pipeline. This manual gate prevents a
+same-name historical club or a season article from being linked incorrectly.
+
 ## Publication metadata
 
 The generated graph uses:

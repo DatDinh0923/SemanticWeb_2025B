@@ -64,6 +64,21 @@ foot:CompetitionShape
         sh:path schema:spatialCoverage ;
         sh:minCount 1 ;
         sh:maxCount 1
+    ] ;
+    sh:or (
+        [ sh:class foot:League ]
+        [ sh:class foot:Cup ]
+    ) .
+
+foot:LeagueShape
+    a sh:NodeShape ;
+    sh:targetClass foot:League ;
+    sh:property [
+        sh:path foot:tier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:positiveInteger ;
+        sh:minInclusive 1
     ] .
 
 foot:SeasonShape
@@ -163,6 +178,23 @@ foot:FootballMatchShape
         sh:class foot:Competition ;
         sh:nodeKind sh:IRI
     ] ;
+    sh:property [
+        sh:path foot:winner ;
+        sh:maxCount 1 ;
+        sh:class foot:FootballTeam ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path foot:loser ;
+        sh:maxCount 1 ;
+        sh:class foot:FootballTeam ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path foot:stage ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ] ;
     sh:sparql [
         sh:message "The home and away teams must be different."@en ;
         sh:select """
@@ -201,6 +233,61 @@ foot:FootballMatchShape
                 FILTER(?matchCompetition != ?seasonCompetition)
             }
         """
+    ] ;
+    sh:sparql [
+        sh:message "Draw typing must agree with whether the scores are equal."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this
+            WHERE {
+                $this foot:homeGoals ?homeGoals ;
+                      foot:awayGoals ?awayGoals .
+                OPTIONAL {
+                    $this a foot:Draw .
+                    BIND(true AS ?isDraw)
+                }
+                FILTER(
+                    (?homeGoals = ?awayGoals && !BOUND(?isDraw)) ||
+                    (?homeGoals != ?awayGoals && BOUND(?isDraw))
+                )
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "A decisive match must have the score's winner and loser."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this
+            WHERE {
+                $this foot:homeTeam ?homeTeam ;
+                      foot:awayTeam ?awayTeam ;
+                      foot:homeGoals ?homeGoals ;
+                      foot:awayGoals ?awayGoals .
+                OPTIONAL { $this foot:winner ?winner . }
+                OPTIONAL { $this foot:loser ?loser . }
+                FILTER(?homeGoals != ?awayGoals)
+                FILTER(
+                    !BOUND(?winner) ||
+                    !BOUND(?loser) ||
+                    (?homeGoals > ?awayGoals && BOUND(?winner) && BOUND(?loser) &&
+                        (?winner != ?homeTeam || ?loser != ?awayTeam)) ||
+                    (?awayGoals > ?homeGoals && BOUND(?winner) && BOUND(?loser) &&
+                        (?winner != ?awayTeam || ?loser != ?homeTeam))
+                )
+            }
+        """
+    ] .
+
+foot:DrawShape
+    a sh:NodeShape ;
+    sh:targetClass foot:Draw ;
+    sh:property [
+        sh:path foot:winner ;
+        sh:maxCount 0
+    ] ;
+    sh:property [
+        sh:path foot:loser ;
+        sh:maxCount 0
     ] .
 
 dataset:DatasetShape

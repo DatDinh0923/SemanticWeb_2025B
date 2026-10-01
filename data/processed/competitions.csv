@@ -1,2 +1,2 @@
-competition_id,name,country
-premier-league,English Premier League,England
+competition_id,name,country,competition_type,tier
+premier-league,English Premier League,England,league,1

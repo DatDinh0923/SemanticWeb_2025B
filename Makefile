@@ -1,7 +1,7 @@
 PYTHON ?= .semweb/bin/python
 PIP ?= .semweb/bin/pip
 
-.PHONY: setup clean-data rdf validate queries test site pipeline endpoint-up endpoint-load endpoint-down
+.PHONY: setup clean-data rdf validate queries test site pipeline suggest-links endpoint-up endpoint-load endpoint-down
 
 setup:
 	$(PIP) install -r requirements.txt
@@ -25,6 +25,9 @@ site:
 	$(PYTHON) src/build_site.py
 
 pipeline: clean-data rdf validate test site
+
+suggest-links:
+	$(PYTHON) src/suggest_links.py
 
 endpoint-up:
 	docker compose up -d

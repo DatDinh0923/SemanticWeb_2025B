@@ -11,12 +11,13 @@ publicly reachable.
 - 1 season
 - 20 teams
 - 380 matches
-- 3,935 instance-data triples
+- 4,626 instance-data triples
 - 22 externally linked entities
 - 44 `owl:sameAs` links to Wikidata and DBpedia
-- 10 competency questions and saved SPARQL queries
+- 12 competency questions and saved SPARQL queries
 - DCAT, VoID, and PROV-O publication metadata
 - A generated static page and Turtle description for every local RDF resource
+- Explicit league tier, draw, winner, and loser semantics validated with SHACL
 
 The source data comes from the public-domain
 [football.csv England dataset](https://github.com/footballcsv/england).
@@ -58,12 +59,23 @@ python3 src/validate_rdf.py
 python3 src/run_sparql.py --all
 ```
 
+Optional Wikidata candidate discovery is separate from the verified mapping:
+
+```bash
+make suggest-links
+```
+
+This networked command writes `data/links/wikidata-suggestions.csv` with every
+candidate marked `unverified`. It refuses to overwrite
+`data/links/entity-links.csv`; identity must be checked manually before a URI
+is copied into the verified mapping.
+
 The generated graph is written to `data/rdf/football-data.ttl`. The SHACL
 report is written to `data/rdf/validation-report.ttl`.
 
 ## SPARQL terminal
 
-Run all ten saved queries:
+Run all twelve saved queries:
 
 ```bash
 python3 src/run_sparql.py --all
@@ -161,3 +173,5 @@ and rebuilds the project before deployment. See
 | 5 stars | 44 verified `owl:sameAs` links to Wikidata and DBpedia |
 
 The data license is documented in [`LICENSE-DATA.md`](LICENSE-DATA.md).
+The controlled expansion plan is documented in
+[`docs/multi-season-roadmap.md`](docs/multi-season-roadmap.md).

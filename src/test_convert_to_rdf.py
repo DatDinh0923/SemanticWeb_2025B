@@ -2,11 +2,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rdflib import DCAT, OWL, RDF, Graph, URIRef
+from rdflib import DCAT, OWL, RDF, XSD, Graph, Literal, URIRef
 
 from convert_to_rdf import (
     DEFAULT_INPUT_DIR,
     DEFAULT_LINKS,
+    COMPETITION,
     DATASET,
     FOOT,
     MATCH,
@@ -27,6 +28,8 @@ class RdfConversionTests(unittest.TestCase):
         self.assertEqual(self.stats["seasons"], 1)
         self.assertEqual(self.stats["teams"], 20)
         self.assertEqual(self.stats["matches"], 380)
+        self.assertEqual(self.stats["draws"], 71)
+        self.assertEqual(self.stats["decisive_matches"], 309)
         self.assertEqual(self.stats["linked_entities"], 22)
 
     def test_expected_rdf_types_and_relationships(self) -> None:
@@ -36,6 +39,34 @@ class RdfConversionTests(unittest.TestCase):
         self.assertIn((match, RDF.type, FOOT.FootballMatch), self.graph)
         self.assertIn((match, FOOT.homeTeam, TEAM["manchester-united"]), self.graph)
         self.assertIn((match, FOOT.awayTeam, TEAM["leicester-city"]), self.graph)
+        self.assertIn((match, FOOT.winner, TEAM["manchester-united"]), self.graph)
+        self.assertIn((match, FOOT.loser, TEAM["leicester-city"]), self.graph)
+
+    def test_competition_is_a_first_tier_league(self) -> None:
+        competition = COMPETITION["premier-league"]
+        self.assertIn((competition, RDF.type, FOOT.Competition), self.graph)
+        self.assertIn((competition, RDF.type, FOOT.League), self.graph)
+        self.assertIn(
+            (
+                competition,
+                FOOT.tier,
+                Literal(1, datatype=XSD.positiveInteger),
+            ),
+            self.graph,
+        )
+
+    def test_draws_and_decisive_results_have_consistent_outcomes(self) -> None:
+        draws = set(self.graph.subjects(RDF.type, FOOT.Draw))
+        matches = set(self.graph.subjects(RDF.type, FOOT.FootballMatch))
+        self.assertEqual(len(draws), 71)
+        self.assertEqual(len(matches - draws), 309)
+
+        for match in draws:
+            self.assertEqual(list(self.graph.objects(match, FOOT.winner)), [])
+            self.assertEqual(list(self.graph.objects(match, FOOT.loser)), [])
+        for match in matches - draws:
+            self.assertEqual(len(list(self.graph.objects(match, FOOT.winner))), 1)
+            self.assertEqual(len(list(self.graph.objects(match, FOOT.loser))), 1)
 
     def test_every_team_has_two_external_links(self) -> None:
         for team in self.graph.subjects(RDF.type, FOOT.FootballTeam):

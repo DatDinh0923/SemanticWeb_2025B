@@ -69,6 +69,8 @@ class Competition:
     competition_id: str
     name: str
     country: str
+    competition_type: str
+    tier: int
 
 
 @dataclass(frozen=True)
@@ -254,16 +256,34 @@ def clean_dataset(
     competition_id: str,
     competition_name: str,
     country: str,
+    competition_type: str,
+    tier: int,
     season_id: str,
     season_label: str,
     expected_matches: int | None,
     expected_teams: int | None,
 ) -> tuple[int, int]:
+    if competition_type != "league":
+        raise DataValidationError(
+            "The current cleaner supports league tables only; cup stages require "
+            "a separate source mapping."
+        )
+    if tier < 1:
+        raise DataValidationError("League tier must be positive")
+
     matches, teams = load_matches(input_path, competition_id, season_id)
     validate_dataset(matches, teams, expected_matches, expected_teams)
 
     match_dates = [date.fromisoformat(match.match_date) for match in matches]
-    competitions = [Competition(competition_id, competition_name, country)]
+    competitions = [
+        Competition(
+            competition_id,
+            competition_name,
+            country,
+            competition_type,
+            tier,
+        )
+    ]
     seasons = [
         Season(
             season_id=season_id,
@@ -304,6 +324,13 @@ def optional_positive_count(value: str) -> int | None:
     return count or None
 
 
+def parse_positive_int_arg(value: str) -> int:
+    try:
+        return parse_positive_int(value, "value")
+    except DataValidationError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Clean an OpenFootball league CSV into ontology-ready tables."
@@ -313,6 +340,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--competition-id", default="premier-league")
     parser.add_argument("--competition-name", default="English Premier League")
     parser.add_argument("--country", default="England")
+    parser.add_argument("--competition-type", choices=("league",), default="league")
+    parser.add_argument("--tier", type=parse_positive_int_arg, default=1)
     parser.add_argument("--season-id", default="2018-19")
     parser.add_argument("--season-label", default="2018/19")
     parser.add_argument(
@@ -339,6 +368,8 @@ def main() -> int:
             competition_id=args.competition_id,
             competition_name=args.competition_name,
             country=args.country,
+            competition_type=args.competition_type,
+            tier=args.tier,
             season_id=args.season_id,
             season_label=args.season_label,
             expected_matches=args.expected_matches,

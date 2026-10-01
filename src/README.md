@@ -10,6 +10,7 @@ The scripts implement the complete data pipeline:
 | `run_sparql.py` | Run saved SPARQL queries as a local terminal. |
 | `load_fuseki.py` | Load the ontology and data into the Fuseki endpoint. |
 | `build_site.py` | Generate dereferenceable resource pages and public downloads. |
+| `suggest_links.py` | Find unverified Wikidata candidates without changing verified links. |
 
 Run it from the project root:
 
@@ -48,6 +49,15 @@ Run the saved SPARQL queries locally:
 ```bash
 python3 src/run_sparql.py --all
 ```
+
+Optionally generate Wikidata candidates for manual review:
+
+```bash
+python3 src/suggest_links.py
+```
+
+This is deliberately excluded from `make pipeline` because it requires the
+network and cannot replace human identity verification.
 
 Run the tests with:
 

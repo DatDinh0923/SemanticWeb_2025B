@@ -3,7 +3,7 @@ PREFIX schema: <https://schema.org/>
 
 SELECT ?date ?homeName ?awayName ?goals
 WHERE {
-    ?match a foot:FootballMatch ;
+    ?match a foot:Draw ;
            foot:matchDate ?date ;
            foot:homeTeam ?homeTeam ;
            foot:awayTeam ?awayTeam ;

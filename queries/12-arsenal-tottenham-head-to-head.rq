@@ -1,0 +1,32 @@
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
+PREFIX team: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/team/>
+
+SELECT ?match ?date ?homeName ?homeGoals ?awayGoals ?awayName ?outcome
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:playedInSeason season:2018-19 ;
+           foot:matchDate ?date ;
+           foot:homeTeam ?homeTeam ;
+           foot:awayTeam ?awayTeam ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
+
+    VALUES (?firstTeam ?secondTeam) {
+        (team:arsenal team:tottenham-hotspur)
+    }
+    FILTER(
+        (?homeTeam = ?firstTeam && ?awayTeam = ?secondTeam) ||
+        (?homeTeam = ?secondTeam && ?awayTeam = ?firstTeam)
+    )
+
+    ?homeTeam schema:name ?homeName .
+    ?awayTeam schema:name ?awayName .
+    OPTIONAL {
+        ?match foot:winner ?winner .
+        ?winner schema:name ?winnerName .
+    }
+    BIND(COALESCE(?winnerName, "Draw") AS ?outcome)
+}
+ORDER BY ?date

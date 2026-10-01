@@ -13,10 +13,10 @@
     dcterms:description
         "An ontology for Premier League competitions, seasons, teams, and match results."@en ;
     dcterms:created "2026-09-27"^^xsd:date ;
-    dcterms:modified "2026-10-01"^^xsd:date ;
+    dcterms:modified "2026-10-02"^^xsd:date ;
     dcterms:creator <https://github.com/DatDinh0923> ;
     dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionInfo "0.2.0" ;
     rdfs:label "Football Linked Open Data Ontology"@en ;
     rdfs:seeAlso <https://github.com/DatDinh0923/SemanticWeb_2025B> .
 
@@ -41,11 +41,30 @@ foot:Competition
     rdfs:comment "An organized football competition, such as the English Premier League."@en ;
     rdfs:subClassOf schema:SportsEvent .
 
+foot:League
+    a owl:Class ;
+    rdfs:label "Football league"@en ;
+    rdfs:comment "A competition in which teams are ranked across a league season."@en ;
+    rdfs:subClassOf foot:Competition ;
+    owl:disjointWith foot:Cup .
+
+foot:Cup
+    a owl:Class ;
+    rdfs:label "Football cup"@en ;
+    rdfs:comment "A football competition organized into knockout or group stages."@en ;
+    rdfs:subClassOf foot:Competition .
+
 foot:Season
     a owl:Class ;
     rdfs:label "Football season"@en ;
     rdfs:comment "A time-bounded edition of a football competition."@en ;
     rdfs:subClassOf schema:Event .
+
+foot:Draw
+    a owl:Class ;
+    rdfs:label "Drawn football match"@en ;
+    rdfs:comment "A football match in which the two teams finish with equal scores."@en ;
+    rdfs:subClassOf foot:FootballMatch .
 
 
 # Object properties
@@ -85,6 +104,20 @@ foot:partOfCompetition
     rdfs:range foot:Competition ;
     rdfs:subPropertyOf dcterms:isPartOf .
 
+foot:winner
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "winner"@en ;
+    rdfs:comment "Relates a decisive football match to the team that won it."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam .
+
+foot:loser
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "loser"@en ;
+    rdfs:comment "Relates a decisive football match to the team that lost it."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam .
+
 
 # Datatype properties
 
@@ -116,3 +149,17 @@ foot:awayGoals
     rdfs:comment "The number of full-time goals scored by the away team."@en ;
     rdfs:domain foot:FootballMatch ;
     rdfs:range xsd:nonNegativeInteger .
+
+foot:tier
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "league tier"@en ;
+    rdfs:comment "The positive integer level of a league in its national league system."@en ;
+    rdfs:domain foot:League ;
+    rdfs:range xsd:positiveInteger .
+
+foot:stage
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "competition stage"@en ;
+    rdfs:comment "The named competition stage in which a match is played, such as semi-final or final."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:string .
