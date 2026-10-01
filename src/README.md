@@ -9,6 +9,7 @@ The scripts implement the complete data pipeline:
 | `validate_rdf.py` | Validate the generated graph against SHACL shapes. |
 | `run_sparql.py` | Run saved SPARQL queries as a local terminal. |
 | `load_fuseki.py` | Load the ontology and data into the Fuseki endpoint. |
+| `build_site.py` | Generate dereferenceable resource pages and public downloads. |
 
 Run it from the project root:
 
@@ -39,6 +40,7 @@ Generate and validate the RDF:
 ```bash
 python3 src/convert_to_rdf.py
 python3 src/validate_rdf.py
+python3 src/build_site.py
 ```
 
 Run the saved SPARQL queries locally:

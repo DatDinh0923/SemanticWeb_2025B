@@ -13,8 +13,12 @@
     dcterms:description
         "An ontology for Premier League competitions, seasons, teams, and match results."@en ;
     dcterms:created "2026-09-27"^^xsd:date ;
+    dcterms:modified "2026-10-01"^^xsd:date ;
+    dcterms:creator <https://github.com/DatDinh0923> ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
     owl:versionInfo "0.1.0" ;
-    rdfs:label "Football Linked Open Data Ontology"@en .
+    rdfs:label "Football Linked Open Data Ontology"@en ;
+    rdfs:seeAlso <https://github.com/DatDinh0923/SemanticWeb_2025B> .
 
 
 # Classes

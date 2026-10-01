@@ -1,4 +1,2 @@
-numpy
-pandas
-rdflib
-pyshacl
+rdflib==7.6.0
+pyshacl==0.40.1

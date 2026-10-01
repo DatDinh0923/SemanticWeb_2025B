@@ -1,7 +1,9 @@
 # Premier League Linked Open Data
 
-This project publishes the 2018/19 English Premier League teams and match
-results as validated, five-star Linked Open Data.
+This project converts the 2018/19 English Premier League teams and match
+results into validated Linked Open Data. It is five-star-ready locally and
+becomes published five-star open data when the generated GitHub Pages site is
+publicly reachable.
 
 ## Dataset summary
 
@@ -9,10 +11,12 @@ results as validated, five-star Linked Open Data.
 - 1 season
 - 20 teams
 - 380 matches
-- 3,901 instance-data triples
+- 3,935 instance-data triples
 - 22 externally linked entities
 - 44 `owl:sameAs` links to Wikidata and DBpedia
 - 10 competency questions and saved SPARQL queries
+- DCAT, VoID, and PROV-O publication metadata
+- A generated static page and Turtle description for every local RDF resource
 
 The source data comes from the public-domain
 [football.csv England dataset](https://github.com/footballcsv/england).
@@ -41,6 +45,9 @@ Run the complete local pipeline:
 ```bash
 make pipeline
 ```
+
+This cleans the source data, generates RDF, validates it with SHACL, runs the
+test suite, and builds the publication site in `_site/`.
 
 Individual commands:
 
@@ -78,7 +85,8 @@ python3 src/load_fuseki.py
 ```
 
 Default local credentials are `admin` / `admin`. Override the password with
-the `FUSEKI_ADMIN_PASSWORD` environment variable for a shared deployment.
+the `FUSEKI_ADMIN_PASSWORD` environment variable. Docker binds Fuseki to
+`127.0.0.1`, so the development endpoint is not exposed to the local network.
 
 - Web interface: <http://localhost:3030/>
 - SPARQL endpoint: <http://localhost:3030/football/sparql>
@@ -101,9 +109,16 @@ ontology/             OWL ontology
 queries/              saved SPARQL queries
 shapes/               SHACL validation shapes
 src/                  pipeline, validation, query, and endpoint tools
+_site/                 generated publication site; not committed
 ```
 
-## URI namespace
+## Repository and URI namespace
+
+The source-code repository is:
+
+```text
+https://github.com/DatDinh0923/SemanticWeb_2025B
+```
 
 Project resources use:
 
@@ -111,5 +126,38 @@ Project resources use:
 https://datdinh0923.github.io/SemanticWeb_2025B/
 ```
 
-Enable GitHub Pages for this repository before the final presentation so the
-HTTP namespace can resolve to project documentation.
+The repository URL and RDF namespace are intentionally different. GitHub Pages
+serves the RDF namespace after publication.
+
+## Static Linked Data site
+
+Build and preview the Pages artifact locally:
+
+```bash
+make site
+python3 -m http.server 8000 --directory _site
+```
+
+Open <http://localhost:8000/>. The generated site contains:
+
+- A dataset landing page and RDF download
+- Human-readable pages for all teams, matches, seasons, and ontology terms
+- Resource-specific Turtle downloads
+- The ontology, SHACL shapes, normalized CSV files, and external-link mapping
+
+When the repository is ready for publication, select **GitHub Actions** under
+GitHub **Settings -> Pages** and merge to `main`. The Pages workflow validates
+and rebuilds the project before deployment. See
+[`docs/publication-checklist.md`](docs/publication-checklist.md).
+
+## Five-star status
+
+| Level | Evidence |
+| --- | --- |
+| 1 star | CC0 data license and public download after Pages deployment |
+| 2 stars | Structured CSV and RDF data |
+| 3 stars | Non-proprietary CSV and Turtle formats |
+| 4 stars | Stable HTTP URIs for the dataset, teams, matches, season, and ontology |
+| 5 stars | 44 verified `owl:sameAs` links to Wikidata and DBpedia |
+
+The data license is documented in [`LICENSE-DATA.md`](LICENSE-DATA.md).

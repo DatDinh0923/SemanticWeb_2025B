@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
@@ -27,12 +28,20 @@ SEASON = Namespace(f"{BASE_URL}resource/season/")
 COMPETITION = Namespace(f"{BASE_URL}resource/competition/")
 SCHEMA = Namespace("https://schema.org/")
 VOID = Namespace("http://rdfs.org/ns/void#")
+PROV = Namespace("http://www.w3.org/ns/prov#")
 
 SOURCE_DATA_URL = URIRef(
     "https://github.com/footballcsv/england/blob/master/"
     "2010s/2018-19/eng.1.csv"
 )
 CC0_LICENSE = URIRef("https://creativecommons.org/publicdomain/zero/1.0/")
+REPOSITORY_URL = URIRef("https://github.com/DatDinh0923/SemanticWeb_2025B")
+PUBLISHER_URL = URIRef("https://github.com/DatDinh0923")
+PUBLIC_DATA_URL = URIRef(f"{BASE_URL}download/football-data.ttl")
+PUBLIC_ONTOLOGY_URL = URIRef(f"{BASE_URL}ontology/football.ttl")
+
+WIKIDATA_PATTERN = re.compile(r"^http://www\.wikidata\.org/entity/Q[1-9][0-9]*$")
+DBPEDIA_PATTERN = re.compile(r"^http://dbpedia\.org/resource/\S+$")
 
 
 class ConversionError(ValueError):
@@ -120,6 +129,7 @@ def bind_namespaces(graph: Graph) -> None:
     graph.bind("dcat", DCAT)
     graph.bind("dcterms", DCTERMS)
     graph.bind("owl", OWL)
+    graph.bind("prov", PROV)
     graph.bind("void", VOID)
     graph.bind("xsd", XSD)
 
@@ -130,6 +140,10 @@ def add_external_links(
     local_resources: dict[tuple[str, str], URIRef],
 ) -> int:
     linked_entities: set[tuple[str, str]] = set()
+    external_targets: dict[str, set[URIRef]] = {
+        "wikidata_uri": set(),
+        "dbpedia_uri": set(),
+    }
     for row in link_rows:
         key = (row["entity_type"].strip(), row["entity_id"].strip())
         if key in linked_entities:
@@ -138,17 +152,30 @@ def add_external_links(
             raise ConversionError(f"External link refers to unknown entity: {key}")
 
         local_resource = local_resources[key]
-        for column in ("wikidata_uri", "dbpedia_uri"):
-            graph.add(
-                (local_resource, OWL.sameAs, external_uri(row[column], column))
-            )
+        wikidata_uri = external_uri(row["wikidata_uri"], "wikidata_uri")
+        dbpedia_uri = external_uri(row["dbpedia_uri"], "dbpedia_uri")
+        if not WIKIDATA_PATTERN.fullmatch(str(wikidata_uri)):
+            raise ConversionError(f"Invalid Wikidata entity URI: {wikidata_uri}")
+        if not DBPEDIA_PATTERN.fullmatch(str(dbpedia_uri)):
+            raise ConversionError(f"Invalid DBpedia resource URI: {dbpedia_uri}")
+
+        for column, target in (
+            ("wikidata_uri", wikidata_uri),
+            ("dbpedia_uri", dbpedia_uri),
+        ):
+            if target in external_targets[column]:
+                raise ConversionError(f"Duplicate {column} target: {target}")
+            external_targets[column].add(target)
+            graph.add((local_resource, OWL.sameAs, target))
         linked_entities.add(key)
 
-    team_keys = {key for key in local_resources if key[0] == "team"}
-    missing_team_links = team_keys - linked_entities
-    if missing_team_links:
-        missing = ", ".join(sorted(entity_id for _, entity_id in missing_team_links))
-        raise ConversionError(f"Teams without external links: {missing}")
+    missing_links = set(local_resources) - linked_entities
+    if missing_links:
+        missing = ", ".join(
+            f"{entity_type}:{entity_id}"
+            for entity_type, entity_id in sorted(missing_links)
+        )
+        raise ConversionError(f"Entities without external links: {missing}")
     return len(linked_entities)
 
 
@@ -190,6 +217,8 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
     local_resources: dict[tuple[str, str], URIRef] = {}
 
     dataset_uri = DATASET["premier-league-2018-19"]
+    distribution_uri = DATASET["premier-league-2018-19/turtle"]
+    activity_uri = DATASET["premier-league-2018-19/transformation"]
     graph.add((dataset_uri, RDF.type, DCAT.Dataset))
     graph.add((dataset_uri, RDF.type, VOID.Dataset))
     graph.add(
@@ -213,6 +242,42 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
     graph.add((dataset_uri, DCTERMS.source, SOURCE_DATA_URL))
     graph.add((dataset_uri, DCTERMS.license, CC0_LICENSE))
     graph.add((dataset_uri, DCTERMS.language, Literal("en")))
+    graph.add((dataset_uri, DCTERMS.creator, PUBLISHER_URL))
+    graph.add((dataset_uri, DCTERMS.publisher, PUBLISHER_URL))
+    graph.add((dataset_uri, DCTERMS.issued, Literal("2026-09-27", datatype=XSD.date)))
+    graph.add((dataset_uri, DCTERMS.modified, Literal("2026-10-01", datatype=XSD.date)))
+    graph.add((dataset_uri, DCAT.landingPage, URIRef(BASE_URL)))
+    graph.add((dataset_uri, DCAT.distribution, distribution_uri))
+    graph.add((dataset_uri, VOID.dataDump, PUBLIC_DATA_URL))
+    graph.add((dataset_uri, VOID.uriSpace, Literal(f"{BASE_URL}resource/")))
+    graph.add((dataset_uri, PROV.wasGeneratedBy, activity_uri))
+
+    graph.add((distribution_uri, RDF.type, DCAT.Distribution))
+    graph.add(
+        (
+            distribution_uri,
+            DCTERMS.title,
+            Literal("Premier League 2018/19 RDF distribution", lang="en"),
+        )
+    )
+    graph.add((distribution_uri, DCTERMS.license, CC0_LICENSE))
+    graph.add((distribution_uri, DCAT.downloadURL, PUBLIC_DATA_URL))
+    graph.add((distribution_uri, DCAT.mediaType, Literal("text/turtle")))
+
+    graph.add((SOURCE_DATA_URL, RDF.type, PROV.Entity))
+    graph.add((activity_uri, RDF.type, PROV.Activity))
+    graph.add((activity_uri, PROV.used, SOURCE_DATA_URL))
+    graph.add((activity_uri, PROV.generated, dataset_uri))
+    graph.add((activity_uri, PROV.wasAssociatedWith, PUBLISHER_URL))
+    graph.add(
+        (
+            activity_uri,
+            PROV.endedAtTime,
+            Literal("2026-10-01T00:00:00+07:00", datatype=XSD.dateTime),
+        )
+    )
+    graph.add((URIRef(f"{BASE_URL}ontology/"), RDFS.seeAlso, PUBLIC_ONTOLOGY_URL))
+    graph.add((dataset_uri, RDFS.seeAlso, REPOSITORY_URL))
 
     for competition_id, row in competitions.items():
         resource = COMPETITION[competition_id]
@@ -287,6 +352,17 @@ def build_graph(input_dir: Path, links_path: Path) -> tuple[Graph, dict[str, int
         graph.add((resource, FOOT.partOfCompetition, COMPETITION[competition_id]))
 
     linked_entity_count = add_external_links(graph, link_rows, local_resources)
+    for linkset_id, target_dataset in (
+        ("wikidata", URIRef("https://www.wikidata.org/")),
+        ("dbpedia", URIRef("https://dbpedia.org/")),
+    ):
+        linkset_uri = DATASET[f"premier-league-2018-19/linkset/{linkset_id}"]
+        graph.add((linkset_uri, RDF.type, VOID.Linkset))
+        graph.add((linkset_uri, VOID.subjectsTarget, dataset_uri))
+        graph.add((linkset_uri, VOID.objectsTarget, target_dataset))
+        graph.add((linkset_uri, VOID.linkPredicate, OWL.sameAs))
+        graph.add((linkset_uri, VOID.triples, Literal(linked_entity_count)))
+        graph.add((dataset_uri, VOID.subset, linkset_uri))
     graph.add((dataset_uri, VOID.entities, Literal(len(local_resources) + len(matches))))
 
     stats = {

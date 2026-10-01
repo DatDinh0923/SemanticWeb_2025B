@@ -2,14 +2,17 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rdflib import OWL, RDF, Graph
+from rdflib import DCAT, OWL, RDF, Graph, URIRef
 
 from convert_to_rdf import (
     DEFAULT_INPUT_DIR,
     DEFAULT_LINKS,
+    DATASET,
     FOOT,
     MATCH,
+    PROV,
     TEAM,
+    VOID,
     build_graph,
 )
 
@@ -37,6 +40,42 @@ class RdfConversionTests(unittest.TestCase):
     def test_every_team_has_two_external_links(self) -> None:
         for team in self.graph.subjects(RDF.type, FOOT.FootballTeam):
             self.assertEqual(len(set(self.graph.objects(team, OWL.sameAs))), 2)
+
+    def test_dataset_has_distribution_linksets_and_provenance(self) -> None:
+        dataset = DATASET["premier-league-2018-19"]
+        distributions = set(self.graph.objects(dataset, DCAT.distribution))
+        linksets = set(self.graph.objects(dataset, VOID.subset))
+        activities = set(self.graph.objects(dataset, PROV.wasGeneratedBy))
+
+        self.assertEqual(len(distributions), 1)
+        self.assertTrue(
+            all(
+                (distribution, RDF.type, DCAT.Distribution) in self.graph
+                for distribution in distributions
+            )
+        )
+        self.assertEqual(len(linksets), 2)
+        self.assertTrue(
+            all(
+                (linkset, RDF.type, VOID.Linkset) in self.graph
+                for linkset in linksets
+            )
+        )
+        self.assertEqual(len(activities), 1)
+        self.assertTrue(
+            all(
+                (activity, RDF.type, PROV.Activity) in self.graph
+                for activity in activities
+            )
+        )
+        self.assertIn(
+            (
+                dataset,
+                DCAT.landingPage,
+                URIRef("https://datdinh0923.github.io/SemanticWeb_2025B/"),
+            ),
+            self.graph,
+        )
 
     def test_serialized_graph_can_be_parsed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

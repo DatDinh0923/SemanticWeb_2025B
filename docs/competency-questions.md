@@ -10,7 +10,7 @@ Premier League 2018/19 data.
 | --- | --- | --- |
 | CQ1 | Which teams participated in the 2018/19 Premier League season? | `FootballTeam`, `homeTeam`, `awayTeam`, `playedInSeason` |
 | CQ2 | Which matches did a given team play, and was it the home or away team? | `FootballMatch`, `homeTeam`, `awayTeam`, `matchDate` |
-| CQ3 | Which match had the highest total number of goals? | `homeGoals`, `awayGoals` |
+| CQ3 | Which match or matches had the highest total number of goals? | `homeGoals`, `awayGoals` |
 | CQ4 | Which matches ended in a draw? | `homeGoals`, `awayGoals` |
 | CQ5 | How many goals did each team score at home? | `homeTeam`, `homeGoals` |
 | CQ6 | How many matches were played in each round? | `roundNumber` |

@@ -5,6 +5,7 @@
 @prefix foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/> .
 @prefix match: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/match/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
 @prefix season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/> .
@@ -12,15 +13,7 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-dataset:premier-league-2018-19 a void:Dataset,
-        dcat:Dataset ;
-    dcterms:description "Linked data describing teams and match results from the 2018/19 English Premier League season."@en ;
-    dcterms:language "en" ;
-    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
-    dcterms:source <https://github.com/footballcsv/england/blob/master/2010s/2018-19/eng.1.csv> ;
-    dcterms:title "Premier League 2018/19 Linked Open Dataset"@en ;
-    void:entities 402 ;
-    void:exampleResource competition:premier-league .
+foot: rdfs:seeAlso foot:football.ttl .
 
 match:2018-08-10-manchester-united-leicester-city a foot:FootballMatch ;
     rdfs:label "Manchester United FC 2–1 Leicester City FC"@en ;
@@ -4201,6 +4194,54 @@ match:2019-05-12-watford-west-ham-united a foot:FootballMatch ;
     foot:partOfCompetition competition:premier-league ;
     foot:playedInSeason season:2018-19 ;
     foot:roundNumber "38"^^xsd:positiveInteger .
+
+<https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/linkset/dbpedia> a void:Linkset ;
+    void:linkPredicate owl:sameAs ;
+    void:objectsTarget <https://dbpedia.org/> ;
+    void:subjectsTarget dataset:premier-league-2018-19 ;
+    void:triples 22 .
+
+<https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/linkset/wikidata> a void:Linkset ;
+    void:linkPredicate owl:sameAs ;
+    void:objectsTarget <https://www.wikidata.org/> ;
+    void:subjectsTarget dataset:premier-league-2018-19 ;
+    void:triples 22 .
+
+<https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/transformation> a prov:Activity ;
+    prov:endedAtTime "2026-10-01T00:00:00+07:00"^^xsd:dateTime ;
+    prov:generated dataset:premier-league-2018-19 ;
+    prov:used <https://github.com/footballcsv/england/blob/master/2010s/2018-19/eng.1.csv> ;
+    prov:wasAssociatedWith <https://github.com/DatDinh0923> .
+
+<https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/turtle> a dcat:Distribution ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcterms:title "Premier League 2018/19 RDF distribution"@en ;
+    dcat:downloadURL <https://datdinh0923.github.io/SemanticWeb_2025B/download/football-data.ttl> ;
+    dcat:mediaType "text/turtle" .
+
+<https://github.com/footballcsv/england/blob/master/2010s/2018-19/eng.1.csv> a prov:Entity .
+
+dataset:premier-league-2018-19 a void:Dataset,
+        dcat:Dataset ;
+    dcterms:creator <https://github.com/DatDinh0923> ;
+    dcterms:description "Linked data describing teams and match results from the 2018/19 English Premier League season."@en ;
+    dcterms:issued "2026-09-27"^^xsd:date ;
+    dcterms:language "en" ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcterms:modified "2026-10-01"^^xsd:date ;
+    dcterms:publisher <https://github.com/DatDinh0923> ;
+    dcterms:source <https://github.com/footballcsv/england/blob/master/2010s/2018-19/eng.1.csv> ;
+    dcterms:title "Premier League 2018/19 Linked Open Dataset"@en ;
+    void:dataDump <https://datdinh0923.github.io/SemanticWeb_2025B/download/football-data.ttl> ;
+    void:entities 402 ;
+    void:exampleResource competition:premier-league ;
+    void:subset <https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/linkset/dbpedia>,
+        <https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/linkset/wikidata> ;
+    void:uriSpace "https://datdinh0923.github.io/SemanticWeb_2025B/resource/" ;
+    rdfs:seeAlso <https://github.com/DatDinh0923/SemanticWeb_2025B> ;
+    dcat:distribution <https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/turtle> ;
+    dcat:landingPage <https://datdinh0923.github.io/SemanticWeb_2025B/> ;
+    prov:wasGeneratedBy <https://datdinh0923.github.io/SemanticWeb_2025B/dataset/premier-league-2018-19/transformation> .
 
 team:arsenal a foot:FootballTeam ;
     owl:sameAs <http://dbpedia.org/resource/Arsenal_F.C.>,

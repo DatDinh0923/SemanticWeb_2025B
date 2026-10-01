@@ -29,6 +29,9 @@ The mapping file contains 22 linked local entities:
 Each entity has one Wikidata link and one DBpedia link, resulting in 44
 `owl:sameAs` statements.
 
+The RDF also describes separate VoID linksets for Wikidata and DBpedia. Each
+linkset records its target dataset, link predicate, and number of links.
+
 ## Matching method
 
 Links were created with exact English-label matching and manually checked
@@ -39,6 +42,22 @@ important because names such as "Everton F.C.", "Crystal Palace F.C.", and
 `owl:sameAs` is used only when the external resource represents the same club,
 competition, or season. The mappings and verification method are recorded in
 `data/links/entity-links.csv`.
+
+The conversion rejects missing mappings, duplicate external targets, malformed
+Wikidata identifiers, and non-DBpedia resource URIs.
+
+## Publication metadata
+
+The generated graph uses:
+
+- DCAT to describe the downloadable Turtle distribution and landing page
+- VoID to describe the URI space, data dump, entity count, and linksets
+- PROV-O to connect the generated dataset to the source CSV and transformation
+- Dublin Core Terms for title, creator, publisher, dates, source, and license
+
+The generated static site makes each project URI resolvable to a human-readable
+page with a resource-specific Turtle representation when GitHub Pages is
+enabled.
 
 ## Five-star progression
 

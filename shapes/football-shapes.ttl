@@ -1,9 +1,13 @@
 @prefix foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/> .
+@prefix dataset: <https://datdinh0923.github.io/SemanticWeb_2025B/dataset/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix void: <http://rdfs.org/ns/void#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
@@ -16,11 +20,34 @@ foot:FootballTeamShape
         sh:maxCount 1 ;
         sh:datatype rdf:langString ;
         sh:languageIn ("en")
-    ] ;
+    ] .
+
+foot:LinkedEntityShape
+    a sh:NodeShape ;
+    sh:targetClass foot:FootballTeam, foot:Competition, foot:Season ;
     sh:property [
         sh:path owl:sameAs ;
         sh:minCount 2 ;
+        sh:maxCount 2 ;
         sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path owl:sameAs ;
+        sh:qualifiedValueShape [
+            sh:nodeKind sh:IRI ;
+            sh:pattern "^http://www\\.wikidata\\.org/entity/Q[1-9][0-9]*$"
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1
+    ] ;
+    sh:property [
+        sh:path owl:sameAs ;
+        sh:qualifiedValueShape [
+            sh:nodeKind sh:IRI ;
+            sh:pattern "^http://dbpedia\\.org/resource/\\S+$"
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1
     ] .
 
 foot:CompetitionShape
@@ -53,7 +80,8 @@ foot:SeasonShape
         sh:path schema:startDate ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:datatype xsd:date
+        sh:datatype xsd:date ;
+        sh:lessThan schema:endDate
     ] ;
     sh:property [
         sh:path schema:endDate ;
@@ -118,7 +146,8 @@ foot:FootballMatchShape
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:datatype xsd:positiveInteger ;
-        sh:minInclusive 1
+        sh:minInclusive 1 ;
+        sh:maxInclusive 38
     ] ;
     sh:property [
         sh:path foot:playedInSeason ;
@@ -144,4 +173,71 @@ foot:FootballMatchShape
                       foot:awayTeam ?team .
             }
         """
+    ] ;
+    sh:sparql [
+        sh:message "The match date must fall within its season dates."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            PREFIX schema: <https://schema.org/>
+            SELECT $this
+            WHERE {
+                $this foot:matchDate ?date ;
+                      foot:playedInSeason ?season .
+                ?season schema:startDate ?startDate ;
+                        schema:endDate ?endDate .
+                FILTER(?date < ?startDate || ?date > ?endDate)
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "The match and its season must reference the same competition."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this
+            WHERE {
+                $this foot:playedInSeason ?season ;
+                      foot:partOfCompetition ?matchCompetition .
+                ?season foot:partOfCompetition ?seasonCompetition .
+                FILTER(?matchCompetition != ?seasonCompetition)
+            }
+        """
+    ] .
+
+dataset:DatasetShape
+    a sh:NodeShape ;
+    sh:targetNode dataset:premier-league-2018-19 ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:hasValue dcat:Dataset
+    ] ;
+    sh:property [
+        sh:path dcterms:title ;
+        sh:minCount 1
+    ] ;
+    sh:property [
+        sh:path dcterms:license ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path dcterms:source ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path dcat:distribution ;
+        sh:minCount 1 ;
+        sh:class dcat:Distribution ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path void:dataDump ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path void:subset ;
+        sh:minCount 2 ;
+        sh:class void:Linkset ;
+        sh:nodeKind sh:IRI
     ] .
