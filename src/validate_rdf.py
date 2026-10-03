@@ -12,7 +12,9 @@ def validate_graph(graph):
 
 def main():
     conforms, report, message = validate_graph(load_graph())
-    report.serialize(destination=RDF_DIR / "validation-report.ttl", format="turtle")
+    (RDF_DIR / "validation-report.ttl").write_text(
+        report.serialize(format="turtle").rstrip() + "\n", encoding="utf-8", newline="\n"
+    )
     if not conforms:
         raise ValueError(message)
     print("SHACL conforms: true", flush=True)

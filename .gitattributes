@@ -1,0 +1,3 @@
+# Keep generated artifacts stable across Windows and Linux; raw sources untouched.
+data/processed/*.csv text eol=lf
+data/rdf/*.ttl text eol=lf
