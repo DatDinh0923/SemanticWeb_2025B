@@ -1,0 +1,19 @@
+PREFIX fb: <http://example.org/phongph5/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+# Tokens are bound by src/query.py, not raw user input.
+SELECT ?team ?name (COUNT(?match) AS ?played)
+ (SUM(?win) AS ?won) (SUM(?draw) AS ?drawn) (SUM(?loss) AS ?lost)
+ (SUM(?gf) AS ?goalsFor) (SUM(?ga) AS ?goalsAgainst)
+ (SUM(?gf - ?ga) AS ?goalDifference) (SUM(?pts) AS ?points)
+WHERE {
+ { ?match fb:inSeason {{season}} ; fb:homeTeam ?team ; fb:homeGoals ?gf ; fb:awayGoals ?ga }
+ UNION
+ { ?match fb:inSeason {{season}} ; fb:awayTeam ?team ; fb:awayGoals ?gf ; fb:homeGoals ?ga }
+ ?team rdfs:label ?name .
+ BIND(IF(?gf > ?ga, 1, 0) AS ?win)
+ BIND(IF(?gf = ?ga, 1, 0) AS ?draw)
+ BIND(IF(?gf < ?ga, 1, 0) AS ?loss)
+ BIND(IF(?gf > ?ga, 3, IF(?gf = ?ga, 1, 0)) AS ?pts)
+} GROUP BY ?team ?name
+ORDER BY DESC(?points) DESC(?goalDifference) DESC(?goalsFor) ?name
