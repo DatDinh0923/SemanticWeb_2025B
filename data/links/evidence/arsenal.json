@@ -1,0 +1,31 @@
+{
+  "entity_id": "arsenal",
+  "wikidata_uri": "http://www.wikidata.org/entity/Q9617",
+  "dbpedia_uri": "http://dbpedia.org/resource/Arsenal_F.C.",
+  "checked_on": "2026-10-03",
+  "wikidata_source": "https://www.wikidata.org/wiki/Special:EntityData/Q9617.json",
+  "wikidata_revision": 2532381290,
+  "wikidata_label": "Arsenal F.C.",
+  "wikidata_description": "association football club in London, England",
+  "wikipedia_title": "Arsenal F.C.",
+  "wikidata_instance_of": [
+    "Q476028"
+  ],
+  "dbpedia_source": "https://dbpedia.org/sparql?query=SELECT+%3Fp+%3Fo+WHERE+%7B+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FArsenal_F.C.%3E+%3Fp+%3Fo+.+VALUES+%3Fp+%7B+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23label%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%7D+%7D&format=application%2Fsparql-results%2Bjson",
+  "dbpedia_labels": [
+    "Arsenal F.C."
+  ],
+  "dbpedia_types": [
+    "http://dbpedia.org/ontology/Agent",
+    "http://dbpedia.org/ontology/Agent",
+    "http://dbpedia.org/ontology/Organisation",
+    "http://dbpedia.org/ontology/Organisation",
+    "http://dbpedia.org/ontology/SoccerClub",
+    "http://dbpedia.org/ontology/SoccerClub",
+    "http://dbpedia.org/ontology/SoccerClub",
+    "http://dbpedia.org/ontology/SportsClub",
+    "http://dbpedia.org/ontology/SportsClub"
+  ],
+  "dbpedia_links_to_wikidata": true,
+  "wikipedia_title_matches_dbpedia": true
+}
