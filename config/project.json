@@ -1,0 +1,7 @@
+{
+  "base_uri": "http://example.org/phongph5/",
+  "competition_id": "premier-league",
+  "competition_name": "English Premier League",
+  "country": "England",
+  "endpoint": "http://localhost:3035/phongph5/sparql"
+}

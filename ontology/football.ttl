@@ -1,0 +1,87 @@
+@prefix fb: <http://example.org/phongph5/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+<http://example.org/phongph5/ontology> a owl:Ontology ;
+    rdfs:label "Premier League ontology — phongph5"@en ;
+    dct:description "Clubs, competitions, seasons and full-time match results."@en ;
+    dct:source <https://github.com/footballcsv/england> ;
+    owl:versionInfo "1.0.0" .
+
+fb:Competition a owl:Class ; rdfs:subClassOf schema:EventSeries ;
+    rdfs:label "Competition"@en ; rdfs:comment "An ongoing football competition, across seasons."@en .
+
+fb:Season a owl:Class ; rdfs:subClassOf schema:SportsEvent ;
+    rdfs:label "Season"@en ; rdfs:comment "One edition of a competition."@en .
+
+fb:Team a owl:Class ; rdfs:subClassOf schema:SportsTeam ;
+    rdfs:label "Team"@en ; rdfs:comment "A football club whose identity persists across seasons."@en .
+
+fb:Match a owl:Class ; rdfs:subClassOf schema:SportsEvent ;
+    rdfs:label "Match"@en ; rdfs:comment "One played match, with a full-time score."@en .
+
+fb:seasonOf a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Season ; rdfs:range fb:Competition ;
+    rdfs:label "seasonOf"@en ; rdfs:comment "Competition to which this season belongs."@en .
+
+fb:inSeason a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range fb:Season ;
+    rdfs:subPropertyOf schema:superEvent ;
+    rdfs:label "inSeason"@en ; rdfs:comment "Season in which the match was played."@en .
+
+fb:homeTeam a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range fb:Team ;
+    rdfs:subPropertyOf schema:homeTeam ;
+    rdfs:label "homeTeam"@en ; rdfs:comment "Home participant."@en .
+
+fb:awayTeam a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range fb:Team ;
+    rdfs:subPropertyOf schema:awayTeam ;
+    rdfs:label "awayTeam"@en ; rdfs:comment "Away participant."@en .
+
+fb:winner a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range fb:Team ;
+    rdfs:label "winner"@en ; rdfs:comment "Winning participant; absent for a draw."@en .
+
+fb:loser a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range fb:Team ;
+    rdfs:label "loser"@en ; rdfs:comment "Losing participant; absent for a draw."@en .
+
+fb:matchDate a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:date ;
+    rdfs:label "matchDate"@en ; rdfs:comment "Date the match was played."@en .
+
+fb:roundNumber a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:positiveInteger ;
+    rdfs:label "roundNumber"@en ; rdfs:comment "League round, from 1 to 38."@en .
+
+fb:homeGoals a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "homeGoals"@en ; rdfs:comment "Full-time home goals."@en .
+
+fb:awayGoals a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "awayGoals"@en ; rdfs:comment "Full-time away goals."@en .
+
+fb:seasonLabel a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Season ; rdfs:range xsd:string ;
+    rdfs:label "seasonLabel"@en ; rdfs:comment "Season label, for example 2018-19."@en .
+
+fb:startDate a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Season ; rdfs:range xsd:date ;
+    rdfs:label "startDate"@en ; rdfs:comment "Earliest played match in the source."@en .
+
+fb:endDate a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Season ; rdfs:range xsd:date ;
+    rdfs:label "endDate"@en ; rdfs:comment "Latest played match in the source."@en .
+
+fb:sourceFile a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:string ;
+    rdfs:label "sourceFile"@en ; rdfs:comment "Repository-relative source CSV path."@en .
+
+fb:sourceLine a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fb:Match ; rdfs:range xsd:positiveInteger ;
+    rdfs:label "sourceLine"@en ; rdfs:comment "One-based source CSV record line including header."@en .
