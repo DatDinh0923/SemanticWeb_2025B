@@ -16,7 +16,6 @@ from typing import Iterable, Sequence
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = PROJECT_ROOT / "england_csv/2010s/2018-19/eng.1.csv"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data/processed"
 
 REQUIRED_SOURCE_COLUMNS = {"Round", "Date", "Team 1", "FT", "Team 2"}
@@ -419,16 +418,16 @@ def main() -> int:
             match_count, team_count = clean_all(args.output_dir)
         else:
             match_count, team_count = clean_dataset(
-            input_path=args.input,
-            output_dir=args.output_dir,
-            competition_id=args.competition_id,
-            competition_name=args.competition_name,
-            country=args.country,
-            season_id=args.season_id,
-            season_label=args.season_label,
-            expected_matches=args.expected_matches,
-            expected_teams=args.expected_teams,
-        )
+                input_path=args.input,
+                output_dir=args.output_dir,
+                competition_id=args.competition_id,
+                competition_name=args.competition_name,
+                country=args.country,
+                season_id=args.season_id,
+                season_label=args.season_label,
+                expected_matches=args.expected_matches,
+                expected_teams=args.expected_teams,
+            )
     except (DataValidationError, OSError) as exc:
         raise SystemExit(f"Data validation failed: {exc}") from exc
 
