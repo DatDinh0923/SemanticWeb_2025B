@@ -60,7 +60,7 @@ class CleanerUnitTests(unittest.TestCase):
 
             self.assertEqual(counts, (1, 2))
             matches = (output_dir / "matches.csv").read_text(encoding="utf-8")
-            self.assertIn("2018-08-10-manchester-united-leicester-city", matches)
+            self.assertIn("premier-league-2018-19-r01-manchester-united-leicester-city", matches)
             self.assertIn("2018-08-10", matches)
             self.assertTrue((output_dir / "teams.csv").is_file())
             self.assertTrue((output_dir / "competitions.csv").is_file())
