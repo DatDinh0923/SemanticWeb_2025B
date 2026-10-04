@@ -18,8 +18,10 @@ only after the generated site and RDF downloads are reachable without login.
 2. Open **Settings -> Pages** and set **Source** to **GitHub Actions**. Until
    this is done the Pages API reports `has_pages: false` and every project URI
    returns 404.
-3. Push or merge to `main`; `.github/workflows/pages.yml` builds and deploys
-   the validated site. The workflow can also be started by hand from the
+3. Push to `dqdat-dev` (or merge to `main`); `.github/workflows/pages.yml`
+   builds and deploys the validated site. To deploy from `dqdat-dev`, open
+   **Settings -> Environments -> github-pages** and add `dqdat-dev` under
+   **Deployment branches and tags**; by default only `main` may deploy. The workflow can also be started by hand from the
    **Actions** tab (`workflow_dispatch`).
 4. Wait for the Pages workflow to finish successfully.
 

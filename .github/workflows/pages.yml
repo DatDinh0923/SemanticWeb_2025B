@@ -2,7 +2,8 @@ name: Publish Linked Open Data site
 
 on:
   push:
-    branches: [main]
+    # dqdat-dev publishes the site while main is kept unchanged.
+    branches: [main, dqdat-dev]
   workflow_dispatch:
 
 permissions:
