@@ -1,0 +1,33 @@
+{
+  "entity_type": "team",
+  "entity_id": "brighton-and-hove-albion",
+  "wikidata_uri": "http://www.wikidata.org/entity/Q19453",
+  "dbpedia_uri": "http://dbpedia.org/resource/Brighton_&_Hove_Albion_F.C.",
+  "checked_on": "2026-10-05",
+  "wikidata_source": "https://www.wikidata.org/wiki/Special:EntityData/Q19453.json",
+  "wikidata_revision": 2547798539,
+  "wikidata_label": "Brighton & Hove Albion F.C.",
+  "wikidata_description": "football club in Brighton & Hove, England",
+  "wikidata_instance_of": [
+    "Q476028",
+    "Q20639856"
+  ],
+  "wikipedia_title": "Brighton & Hove Albion F.C.",
+  "dbpedia_source": "https://dbpedia.org/sparql?query=SELECT+%3Fp+%3Fo+WHERE+%7B+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBrighton_%26_Hove_Albion_F.C.%3E+%3Fp+%3Fo+.+VALUES+%3Fp+%7B+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23label%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%7D+%7D&format=application%2Fsparql-results%2Bjson",
+  "dbpedia_labels": [
+    "Brighton & Hove Albion F.C."
+  ],
+  "dbpedia_types": [
+    "http://dbpedia.org/ontology/Agent",
+    "http://dbpedia.org/ontology/Organisation",
+    "http://dbpedia.org/ontology/SoccerClub",
+    "http://dbpedia.org/ontology/SportsClub"
+  ],
+  "checks": {
+    "wikidata_type_matches": true,
+    "wikidata_sport_is_association_football": true,
+    "wikipedia_title_matches_dbpedia": true,
+    "dbpedia_links_to_wikidata": true
+  },
+  "passed": true
+}

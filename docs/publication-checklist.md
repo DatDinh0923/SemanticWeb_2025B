@@ -7,17 +7,20 @@ only after the generated site and RDF downloads are reachable without login.
 
 - Run `make pipeline` and confirm all tests and SHACL validation pass.
 - Preview `_site/` locally with `python3 -m http.server 8000 --directory _site`.
-- Check the root page, ontology page, one team, one match, and all downloads.
+- Check the root page, ontology page, one season, one team, one match, and all
+  downloads.
 - Merge the reviewed development branch into `main`.
 - Keep the dataset license and source attribution in the release.
 
 ## GitHub configuration
 
-1. Make the repository public, or use a GitHub plan that permits the required
-   public Pages deployment from a private repository.
-2. Open **Settings -> Pages** and select **GitHub Actions** as the source.
+1. The repository is public (done on 2026-10-05).
+2. Open **Settings -> Pages** and set **Source** to **GitHub Actions**. Until
+   this is done the Pages API reports `has_pages: false` and every project URI
+   returns 404.
 3. Push or merge to `main`; `.github/workflows/pages.yml` builds and deploys
-   the validated site.
+   the validated site. The workflow can also be started by hand from the
+   **Actions** tab (`workflow_dispatch`).
 4. Wait for the Pages workflow to finish successfully.
 
 ## Public verification
@@ -29,6 +32,7 @@ https://datdinh0923.github.io/SemanticWeb_2025B/
 https://datdinh0923.github.io/SemanticWeb_2025B/download/football-data.ttl
 https://datdinh0923.github.io/SemanticWeb_2025B/ontology/
 https://datdinh0923.github.io/SemanticWeb_2025B/resource/team/arsenal/
+https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/premier-league-2018-19/
 ```
 
 The URI without a final slash may redirect to the generated resource page.

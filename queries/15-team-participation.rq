@@ -1,0 +1,16 @@
+# CQ15: In how many of the ten seasons did each club play, and when?
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?team ?name
+       (COUNT(DISTINCT ?season) AS ?seasons)
+       (MIN(?label) AS ?firstSeason)
+       (MAX(?label) AS ?lastSeason)
+WHERE {
+    ?match foot:homeTeam ?team ;
+           foot:playedInSeason ?season .
+    ?season foot:seasonLabel ?label .
+    ?team schema:name ?name .
+}
+GROUP BY ?team ?name
+ORDER BY DESC(?seasons) ?name

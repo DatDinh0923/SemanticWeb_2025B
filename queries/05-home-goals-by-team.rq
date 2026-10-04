@@ -1,9 +1,13 @@
+# CQ5: How many goals did each team score at home in a season?
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
 
 SELECT ?team ?name (SUM(?goals) AS ?totalHomeGoals)
 WHERE {
+    VALUES ?season { season:premier-league-2018-19 }
     ?match a foot:FootballMatch ;
+           foot:playedInSeason ?season ;
            foot:homeTeam ?team ;
            foot:homeGoals ?goals .
     ?team schema:name ?name .

@@ -1,0 +1,66 @@
+# CQ14: Which club won each season, computed only from match results?
+# Clubs are ranked by points, then goal difference, as in the Premier League
+# (2011/12 was decided on goal difference). The two are combined into one
+# sortable key, points * 1000 + goal difference, and the champion is the club
+# with the highest key in its season.
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?seasonLabel ?championName ?points ?goalDifference
+WHERE {
+    {
+        SELECT ?season (MAX(?rankKey) AS ?bestKey)
+        WHERE {
+            {
+                SELECT ?season ?team (SUM(?pts) * 1000 + SUM(?gd) AS ?rankKey)
+                WHERE {
+                    {
+                        ?match foot:playedInSeason ?season ;
+                               foot:homeTeam ?team ;
+                               foot:homeGoals ?for ;
+                               foot:awayGoals ?against .
+                    }
+                    UNION
+                    {
+                        ?match foot:playedInSeason ?season ;
+                               foot:awayTeam ?team ;
+                               foot:awayGoals ?for ;
+                               foot:homeGoals ?against .
+                    }
+                    BIND(IF(?for > ?against, 3, IF(?for = ?against, 1, 0)) AS ?pts)
+                    BIND(?for - ?against AS ?gd)
+                }
+                GROUP BY ?season ?team
+            }
+        }
+        GROUP BY ?season
+    }
+    {
+        SELECT ?season ?team
+               (SUM(?pts) AS ?points)
+               (SUM(?gd) AS ?goalDifference)
+               (SUM(?pts) * 1000 + SUM(?gd) AS ?rankKey)
+        WHERE {
+            {
+                ?match foot:playedInSeason ?season ;
+                       foot:homeTeam ?team ;
+                       foot:homeGoals ?for ;
+                       foot:awayGoals ?against .
+            }
+            UNION
+            {
+                ?match foot:playedInSeason ?season ;
+                       foot:awayTeam ?team ;
+                       foot:awayGoals ?for ;
+                       foot:homeGoals ?against .
+            }
+            BIND(IF(?for > ?against, 3, IF(?for = ?against, 1, 0)) AS ?pts)
+            BIND(?for - ?against AS ?gd)
+        }
+        GROUP BY ?season ?team
+    }
+    FILTER(?rankKey = ?bestKey)
+    ?season foot:seasonLabel ?seasonLabel .
+    ?team schema:name ?championName .
+}
+ORDER BY ?seasonLabel

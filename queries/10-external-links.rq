@@ -1,0 +1,21 @@
+# CQ10: Which local resources link to Wikidata or DBpedia, and to what?
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?type ?resource ?name ?externalDataset ?externalResource
+WHERE {
+    VALUES (?class ?type) {
+        (foot:Competition "competition")
+        (foot:Season "season")
+        (foot:FootballTeam "team")
+    }
+    ?resource a ?class ;
+              schema:name ?name ;
+              owl:sameAs ?externalResource .
+    BIND(
+        IF(CONTAINS(STR(?externalResource), "wikidata.org"), "Wikidata", "DBpedia")
+        AS ?externalDataset
+    )
+}
+ORDER BY ?type ?name ?externalDataset

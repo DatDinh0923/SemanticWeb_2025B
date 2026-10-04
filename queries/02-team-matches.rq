@@ -1,26 +1,28 @@
+# CQ2: Which matches did a team play in a season, and was it home or away?
+# Change team:arsenal and the season in both branches to ask about another club.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
 PREFIX team: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/team/>
 
 SELECT ?date ?role ?opponentName ?homeGoals ?awayGoals
 WHERE {
-    ?match a foot:FootballMatch ;
-           foot:matchDate ?date ;
-           foot:homeGoals ?homeGoals ;
-           foot:awayGoals ?awayGoals .
-
     {
         ?match foot:homeTeam team:arsenal ;
+               foot:playedInSeason season:premier-league-2018-19 ;
                foot:awayTeam ?opponent .
         BIND("home" AS ?role)
     }
     UNION
     {
         ?match foot:awayTeam team:arsenal ;
+               foot:playedInSeason season:premier-league-2018-19 ;
                foot:homeTeam ?opponent .
         BIND("away" AS ?role)
     }
-
+    ?match foot:matchDate ?date ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
     ?opponent schema:name ?opponentName .
 }
 ORDER BY ?date

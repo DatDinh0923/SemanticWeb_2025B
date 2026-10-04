@@ -1,0 +1,21 @@
+# CQ13: How do goals and home advantage compare from season to season?
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+
+SELECT ?seasonLabel
+       (COUNT(?match) AS ?matches)
+       (SUM(?homeGoals + ?awayGoals) AS ?goals)
+       (ROUND(100 * SUM(?homeGoals + ?awayGoals) / COUNT(?match)) / 100 AS ?goalsPerMatch)
+       (ROUND(1000 * SUM(?homeWin) / COUNT(?match)) / 10 AS ?homeWinPercent)
+       (ROUND(1000 * SUM(?draw) / COUNT(?match)) / 10 AS ?drawPercent)
+       (ROUND(1000 * SUM(?awayWin) / COUNT(?match)) / 10 AS ?awayWinPercent)
+WHERE {
+    ?match a foot:FootballMatch ;
+           foot:playedInSeason/foot:seasonLabel ?seasonLabel ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
+    BIND(IF(?homeGoals > ?awayGoals, 1, 0) AS ?homeWin)
+    BIND(IF(?homeGoals = ?awayGoals, 1, 0) AS ?draw)
+    BIND(IF(?homeGoals < ?awayGoals, 1, 0) AS ?awayWin)
+}
+GROUP BY ?seasonLabel
+ORDER BY ?seasonLabel

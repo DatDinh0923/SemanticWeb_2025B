@@ -1,5 +1,8 @@
 team_id,name
 arsenal,Arsenal FC
+aston-villa,Aston Villa FC
+blackburn-rovers,Blackburn Rovers FC
+bolton-wanderers,Bolton Wanderers FC
 bournemouth,AFC Bournemouth
 brighton-and-hove-albion,Brighton & Hove Albion FC
 burnley,Burnley FC
@@ -9,13 +12,25 @@ crystal-palace,Crystal Palace FC
 everton,Everton FC
 fulham,Fulham FC
 huddersfield-town,Huddersfield Town AFC
+hull-city,Hull City AFC
+leeds-united,Leeds United FC
 leicester-city,Leicester City FC
 liverpool,Liverpool FC
 manchester-city,Manchester City FC
 manchester-united,Manchester United FC
+middlesbrough,Middlesbrough FC
 newcastle-united,Newcastle United FC
+norwich-city,Norwich City FC
+queens-park-rangers,Queens Park Rangers FC
+reading,Reading FC
+sheffield-united,Sheffield United FC
 southampton,Southampton FC
+stoke-city,Stoke City FC
+sunderland,Sunderland AFC
+swansea-city,Swansea City FC
 tottenham-hotspur,Tottenham Hotspur FC
 watford,Watford FC
+west-bromwich-albion,West Bromwich Albion FC
 west-ham-united,West Ham United FC
+wigan-athletic,Wigan Athletic FC
 wolverhampton-wanderers,Wolverhampton Wanderers FC

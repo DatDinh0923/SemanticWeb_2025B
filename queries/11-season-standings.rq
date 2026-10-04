@@ -1,3 +1,5 @@
+# CQ11: What is the final league table of a season (3 points for a win)?
+# Ordered by points, goal difference, then goals scored.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
 PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
@@ -7,31 +9,31 @@ SELECT ?team ?teamName
        (SUM(?win) AS ?won)
        (SUM(?draw) AS ?drawn)
        (SUM(?loss) AS ?lost)
-       (SUM(?goalsFor) AS ?goalsFor)
-       (SUM(?goalsAgainst) AS ?goalsAgainst)
-       ((SUM(?goalsFor) - SUM(?goalsAgainst)) AS ?goalDifference)
+       (SUM(?scored) AS ?goalsFor)
+       (SUM(?conceded) AS ?goalsAgainst)
+       ((SUM(?scored) - SUM(?conceded)) AS ?goalDifference)
        ((SUM(?win) * 3 + SUM(?draw)) AS ?points)
 WHERE {
-    ?match a foot:FootballMatch ;
-           foot:playedInSeason season:2018-19 .
-
+    VALUES ?season { season:premier-league-2018-19 }
+    # Each UNION branch carries the season pattern so engines without join
+    # reordering (such as rdflib) only scan that season's matches.
     {
-        ?match foot:homeTeam ?team ;
-               foot:homeGoals ?goalsFor ;
-               foot:awayGoals ?goalsAgainst .
+        ?match foot:playedInSeason ?season ;
+               foot:homeTeam ?team ;
+               foot:homeGoals ?scored ;
+               foot:awayGoals ?conceded .
     }
     UNION
     {
-        ?match foot:awayTeam ?team ;
-               foot:awayGoals ?goalsFor ;
-               foot:homeGoals ?goalsAgainst .
+        ?match foot:playedInSeason ?season ;
+               foot:awayTeam ?team ;
+               foot:awayGoals ?scored ;
+               foot:homeGoals ?conceded .
     }
-
-    ?team a foot:FootballTeam ;
-          schema:name ?teamName .
-    BIND(IF(?goalsFor > ?goalsAgainst, 1, 0) AS ?win)
-    BIND(IF(?goalsFor = ?goalsAgainst, 1, 0) AS ?draw)
-    BIND(IF(?goalsFor < ?goalsAgainst, 1, 0) AS ?loss)
+    ?team schema:name ?teamName .
+    BIND(IF(?scored > ?conceded, 1, 0) AS ?win)
+    BIND(IF(?scored = ?conceded, 1, 0) AS ?draw)
+    BIND(IF(?scored < ?conceded, 1, 0) AS ?loss)
 }
 GROUP BY ?team ?teamName
 ORDER BY DESC(?points) DESC(?goalDifference) DESC(?goalsFor) ?teamName

@@ -9,6 +9,8 @@ services:
       TDB: "2"
     volumes:
       - fuseki-data:/fuseki
+      # Server settings, including permission for federated SERVICE queries.
+      - ./fuseki/server.ttl:/fuseki/config.ttl:ro
     restart: unless-stopped
 
 volumes:

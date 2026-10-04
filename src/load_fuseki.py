@@ -32,7 +32,8 @@ def wait_for_fuseki(base_url: str, timeout: int) -> None:
             with urlopen(ping_url, timeout=2) as response:
                 if response.status == 200:
                     return
-        except (HTTPError, URLError, TimeoutError):
+        except (OSError, HTTPError, URLError):
+            # Includes connection resets while the server is still starting.
             time.sleep(1)
     raise RuntimeError(f"Fuseki did not become ready within {timeout} seconds")
 

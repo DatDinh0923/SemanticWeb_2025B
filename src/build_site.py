@@ -22,6 +22,9 @@ DEFAULT_ONTOLOGY = PROJECT_ROOT / "ontology/football.ttl"
 DEFAULT_OUTPUT = PROJECT_ROOT / "_site"
 
 REPOSITORY_URL = "https://github.com/DatDinh0923/SemanticWeb_2025B"
+SITE_NAME = "Premier League Linked Open Data"
+# A competition is referenced by every match; list a readable number of them.
+MAX_INBOUND_LINKS = 500
 
 STYLES = """
 :root {
@@ -205,7 +208,7 @@ def page_shell(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{html.escape(title)} | Premier League LOD</title>
+  <title>{html.escape(title)} | {SITE_NAME}</title>
   {canonical}
   {alternate}
   <link rel="stylesheet" href="{html.escape(style_href, quote=True)}">
@@ -217,7 +220,59 @@ def page_shell(
 """
 
 
-def write_resource_page(graph: Graph, subject: URIRef, output_dir: Path) -> None:
+def inbound_index(graph: Graph) -> dict[URIRef, list[tuple[URIRef, URIRef]]]:
+    """Map each local resource to the local resources that point at it."""
+    index: dict[URIRef, list[tuple[URIRef, URIRef]]] = {}
+    for subject, predicate, obj in graph:
+        if (
+            isinstance(obj, URIRef)
+            and isinstance(subject, URIRef)
+            and str(obj).startswith(BASE_URL)
+            and str(subject).startswith(BASE_URL)
+            and predicate != RDF.type
+        ):
+            index.setdefault(obj, []).append((subject, predicate))
+    return index
+
+
+def render_inbound(
+    graph: Graph,
+    references: list[tuple[URIRef, URIRef]],
+    page_path: Path,
+    output_dir: Path,
+) -> str:
+    """Render the resources that link to this page, so browsing works both ways."""
+    if not references:
+        return ""
+    ordered = sorted(
+        references, key=lambda item: (str(item[1]), title_for(graph, item[0]))
+    )
+    rows = "\n".join(
+        f"<tr><th>{render_term(graph, predicate, page_path, output_dir)}</th>"
+        f"<td>{render_term(graph, source, page_path, output_dir)}"
+        f" <small>{html.escape(title_for(graph, source))}</small></td></tr>"
+        for source, predicate in ordered[:MAX_INBOUND_LINKS]
+    )
+    hidden = len(ordered) - MAX_INBOUND_LINKS
+    more = (
+        f"<p>…and {hidden} more; use the SPARQL queries to list them all.</p>"
+        if hidden > 0
+        else ""
+    )
+    return f"""
+<section class="panel">
+  <h2>Referenced by ({len(ordered)})</h2>
+  <table><tbody>{rows}</tbody></table>
+  {more}
+</section>"""
+
+
+def write_resource_page(
+    graph: Graph,
+    subject: URIRef,
+    output_dir: Path,
+    references: list[tuple[URIRef, URIRef]] | None = None,
+) -> None:
     title = title_for(graph, subject)
     description = describe_subject(graph, subject)
     page_path = local_output_path(output_dir, subject)
@@ -230,6 +285,7 @@ def write_resource_page(graph: Graph, subject: URIRef, output_dir: Path) -> None
         f"<td>{render_term(graph, obj, page_path, output_dir)}</td></tr>"
         for _, predicate, obj in triples
     )
+    inbound = render_inbound(graph, references or [], page_path, output_dir)
     json_ld = canonical_json_ld(description)
     home_href = relative_href(page_path, output_dir / "index.html")
     body = f"""
@@ -243,8 +299,9 @@ def write_resource_page(graph: Graph, subject: URIRef, output_dir: Path) -> None
 <section class="panel">
   <table><tbody>{rows}</tbody></table>
 </section>
+{inbound}
 <script type="application/ld+json">{json_ld}</script>
-<footer>Premier League 2018/19 Linked Open Data · CC0 1.0</footer>
+<footer>{SITE_NAME} · CC0 1.0</footer>
 """
     page_path.parent.mkdir(parents=True, exist_ok=True)
     page_path.write_text(
@@ -285,16 +342,35 @@ def copy_public_downloads(
         shutil.copy2(source, csv_dir / source.name)
 
 
+def resource_list(graph: Graph, resources: list[URIRef]) -> str:
+    items = "\n".join(
+        f'    <li><a href="{html.escape(str(resource)[len(BASE_URL):], quote=True)}/">'
+        f"{html.escape(title_for(graph, resource))}</a></li>"
+        for resource in resources
+    )
+    return f"  <ul>\n{items}\n  </ul>"
+
+
 def write_home_page(graph: Graph, output_dir: Path) -> None:
-    team_count = len(set(graph.subjects(RDF.type, FOOT.FootballTeam)))
+    seasons = sorted(
+        set(graph.subjects(RDF.type, FOOT.Season)),
+        key=lambda season: str(graph.value(season, FOOT.seasonLabel) or season),
+    )
+    teams = sorted(
+        set(graph.subjects(RDF.type, FOOT.FootballTeam)),
+        key=lambda team: title_for(graph, team),
+    )
     match_count = len(set(graph.subjects(RDF.type, FOOT.FootballMatch)))
     external_link_count = len(list(graph.triples((None, OWL.sameAs, None))))
+    first_season = graph.value(seasons[0], FOOT.seasonLabel) if seasons else ""
+    last_season = graph.value(seasons[-1], FOOT.seasonLabel) if seasons else ""
     body = f"""
 <p class="eyebrow">Five-star linked open data</p>
 <h1>Premier League, expressed as a knowledge graph.</h1>
-<p class="lead">Teams and results from the 2018/19 season, published as RDF with stable HTTP URIs and verified links to Wikidata and DBpedia.</p>
+<p class="lead">Clubs and results from {len(seasons)} seasons ({first_season} to {last_season}), published as RDF with stable HTTP URIs and verified links to Wikidata and DBpedia.</p>
 <div class="metrics">
-  <div class="metric"><strong>{team_count}</strong>teams</div>
+  <div class="metric"><strong>{len(seasons)}</strong>seasons</div>
+  <div class="metric"><strong>{len(teams)}</strong>clubs</div>
   <div class="metric"><strong>{match_count}</strong>matches</div>
   <div class="metric"><strong>{external_link_count}</strong>external links</div>
   <div class="metric"><strong>{len(graph):,}</strong>RDF triples</div>
@@ -319,11 +395,19 @@ def write_home_page(graph: Graph, output_dir: Path) -> None:
     <li><a href="download/LICENSE-DATA.md">CC0 data license</a></li>
   </ul>
 </section>
+<section class="panel">
+  <h2>Seasons</h2>
+{resource_list(graph, seasons)}
+</section>
+<section class="panel">
+  <h2>Clubs</h2>
+{resource_list(graph, teams)}
+</section>
 <footer>Generated from the public-domain OpenFootball dataset.</footer>
 """
     (output_dir / "index.html").write_text(
         page_shell(
-            "Premier League Linked Open Data",
+            SITE_NAME,
             body,
             "assets/style.css",
             canonical_uri=BASE_URL,
@@ -356,8 +440,9 @@ def build_site(data_path: Path, ontology_path: Path, output_dir: Path) -> int:
         },
         key=str,
     )
+    references = inbound_index(graph)
     for subject in local_subjects:
-        write_resource_page(graph, subject, output_dir)
+        write_resource_page(graph, subject, output_dir, references.get(subject))
 
     not_found = """
 <p class="eyebrow">Resource not found</p>

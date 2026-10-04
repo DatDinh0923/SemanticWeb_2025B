@@ -1,0 +1,12 @@
+# Fuseki server settings for the Docker setup (mounted as /fuseki/config.ttl).
+# The football dataset itself is created by FUSEKI_DATASET_1 in
+# docker-compose.yml and filled by src/load_fuseki.py.
+@prefix fuseki: <http://jena.apache.org/fuseki#> .
+@prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[] rdf:type fuseki:Server ;
+    # Allow federated SERVICE queries (SPARQL 1.1 Federated Query).
+    ja:context [ ja:cxtName "arq:httpServiceAllowed" ; ja:cxtValue "true" ] ;
+    # Stop runaway queries: 30 s to the first result, 120 s in total.
+    ja:context [ ja:cxtName "arq:queryTimeout" ; ja:cxtValue "30000,120000" ] .

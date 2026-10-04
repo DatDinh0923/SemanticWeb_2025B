@@ -1,40 +1,54 @@
 # Multi-season roadmap
 
-The published dataset intentionally remains the complete 2018/19 Premier
-League season. Expanding record count is not worth introducing incomplete
-results, unstable identities, or unverified links. The existing pipeline is a
-tested baseline for a controlled later expansion.
+The dataset now covers ten complete Premier League seasons (2011/12 to
+2020/21). This page records what the expansion established and the gates for
+growing further.
 
-## Supported foundation
+## Done
 
-- Season and competition IDs already appear explicitly in every normalized
-  match row.
-- A competition is classified as a `League` and carries its national `tier`.
-- The ontology defines future-ready `Cup` and `stage` terms without claiming
-  that cup data exists in the current graph.
-- Draw, winner, and loser facts are derived from scores rather than copied from
-  inconsistent text labels.
-- Static resource pages, SHACL validation, and query regression tests are
-  generated from the resulting graph.
+- `config/seasons.csv` is a checked manifest: each row names a source file,
+  season ID, label, and expected match and team counts.
+- `config/team-aliases.csv` gives every club one persistent, reviewed ID; all
+  54 source spellings map to 35 clubs.
+- The cleaner checks each season as a complete double round-robin and keeps
+  the source file and line of every match.
+- All 46 external identities (1 competition, 10 seasons, 35 clubs) have saved
+  evidence and pass the identity checks in `docs/data-and-linking.md`.
+- Cross-season competency questions (head-to-head, season statistics,
+  champions, club participation) have regression tests. The standings for
+  every season are compared with an independent calculation from the original
+  CSV files.
+- SHACL validation, deterministic RDF output, and the static site cover the
+  combined dataset.
 
-## Expansion sequence
+## Adding another Premier League season
 
-1. Add one complete league season at a time and verify its expected match and
-   team counts before combining graphs.
-2. Replace the single-season command defaults with a checked manifest that
-   records source file, competition, tier, season, and expected counts.
-3. Give each club identity a persistent reviewed ID. Do not remove annotations
-   such as founding year or phoenix-club status when two clubs share a name.
-4. Extend external mappings only after manual identity checks; never treat a
-   search result as an automatic `owl:sameAs` assertion.
-5. Add season-specific query fixtures and cross-season competency questions,
-   then run SHACL and deterministic-build checks over the combined dataset.
-6. Import cup files only after their rounds can be mapped to explicit `stage`
-   values and incomplete or replay records have a documented policy.
+1. Add the season's `eng.1.csv` to the manifest with its expected counts.
+2. Run `python3 src/clean_data.py`. Add any unknown club spelling it reports
+   to the alias table, reusing the existing ID when it is the same club.
+3. Add the season (and any new club) to `data/links/entity-links.csv` as a
+   `candidate`, then run `python3 src/collect_link_evidence.py --promote`.
+4. Run `make pipeline` and update the expected counts in the tests.
+
+Seasons before 2011/12 use the same format. 1992/93 to 1994/95 had 22 clubs
+and 462 matches, which the manifest's expected counts already allow.
+
+## Lower divisions and cups
+
+Adding the Football League and National League needs extra identity rules
+first. Several clubs were dissolved and refounded under a similar name
+(phoenix clubs), such as Halifax Town AFC and FC Halifax Town, or Chester City
+and Chester FC. Each must keep its own ID and Wikidata link, so the alias
+table needs a validity period for such names before those divisions are
+imported.
+
+Cup files should be imported only after their rounds map to explicit `stage`
+values and replays and walkovers have a documented policy. The ontology
+already defines `Cup` and `stage` for this.
 
 ## Acceptance gates
 
 An added season is ready only when all source rows are accounted for, entity
-IDs are collision-free, every linked entity is manually verified, saved query
-results have regression expectations, SHACL passes, and two pipeline runs
+IDs are collision-free, every linked entity passes the evidence checks, saved
+queries have regression expectations, SHACL passes, and two pipeline runs
 produce byte-identical tracked artifacts.

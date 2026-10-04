@@ -1,0 +1,27 @@
+# CQ12: What are the head-to-head results between two clubs across all seasons?
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+PREFIX team: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/team/>
+
+SELECT ?seasonLabel ?date ?homeName ?homeGoals ?awayGoals ?awayName ?outcome
+WHERE {
+    VALUES (?firstTeam ?secondTeam) { (team:arsenal team:tottenham-hotspur) }
+    {
+        ?match foot:homeTeam ?firstTeam ;
+               foot:awayTeam ?secondTeam .
+    }
+    UNION
+    {
+        ?match foot:homeTeam ?secondTeam ;
+               foot:awayTeam ?firstTeam .
+    }
+    ?match foot:matchDate ?date ;
+           foot:playedInSeason/foot:seasonLabel ?seasonLabel ;
+           foot:homeTeam/schema:name ?homeName ;
+           foot:awayTeam/schema:name ?awayName ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
+    OPTIONAL { ?match foot:winner/schema:name ?winnerName . }
+    BIND(COALESCE(?winnerName, "Draw") AS ?outcome)
+}
+ORDER BY ?date

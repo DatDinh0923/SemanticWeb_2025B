@@ -3,6 +3,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
@@ -10,6 +11,12 @@
 @prefix void: <http://rdfs.org/ns/void#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+
+# Resource shapes use SHACL Core only, so they stay fast on thousands of
+# matches. Rules that compare several resources (a match with its season, a
+# score with its outcome) are dataset-level SPARQL constraints at the end of
+# this file: each runs once over the graph and reports the offending resource
+# as sh:value.
 
 foot:FootballTeamShape
     a sh:NodeShape ;
@@ -92,6 +99,13 @@ foot:SeasonShape
         sh:languageIn ("en")
     ] ;
     sh:property [
+        sh:path foot:seasonLabel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9]{4}/[0-9]{2}$"
+    ] ;
+    sh:property [
         sh:path schema:startDate ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -110,6 +124,12 @@ foot:SeasonShape
         sh:maxCount 1 ;
         sh:class foot:Competition ;
         sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
     ] .
 
 foot:FootballMatchShape
@@ -127,7 +147,9 @@ foot:FootballMatchShape
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:class foot:FootballTeam ;
-        sh:nodeKind sh:IRI
+        sh:nodeKind sh:IRI ;
+        sh:disjoint foot:awayTeam ;
+        sh:message "The home and away teams must be different."@en
     ] ;
     sh:property [
         sh:path foot:awayTeam ;
@@ -195,87 +217,18 @@ foot:FootballMatchShape
         sh:maxCount 1 ;
         sh:datatype xsd:string
     ] ;
-    sh:sparql [
-        sh:message "The home and away teams must be different."@en ;
-        sh:select """
-            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-            SELECT $this
-            WHERE {
-                $this foot:homeTeam ?team ;
-                      foot:awayTeam ?team .
-            }
-        """
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
     ] ;
-    sh:sparql [
-        sh:message "The match date must fall within its season dates."@en ;
-        sh:select """
-            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-            PREFIX schema: <https://schema.org/>
-            SELECT $this
-            WHERE {
-                $this foot:matchDate ?date ;
-                      foot:playedInSeason ?season .
-                ?season schema:startDate ?startDate ;
-                        schema:endDate ?endDate .
-                FILTER(?date < ?startDate || ?date > ?endDate)
-            }
-        """
-    ] ;
-    sh:sparql [
-        sh:message "The match and its season must reference the same competition."@en ;
-        sh:select """
-            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-            SELECT $this
-            WHERE {
-                $this foot:playedInSeason ?season ;
-                      foot:partOfCompetition ?matchCompetition .
-                ?season foot:partOfCompetition ?seasonCompetition .
-                FILTER(?matchCompetition != ?seasonCompetition)
-            }
-        """
-    ] ;
-    sh:sparql [
-        sh:message "Draw typing must agree with whether the scores are equal."@en ;
-        sh:select """
-            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-            SELECT $this
-            WHERE {
-                $this foot:homeGoals ?homeGoals ;
-                      foot:awayGoals ?awayGoals .
-                OPTIONAL {
-                    $this a foot:Draw .
-                    BIND(true AS ?isDraw)
-                }
-                FILTER(
-                    (?homeGoals = ?awayGoals && !BOUND(?isDraw)) ||
-                    (?homeGoals != ?awayGoals && BOUND(?isDraw))
-                )
-            }
-        """
-    ] ;
-    sh:sparql [
-        sh:message "A decisive match must have the score's winner and loser."@en ;
-        sh:select """
-            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-            SELECT $this
-            WHERE {
-                $this foot:homeTeam ?homeTeam ;
-                      foot:awayTeam ?awayTeam ;
-                      foot:homeGoals ?homeGoals ;
-                      foot:awayGoals ?awayGoals .
-                OPTIONAL { $this foot:winner ?winner . }
-                OPTIONAL { $this foot:loser ?loser . }
-                FILTER(?homeGoals != ?awayGoals)
-                FILTER(
-                    !BOUND(?winner) ||
-                    !BOUND(?loser) ||
-                    (?homeGoals > ?awayGoals && BOUND(?winner) && BOUND(?loser) &&
-                        (?winner != ?homeTeam || ?loser != ?awayTeam)) ||
-                    (?awayGoals > ?homeGoals && BOUND(?winner) && BOUND(?loser) &&
-                        (?winner != ?awayTeam || ?loser != ?homeTeam))
-                )
-            }
-        """
+    sh:property [
+        sh:path foot:sourceLine ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:positiveInteger ;
+        sh:minInclusive 2
     ] .
 
 foot:DrawShape
@@ -292,7 +245,7 @@ foot:DrawShape
 
 dataset:DatasetShape
     a sh:NodeShape ;
-    sh:targetNode dataset:premier-league-2018-19 ;
+    sh:targetNode dataset:premier-league ;
     sh:property [
         sh:path rdf:type ;
         sh:hasValue dcat:Dataset
@@ -327,4 +280,125 @@ dataset:DatasetShape
         sh:minCount 2 ;
         sh:class void:Linkset ;
         sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path void:classPartition ;
+        sh:minCount 4 ;
+        sh:nodeKind sh:IRI
+    ] ;
+    sh:property [
+        sh:path void:triples ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer
+    ] .
+
+
+# Dataset-level integrity rules. Each violation's sh:value is the offending
+# match or season.
+
+dataset:DatasetIntegrityShape
+    a sh:NodeShape ;
+    sh:targetNode dataset:premier-league ;
+    sh:sparql [
+        sh:message "The match date must fall within its season dates."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            PREFIX schema: <https://schema.org/>
+            SELECT $this ?value
+            WHERE {
+                ?value foot:matchDate ?date ;
+                       foot:playedInSeason ?season .
+                ?season schema:startDate ?startDate ;
+                        schema:endDate ?endDate .
+                FILTER(?date < ?startDate || ?date > ?endDate)
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "The match and its season must reference the same competition."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this ?value
+            WHERE {
+                ?value foot:playedInSeason ?season ;
+                       foot:partOfCompetition ?matchCompetition .
+                ?season foot:partOfCompetition ?seasonCompetition .
+                FILTER(?matchCompetition != ?seasonCompetition)
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "Draw typing must agree with whether the scores are equal."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this ?value
+            WHERE {
+                ?value a foot:FootballMatch ;
+                       foot:homeGoals ?homeGoals ;
+                       foot:awayGoals ?awayGoals .
+                OPTIONAL {
+                    ?value a foot:Draw .
+                    BIND(true AS ?isDraw)
+                }
+                FILTER(
+                    (?homeGoals = ?awayGoals && !BOUND(?isDraw)) ||
+                    (?homeGoals != ?awayGoals && BOUND(?isDraw))
+                )
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "A decisive match must have the score's winner and loser."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this ?value
+            WHERE {
+                ?value foot:homeTeam ?homeTeam ;
+                       foot:awayTeam ?awayTeam ;
+                       foot:homeGoals ?homeGoals ;
+                       foot:awayGoals ?awayGoals .
+                OPTIONAL { ?value foot:winner ?winner . }
+                OPTIONAL { ?value foot:loser ?loser . }
+                FILTER(?homeGoals != ?awayGoals)
+                FILTER(
+                    !BOUND(?winner) ||
+                    !BOUND(?loser) ||
+                    (?homeGoals > ?awayGoals &&
+                        (?winner != ?homeTeam || ?loser != ?awayTeam)) ||
+                    (?awayGoals > ?homeGoals &&
+                        (?winner != ?awayTeam || ?loser != ?homeTeam))
+                )
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "A match must come from the same source file as its season."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT $this ?value
+            WHERE {
+                ?value prov:wasDerivedFrom ?matchSource ;
+                       foot:playedInSeason ?season .
+                ?season prov:wasDerivedFrom ?seasonSource .
+                FILTER(?matchSource != ?seasonSource)
+            }
+        """
+    ] ;
+    sh:sparql [
+        sh:message "A league season must not contain the same home/away fixture twice."@en ;
+        sh:select """
+            PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+            SELECT $this ?value
+            WHERE {
+                ?first foot:playedInSeason ?value ;
+                       foot:homeTeam ?homeTeam ;
+                       foot:awayTeam ?awayTeam .
+                ?second foot:playedInSeason ?value ;
+                        foot:homeTeam ?homeTeam ;
+                        foot:awayTeam ?awayTeam .
+                FILTER(STR(?first) < STR(?second))
+            }
+        """
     ] .

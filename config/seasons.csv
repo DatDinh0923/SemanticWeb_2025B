@@ -1,0 +1,11 @@
+season_id,label,source_file,expected_matches,expected_teams
+premier-league-2011-12,2011/12,england_csv/2010s/2011-12/eng.1.csv,380,20
+premier-league-2012-13,2012/13,england_csv/2010s/2012-13/eng.1.csv,380,20
+premier-league-2013-14,2013/14,england_csv/2010s/2013-14/eng.1.csv,380,20
+premier-league-2014-15,2014/15,england_csv/2010s/2014-15/eng.1.csv,380,20
+premier-league-2015-16,2015/16,england_csv/2010s/2015-16/eng.1.csv,380,20
+premier-league-2016-17,2016/17,england_csv/2010s/2016-17/eng.1.csv,380,20
+premier-league-2017-18,2017/18,england_csv/2010s/2017-18/eng.1.csv,380,20
+premier-league-2018-19,2018/19,england_csv/2010s/2018-19/eng.1.csv,380,20
+premier-league-2019-20,2019/20,england_csv/2010s/2019-20/eng.1.csv,380,20
+premier-league-2020-21,2020/21,england_csv/2020s/2020-21/eng.1.csv,380,20

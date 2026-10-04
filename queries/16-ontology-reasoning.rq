@@ -1,0 +1,25 @@
+# CQ16: What does the data look like through the ontology's schema.org view?
+# rdfs:subClassOf* and rdfs:subPropertyOf* follow the ontology at query time,
+# so no reasoner is needed. Requires the ontology to be loaded with the data
+# (run_sparql.py and the Fuseki loader both load it).
+PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?view ?term (COUNT(DISTINCT ?x) AS ?resources)
+WHERE {
+    {
+        VALUES ?term { schema:SportsEvent schema:SportsTeam schema:EventSeries }
+        ?x a/rdfs:subClassOf* ?term .
+        BIND("class" AS ?view)
+    }
+    UNION
+    {
+        VALUES ?term { foot:participant schema:competitor }
+        ?property rdfs:subPropertyOf* ?term .
+        ?x ?property ?team .
+        BIND("property" AS ?view)
+    }
+}
+GROUP BY ?view ?term
+ORDER BY ?view ?term

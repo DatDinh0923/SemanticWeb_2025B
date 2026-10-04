@@ -1,0 +1,32 @@
+{
+  "entity_type": "team",
+  "entity_id": "middlesbrough",
+  "wikidata_uri": "http://www.wikidata.org/entity/Q18661",
+  "dbpedia_uri": "http://dbpedia.org/resource/Middlesbrough_F.C.",
+  "checked_on": "2026-10-05",
+  "wikidata_source": "https://www.wikidata.org/wiki/Special:EntityData/Q18661.json",
+  "wikidata_revision": 2520193484,
+  "wikidata_label": "Middlesbrough F.C.",
+  "wikidata_description": "association football club in Middlesbrough, England",
+  "wikidata_instance_of": [
+    "Q476028"
+  ],
+  "wikipedia_title": "Middlesbrough F.C.",
+  "dbpedia_source": "https://dbpedia.org/sparql?query=SELECT+%3Fp+%3Fo+WHERE+%7B+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FMiddlesbrough_F.C.%3E+%3Fp+%3Fo+.+VALUES+%3Fp+%7B+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23label%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%7D+%7D&format=application%2Fsparql-results%2Bjson",
+  "dbpedia_labels": [
+    "Middlesbrough F.C."
+  ],
+  "dbpedia_types": [
+    "http://dbpedia.org/ontology/Agent",
+    "http://dbpedia.org/ontology/Organisation",
+    "http://dbpedia.org/ontology/SoccerClub",
+    "http://dbpedia.org/ontology/SportsClub"
+  ],
+  "checks": {
+    "wikidata_type_matches": true,
+    "wikidata_sport_is_association_football": true,
+    "wikipedia_title_matches_dbpedia": true,
+    "dbpedia_links_to_wikidata": true
+  },
+  "passed": true
+}

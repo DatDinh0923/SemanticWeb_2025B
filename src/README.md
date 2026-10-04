@@ -4,39 +4,39 @@ The scripts implement the complete data pipeline:
 
 | Script | Purpose |
 | --- | --- |
-| `clean_data.py` | Normalize the source match CSV into entity tables. |
-| `convert_to_rdf.py` | Convert the tables and external links to RDF/Turtle. |
+| `clean_data.py` | Normalize the seasons in `config/seasons.csv` into entity tables. |
+| `convert_to_rdf.py` | Convert the tables and verified external links to RDF/Turtle. |
 | `validate_rdf.py` | Validate the generated graph against SHACL shapes. |
-| `run_sparql.py` | Run saved SPARQL queries as a local terminal. |
+| `run_sparql.py` | SPARQL terminal: run saved queries locally or against an endpoint. |
 | `load_fuseki.py` | Load the ontology and data into the Fuseki endpoint. |
 | `build_site.py` | Generate dereferenceable resource pages and public downloads. |
 | `suggest_links.py` | Find unverified Wikidata candidates without changing verified links. |
+| `collect_link_evidence.py` | Record and check identity evidence for every external link. |
 
-Run it from the project root:
+Run them from the project root.
+
+## Cleaning
 
 ```bash
 python3 src/clean_data.py
 ```
 
-The default input is:
+The cleaner reads two reviewed configuration files:
 
-```text
-england_csv/2010s/2018-19/eng.1.csv
-```
+- `config/seasons.csv` lists each source file with its season ID, label, and
+  expected match and team counts.
+- `config/team-aliases.csv` maps every club spelling found in the sources
+  (`Manchester Utd`, `Wolves`, ...) to one persistent team ID and name.
 
-The cleaning command creates:
+Each season must be a complete double round-robin: the expected number of
+matches and teams, every home/away fixture exactly once, and every round with
+the same number of matches. An unknown club spelling stops the run with its
+file and line number instead of creating a new club from a guessed name.
 
-```text
-data/processed/competitions.csv
-data/processed/seasons.csv
-data/processed/teams.csv
-data/processed/matches.csv
-```
+The command writes `data/processed/{competitions,seasons,teams,matches}.csv`.
+Every match keeps the source file and line it came from.
 
-The output separates each ontology entity into its own table. Matches refer to
-teams, seasons, and competitions through stable IDs rather than display names.
-
-Generate and validate the RDF:
+## RDF, validation, and site
 
 ```bash
 python3 src/convert_to_rdf.py
@@ -44,27 +44,33 @@ python3 src/validate_rdf.py
 python3 src/build_site.py
 ```
 
-Run the saved SPARQL queries locally:
+## SPARQL terminal
 
 ```bash
-python3 src/run_sparql.py --all
+python3 src/run_sparql.py --all                                  # local rdflib
+python3 src/run_sparql.py queries/14-season-champions.rq
+python3 src/run_sparql.py --all --endpoint                        # running Fuseki
+python3 src/run_sparql.py queries/federated/wikidata-club-facts.rq  # needs internet
 ```
 
-Optionally generate Wikidata candidates for manual review:
+The local terminal loads the ontology together with the data, as the Fuseki
+loader does, so ontology-aware queries such as `16-ontology-reasoning.rq`
+return the same results in both.
+
+## External links
 
 ```bash
-python3 src/suggest_links.py
+python3 src/suggest_links.py                    # candidates only
+python3 src/collect_link_evidence.py            # check every mapping
+python3 src/collect_link_evidence.py --only arsenal chelsea
+python3 src/collect_link_evidence.py --promote  # mark passing rows verified
 ```
 
-This is deliberately excluded from `make pipeline` because it requires the
-network and cannot replace human identity verification.
+These commands need the network and are excluded from `make pipeline`. See
+`docs/data-and-linking.md` for the identity checks.
 
-Run the tests with:
+## Tests
 
 ```bash
 python3 -m unittest discover -s src -p 'test_*.py'
 ```
-
-Use `python3 src/clean_data.py --help` to select another input, season, or
-output directory. The default validation expects a complete Premier League
-season with 380 matches and 20 teams.

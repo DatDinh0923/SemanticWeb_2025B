@@ -1,14 +1,15 @@
+# CQ8: Which season and competition does each match belong to?
+# Summarized as the number of matches per season and competition.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <https://schema.org/>
 
-SELECT ?match ?label ?seasonName ?competitionName
+SELECT ?competitionName ?seasonName (COUNT(?match) AS ?matches)
 WHERE {
     ?match a foot:FootballMatch ;
-           rdfs:label ?label ;
            foot:playedInSeason ?season ;
            foot:partOfCompetition ?competition .
     ?season schema:name ?seasonName .
     ?competition schema:name ?competitionName .
 }
-ORDER BY ?match
+GROUP BY ?competitionName ?seasonName
+ORDER BY ?seasonName

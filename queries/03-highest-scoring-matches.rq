@@ -1,26 +1,26 @@
+# CQ3: Which match or matches had the most goals across all ten seasons?
+# Every match tied on the maximum total is returned.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <https://schema.org/>
 
-SELECT ?match ?label ?homeGoals ?awayGoals ?totalGoals
+SELECT ?match ?seasonName ?date ?label ?totalGoals
 WHERE {
-    ?match a foot:FootballMatch ;
-           rdfs:label ?label ;
-           foot:homeGoals ?homeGoals ;
-           foot:awayGoals ?awayGoals .
-    BIND(?homeGoals + ?awayGoals AS ?totalGoals)
-
     {
-        SELECT
-            (?candidateHomeGoals + ?candidateAwayGoals AS ?maximumTotal)
+        SELECT (MAX(?candidateHomeGoals + ?candidateAwayGoals) AS ?maximumTotal)
         WHERE {
             ?candidate a foot:FootballMatch ;
                        foot:homeGoals ?candidateHomeGoals ;
                        foot:awayGoals ?candidateAwayGoals .
         }
-        ORDER BY DESC(?maximumTotal)
-        LIMIT 1
     }
-
+    ?match a foot:FootballMatch ;
+           rdfs:label ?label ;
+           foot:matchDate ?date ;
+           foot:playedInSeason/schema:name ?seasonName ;
+           foot:homeGoals ?homeGoals ;
+           foot:awayGoals ?awayGoals .
+    BIND(?homeGoals + ?awayGoals AS ?totalGoals)
     FILTER(?totalGoals = ?maximumTotal)
 }
-ORDER BY ?match
+ORDER BY ?date

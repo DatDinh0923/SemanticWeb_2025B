@@ -1,20 +1,15 @@
+# CQ1: Which teams played in a given Premier League season?
+# Change the VALUES line to query another season, e.g. season:premier-league-2015-16.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
 
 SELECT DISTINCT ?team ?name
 WHERE {
-    ?match a foot:FootballMatch ;
-           foot:playedInSeason
-               <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/2018-19> .
-
-    {
-        ?match foot:homeTeam ?team .
-    }
+    VALUES ?season { season:premier-league-2018-19 }
+    { ?match foot:playedInSeason ?season ; foot:homeTeam ?team . }
     UNION
-    {
-        ?match foot:awayTeam ?team .
-    }
-
+    { ?match foot:playedInSeason ?season ; foot:awayTeam ?team . }
     ?team a foot:FootballTeam ;
           schema:name ?name .
 }

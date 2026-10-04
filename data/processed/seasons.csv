@@ -1,2 +1,11 @@
-season_id,label,competition_id,start_date,end_date
-2018-19,2018/19,premier-league,2018-08-10,2019-05-12
+season_id,label,competition_id,start_date,end_date,source_file
+premier-league-2011-12,2011/12,premier-league,2011-08-13,2012-05-13,england_csv/2010s/2011-12/eng.1.csv
+premier-league-2012-13,2012/13,premier-league,2012-08-18,2013-05-19,england_csv/2010s/2012-13/eng.1.csv
+premier-league-2013-14,2013/14,premier-league,2013-08-17,2014-05-11,england_csv/2010s/2013-14/eng.1.csv
+premier-league-2014-15,2014/15,premier-league,2014-08-16,2015-05-24,england_csv/2010s/2014-15/eng.1.csv
+premier-league-2015-16,2015/16,premier-league,2015-08-08,2016-05-17,england_csv/2010s/2015-16/eng.1.csv
+premier-league-2016-17,2016/17,premier-league,2016-08-13,2017-05-21,england_csv/2010s/2016-17/eng.1.csv
+premier-league-2017-18,2017/18,premier-league,2017-08-11,2018-05-13,england_csv/2010s/2017-18/eng.1.csv
+premier-league-2018-19,2018/19,premier-league,2018-08-10,2019-05-12,england_csv/2010s/2018-19/eng.1.csv
+premier-league-2019-20,2019/20,premier-league,2019-08-09,2020-07-26,england_csv/2010s/2019-20/eng.1.csv
+premier-league-2020-21,2020/21,premier-league,2020-09-12,2021-05-23,england_csv/2020s/2020-21/eng.1.csv

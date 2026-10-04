@@ -1,8 +1,13 @@
+# CQ6: How many matches were played in each round of a season?
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
+PREFIX schema: <https://schema.org/>
+PREFIX season: <https://datdinh0923.github.io/SemanticWeb_2025B/resource/season/>
 
 SELECT ?round (COUNT(?match) AS ?matchCount)
 WHERE {
+    VALUES ?season { season:premier-league-2018-19 }
     ?match a foot:FootballMatch ;
+           foot:playedInSeason ?season ;
            foot:roundNumber ?round .
 }
 GROUP BY ?round

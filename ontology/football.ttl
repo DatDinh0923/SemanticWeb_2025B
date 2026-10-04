@@ -1,6 +1,7 @@
 @prefix foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
@@ -11,14 +12,28 @@
     a owl:Ontology ;
     dcterms:title "Football Linked Open Data Ontology"@en ;
     dcterms:description
-        "An ontology for Premier League competitions, seasons, teams, and match results."@en ;
+        "An ontology for football competitions, seasons, teams, and match results."@en ;
     dcterms:created "2026-09-27"^^xsd:date ;
-    dcterms:modified "2026-10-02"^^xsd:date ;
+    dcterms:modified "2026-10-05"^^xsd:date ;
     dcterms:creator <https://github.com/DatDinh0923> ;
     dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
-    owl:versionInfo "0.2.0" ;
+    owl:versionInfo "0.3.0" ;
     rdfs:label "Football Linked Open Data Ontology"@en ;
     rdfs:seeAlso <https://github.com/DatDinh0923/SemanticWeb_2025B> .
+
+
+# Reused external terms, declared so OWL 2 DL tools such as Protégé and
+# HermiT type them correctly.
+
+schema:SportsEvent a owl:Class .
+schema:SportsTeam a owl:Class .
+schema:EventSeries a owl:Class .
+schema:homeTeam a owl:ObjectProperty .
+schema:awayTeam a owl:ObjectProperty .
+schema:competitor a owl:ObjectProperty .
+schema:superEvent a owl:ObjectProperty .
+schema:startDate a owl:DatatypeProperty .
+dcterms:isPartOf a owl:ObjectProperty .
 
 
 # Classes
@@ -27,25 +42,42 @@ foot:FootballMatch
     a owl:Class ;
     rdfs:label "Football match"@en ;
     rdfs:comment "A scheduled association football match between a home team and an away team."@en ;
-    rdfs:subClassOf schema:SportsEvent .
+    rdfs:subClassOf
+        schema:SportsEvent ,
+        [ a owl:Restriction ;
+          owl:onProperty foot:homeTeam ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass foot:FootballTeam ] ,
+        [ a owl:Restriction ;
+          owl:onProperty foot:awayTeam ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass foot:FootballTeam ] ,
+        [ a owl:Restriction ;
+          owl:onProperty foot:playedInSeason ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass foot:Season ] .
 
 foot:FootballTeam
     a owl:Class ;
     rdfs:label "Football team"@en ;
-    rdfs:comment "A football club or team participating in a competition."@en ;
+    rdfs:comment "A football club whose identity persists across seasons."@en ;
     rdfs:subClassOf schema:SportsTeam .
 
 foot:Competition
     a owl:Class ;
     rdfs:label "Football competition"@en ;
-    rdfs:comment "An organized football competition, such as the English Premier League."@en ;
-    rdfs:subClassOf schema:SportsEvent .
+    rdfs:comment "An ongoing football competition, such as the English Premier League, that is held as a series of seasons."@en ;
+    rdfs:subClassOf schema:EventSeries .
 
 foot:League
     a owl:Class ;
     rdfs:label "Football league"@en ;
     rdfs:comment "A competition in which teams are ranked across a league season."@en ;
-    rdfs:subClassOf foot:Competition ;
+    rdfs:subClassOf
+        foot:Competition ,
+        [ a owl:Restriction ;
+          owl:onProperty foot:tier ;
+          owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
     owl:disjointWith foot:Cup .
 
 foot:Cup
@@ -58,16 +90,44 @@ foot:Season
     a owl:Class ;
     rdfs:label "Football season"@en ;
     rdfs:comment "A time-bounded edition of a football competition."@en ;
-    rdfs:subClassOf schema:Event .
+    rdfs:subClassOf
+        schema:SportsEvent ,
+        [ a owl:Restriction ;
+          owl:onProperty foot:partOfCompetition ;
+          owl:someValuesFrom foot:Competition ] .
 
 foot:Draw
     a owl:Class ;
     rdfs:label "Drawn football match"@en ;
-    rdfs:comment "A football match in which the two teams finish with equal scores."@en ;
-    rdfs:subClassOf foot:FootballMatch .
+    rdfs:comment "A football match in which the two teams finish with equal scores; it has neither a winner nor a loser."@en ;
+    rdfs:subClassOf
+        foot:FootballMatch ,
+        [ a owl:Class ;
+          owl:complementOf [
+              a owl:Restriction ;
+              owl:onProperty foot:winner ;
+              owl:someValuesFrom owl:Thing
+          ] ] ,
+        [ a owl:Class ;
+          owl:complementOf [
+              a owl:Restriction ;
+              owl:onProperty foot:loser ;
+              owl:someValuesFrom owl:Thing
+          ] ] .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( foot:Competition foot:Season foot:FootballTeam foot:FootballMatch ) .
 
 
 # Object properties
+
+foot:participant
+    a owl:ObjectProperty ;
+    rdfs:label "participant"@en ;
+    rdfs:comment "Relates a football match to a team that took part in it."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam ;
+    rdfs:subPropertyOf schema:competitor .
 
 foot:homeTeam
     a owl:ObjectProperty, owl:FunctionalProperty ;
@@ -75,7 +135,7 @@ foot:homeTeam
     rdfs:comment "Relates a football match to its home team."@en ;
     rdfs:domain foot:FootballMatch ;
     rdfs:range foot:FootballTeam ;
-    rdfs:subPropertyOf schema:homeTeam .
+    rdfs:subPropertyOf foot:participant, schema:homeTeam .
 
 foot:awayTeam
     a owl:ObjectProperty, owl:FunctionalProperty ;
@@ -83,7 +143,25 @@ foot:awayTeam
     rdfs:comment "Relates a football match to its away team."@en ;
     rdfs:domain foot:FootballMatch ;
     rdfs:range foot:FootballTeam ;
-    rdfs:subPropertyOf schema:awayTeam .
+    rdfs:subPropertyOf foot:participant, schema:awayTeam ;
+    owl:propertyDisjointWith foot:homeTeam .
+
+foot:winner
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "winner"@en ;
+    rdfs:comment "Relates a decisive football match to the team that won it."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam ;
+    rdfs:subPropertyOf foot:participant .
+
+foot:loser
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:label "loser"@en ;
+    rdfs:comment "Relates a decisive football match to the team that lost it."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range foot:FootballTeam ;
+    rdfs:subPropertyOf foot:participant ;
+    owl:propertyDisjointWith foot:winner .
 
 foot:playedInSeason
     a owl:ObjectProperty, owl:FunctionalProperty ;
@@ -91,32 +169,20 @@ foot:playedInSeason
     rdfs:comment "Relates a football match to the season in which it was played."@en ;
     rdfs:domain foot:FootballMatch ;
     rdfs:range foot:Season ;
-    rdfs:subPropertyOf dcterms:isPartOf .
+    rdfs:subPropertyOf schema:superEvent, dcterms:isPartOf .
 
 foot:partOfCompetition
-    a owl:ObjectProperty, owl:FunctionalProperty ;
+    a owl:ObjectProperty ;
     rdfs:label "part of competition"@en ;
-    rdfs:comment "Relates a match or season to its football competition."@en ;
+    rdfs:comment
+        "Relates a match or season to its football competition. For a match it follows from the match's season, so an OWL 2 reasoner infers it from playedInSeason and the season's competition; the generated data also asserts it so plain SPARQL works without a reasoner. The property is deliberately not functional: OWL 2 DL forbids functional properties defined by a property chain, so SHACL enforces the single value instead."@en ;
     rdfs:domain [
         a owl:Class ;
         owl:unionOf (foot:FootballMatch foot:Season)
     ] ;
     rdfs:range foot:Competition ;
-    rdfs:subPropertyOf dcterms:isPartOf .
-
-foot:winner
-    a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:label "winner"@en ;
-    rdfs:comment "Relates a decisive football match to the team that won it."@en ;
-    rdfs:domain foot:FootballMatch ;
-    rdfs:range foot:FootballTeam .
-
-foot:loser
-    a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:label "loser"@en ;
-    rdfs:comment "Relates a decisive football match to the team that lost it."@en ;
-    rdfs:domain foot:FootballMatch ;
-    rdfs:range foot:FootballTeam .
+    rdfs:subPropertyOf dcterms:isPartOf ;
+    owl:propertyChainAxiom ( foot:playedInSeason foot:partOfCompetition ) .
 
 
 # Datatype properties
@@ -153,7 +219,7 @@ foot:awayGoals
 foot:tier
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:label "league tier"@en ;
-    rdfs:comment "The positive integer level of a league in its national league system."@en ;
+    rdfs:comment "The positive integer level of a league in its national league system (1 = top)."@en ;
     rdfs:domain foot:League ;
     rdfs:range xsd:positiveInteger .
 
@@ -162,4 +228,19 @@ foot:stage
     rdfs:label "competition stage"@en ;
     rdfs:comment "The named competition stage in which a match is played, such as semi-final or final."@en ;
     rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:string .
+
+foot:sourceLine
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "source line"@en ;
+    rdfs:comment "The one-based line, counting the header, of the source CSV record that a match was derived from. The source file is given by prov:wasDerivedFrom."@en ;
+    rdfs:domain foot:FootballMatch ;
+    rdfs:range xsd:positiveInteger ;
+    rdfs:seeAlso prov:wasDerivedFrom .
+
+foot:seasonLabel
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:label "season label"@en ;
+    rdfs:comment "The short years label of a season, such as 2018/19."@en ;
+    rdfs:domain foot:Season ;
     rdfs:range xsd:string .

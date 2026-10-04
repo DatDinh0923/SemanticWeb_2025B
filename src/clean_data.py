@@ -15,16 +15,26 @@ from typing import Iterable, Sequence
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = PROJECT_ROOT / "england_csv/2010s/2018-19/eng.1.csv"
+DEFAULT_MANIFEST = PROJECT_ROOT / "config/seasons.csv"
+DEFAULT_ALIASES = PROJECT_ROOT / "config/team-aliases.csv"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data/processed"
 
 REQUIRED_SOURCE_COLUMNS = {"Round", "Date", "Team 1", "FT", "Team 2"}
-SCORE_PATTERN = re.compile(r"^(\d+)\s*[-\u2013\u2014]\s*(\d+)$")
+REQUIRED_MANIFEST_COLUMNS = {
+    "season_id",
+    "label",
+    "source_file",
+    "expected_matches",
+    "expected_teams",
+}
+REQUIRED_ALIAS_COLUMNS = {"source_name", "team_id", "name"}
+SCORE_PATTERN = re.compile(r"^(\d+)\s*[-–—]\s*(\d+)$")
 DATE_PATTERN = re.compile(
     r"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+"
     r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+"
     r"(\d{1,2})\s+(\d{4})(?:\s*\([^)]*\))?$"
 )
+SEASON_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MONTHS = {
     "Jan": 1,
     "Feb": 2,
@@ -56,6 +66,8 @@ class Match:
     away_team_id: str
     home_goals: int
     away_goals: int
+    source_file: str
+    source_line: int
 
 
 @dataclass(frozen=True)
@@ -80,6 +92,16 @@ class Season:
     competition_id: str
     start_date: str
     end_date: str
+    source_file: str
+
+
+@dataclass(frozen=True)
+class SeasonSource:
+    season_id: str
+    label: str
+    source_file: str
+    expected_matches: int
+    expected_teams: int
 
 
 def compact_whitespace(value: str) -> str:
@@ -132,27 +154,125 @@ def parse_positive_int(value: str, field_name: str) -> int:
     return number
 
 
+def read_table(path: Path, required_columns: set[str]) -> list[dict[str, str]]:
+    try:
+        source = path.open("r", encoding="utf-8-sig", newline="")
+    except OSError as exc:
+        raise DataValidationError(f"Cannot open {path}: {exc}") from exc
+
+    with source:
+        reader = csv.DictReader(source)
+        columns = {column.strip() for column in (reader.fieldnames or [])}
+        missing = required_columns - columns
+        if missing:
+            raise DataValidationError(
+                f"{path.name} is missing columns: {', '.join(sorted(missing))}"
+            )
+        rows = [
+            {key.strip(): (value or "").strip() for key, value in row.items()}
+            for row in reader
+        ]
+    if not rows:
+        raise DataValidationError(f"{path.name} contains no rows")
+    return rows
+
+
+def load_manifest(path: Path) -> list[SeasonSource]:
+    """Read the checked list of source files, one complete league season each."""
+    sources: list[SeasonSource] = []
+    seen_ids: set[str] = set()
+    seen_files: set[str] = set()
+    for line_number, row in enumerate(
+        read_table(path, REQUIRED_MANIFEST_COLUMNS), start=2
+    ):
+        try:
+            season_id = row["season_id"]
+            if not SEASON_ID_PATTERN.fullmatch(season_id):
+                raise DataValidationError(f"Invalid season_id: {season_id!r}")
+            if season_id in seen_ids:
+                raise DataValidationError(f"Duplicate season_id: {season_id}")
+            if row["source_file"] in seen_files:
+                raise DataValidationError(f"Duplicate source_file: {row['source_file']}")
+            if not row["label"]:
+                raise DataValidationError("Season label cannot be empty")
+            seen_ids.add(season_id)
+            seen_files.add(row["source_file"])
+            sources.append(
+                SeasonSource(
+                    season_id=season_id,
+                    label=row["label"],
+                    source_file=row["source_file"],
+                    expected_matches=parse_positive_int(
+                        row["expected_matches"], "expected_matches"
+                    ),
+                    expected_teams=parse_positive_int(
+                        row["expected_teams"], "expected_teams"
+                    ),
+                )
+            )
+        except DataValidationError as exc:
+            raise DataValidationError(f"{path.name}: line {line_number}: {exc}") from exc
+    return sources
+
+
+def load_aliases(path: Path) -> dict[str, Team]:
+    """Map every source spelling of a club to one reviewed, persistent identity.
+
+    The canonical display name must slugify to the team ID, so an ID can never
+    silently drift away from the club it names. Unknown source spellings are
+    rejected later instead of being guessed from their slug.
+    """
+    aliases: dict[str, Team] = {}
+    names_by_id: dict[str, str] = {}
+    for line_number, row in enumerate(read_table(path, REQUIRED_ALIAS_COLUMNS), start=2):
+        try:
+            source_name = compact_whitespace(row["source_name"])
+            team = Team(team_id=row["team_id"], name=compact_whitespace(row["name"]))
+            if not source_name or not team.team_id or not team.name:
+                raise DataValidationError("Alias rows cannot contain empty values")
+            if source_name in aliases:
+                raise DataValidationError(f"Duplicate source_name: {source_name!r}")
+            if slugify_team_name(team.name) != team.team_id:
+                raise DataValidationError(
+                    f"team_id {team.team_id!r} does not match name {team.name!r}"
+                )
+            previous_name = names_by_id.setdefault(team.team_id, team.name)
+            if previous_name != team.name:
+                raise DataValidationError(
+                    f"team_id {team.team_id!r} has two names: "
+                    f"{previous_name!r} and {team.name!r}"
+                )
+            aliases[source_name] = team
+        except DataValidationError as exc:
+            raise DataValidationError(f"{path.name}: line {line_number}: {exc}") from exc
+    return aliases
+
+
 def load_matches(
     input_path: Path,
     competition_id: str,
     season_id: str,
-) -> tuple[list[Match], list[Team]]:
+    aliases: dict[str, Team],
+    source_file: str | None = None,
+) -> list[Match]:
     matches: list[Match] = []
-    team_names_by_id: dict[str, str] = {}
     seen_match_ids: set[str] = set()
+    source_reference = source_file or input_path.as_posix()
 
     try:
-        source_file = input_path.open("r", encoding="utf-8-sig", newline="")
+        source = input_path.open("r", encoding="utf-8-sig", newline="")
     except OSError as exc:
         raise DataValidationError(f"Cannot open input file {input_path}: {exc}") from exc
 
-    with source_file:
-        reader = csv.DictReader(source_file)
+    with source:
+        reader = csv.DictReader(source)
         source_columns = {column.strip() for column in (reader.fieldnames or [])}
         missing_columns = REQUIRED_SOURCE_COLUMNS - source_columns
         if missing_columns:
             missing = ", ".join(sorted(missing_columns))
-            raise DataValidationError(f"Source CSV is missing columns: {missing}")
+            raise DataValidationError(
+                f"{input_path.name} is missing columns: {missing}"
+            )
 
         for line_number, row in enumerate(reader, start=2):
             try:
@@ -164,24 +284,17 @@ def load_matches(
 
                 if not home_name or not away_name:
                     raise DataValidationError("Team names cannot be empty")
-                if home_name == away_name:
-                    raise DataValidationError("Home and away teams cannot be identical")
-
-                home_team_id = slugify_team_name(home_name)
-                away_team_id = slugify_team_name(away_name)
-                if home_team_id == away_team_id:
-                    raise DataValidationError("Home and away team IDs cannot be identical")
-
-                for team_id, team_name in (
-                    (home_team_id, home_name),
-                    (away_team_id, away_name),
-                ):
-                    previous_name = team_names_by_id.setdefault(team_id, team_name)
-                    if previous_name != team_name:
+                for name in (home_name, away_name):
+                    if name not in aliases:
                         raise DataValidationError(
-                            f"Team ID collision for {team_id!r}: "
-                            f"{previous_name!r} and {team_name!r}"
+                            f"Unknown team name {name!r}; review it and add it to "
+                            f"the alias table (suggested ID: "
+                            f"{slugify_team_name(name)!r})"
                         )
+                home_team_id = aliases[home_name].team_id
+                away_team_id = aliases[away_name].team_id
+                if home_team_id == away_team_id:
+                    raise DataValidationError("Home and away teams cannot be identical")
 
                 match_id = f"{match_date.isoformat()}-{home_team_id}-{away_team_id}"
                 if match_id in seen_match_ids:
@@ -199,129 +312,156 @@ def load_matches(
                         away_team_id=away_team_id,
                         home_goals=home_goals,
                         away_goals=away_goals,
+                        source_file=source_reference,
+                        source_line=line_number,
                     )
                 )
-            except (KeyError, TypeError, DataValidationError) as exc:
-                raise DataValidationError(f"Line {line_number}: {exc}") from exc
+            except (KeyError, TypeError, AttributeError, DataValidationError) as exc:
+                raise DataValidationError(
+                    f"{input_path.name}: line {line_number}: {exc}"
+                ) from exc
 
     if not matches:
-        raise DataValidationError("Source CSV contains no matches")
-
-    teams = [
-        Team(team_id=team_id, name=name)
-        for team_id, name in sorted(team_names_by_id.items())
-    ]
-    return matches, teams
+        raise DataValidationError(f"{input_path.name} contains no matches")
+    return matches
 
 
-def validate_dataset(
+def validate_season(
     matches: Sequence[Match],
-    teams: Sequence[Team],
-    expected_matches: int | None,
-    expected_teams: int | None,
-) -> None:
-    if expected_matches is not None and len(matches) != expected_matches:
+    expected_matches: int,
+    expected_teams: int,
+) -> set[str]:
+    """Check that one league season is a complete double round-robin."""
+    if len(matches) != expected_matches:
         raise DataValidationError(
             f"Expected {expected_matches} matches, found {len(matches)}"
         )
-    if expected_teams is not None and len(teams) != expected_teams:
-        raise DataValidationError(f"Expected {expected_teams} teams, found {len(teams)}")
 
-    known_team_ids = {team.team_id for team in teams}
-    appearances: Counter[str] = Counter()
-    for match in matches:
-        if match.home_team_id not in known_team_ids:
-            raise DataValidationError(f"Unknown home team: {match.home_team_id}")
-        if match.away_team_id not in known_team_ids:
-            raise DataValidationError(f"Unknown away team: {match.away_team_id}")
-        appearances.update((match.home_team_id, match.away_team_id))
+    team_ids = {match.home_team_id for match in matches} | {
+        match.away_team_id for match in matches
+    }
+    if len(team_ids) != expected_teams:
+        raise DataValidationError(f"Expected {expected_teams} teams, found {len(team_ids)}")
 
-    unused_teams = known_team_ids - appearances.keys()
-    if unused_teams:
-        raise DataValidationError(f"Teams without matches: {sorted(unused_teams)}")
+    fixtures = Counter((match.home_team_id, match.away_team_id) for match in matches)
+    repeated = sorted(pair for pair, count in fixtures.items() if count > 1)
+    if repeated:
+        raise DataValidationError(f"Duplicate home/away fixtures: {repeated[:3]}")
+    expected_fixtures = expected_teams * (expected_teams - 1)
+    if len(fixtures) != expected_fixtures:
+        raise DataValidationError(
+            f"Expected {expected_fixtures} distinct home/away fixtures, "
+            f"found {len(fixtures)}"
+        )
+
+    home_counts = Counter(match.home_team_id for match in matches)
+    away_counts = Counter(match.away_team_id for match in matches)
+    for team_id in sorted(team_ids):
+        if home_counts[team_id] != expected_teams - 1:
+            raise DataValidationError(
+                f"{team_id} has {home_counts[team_id]} home matches"
+            )
+        if away_counts[team_id] != expected_teams - 1:
+            raise DataValidationError(
+                f"{team_id} has {away_counts[team_id]} away matches"
+            )
+
+    expected_rounds = 2 * (expected_teams - 1)
+    round_counts = Counter(match.round for match in matches)
+    if set(round_counts) != set(range(1, expected_rounds + 1)):
+        raise DataValidationError(
+            f"Expected rounds 1-{expected_rounds}, found {sorted(round_counts)}"
+        )
+    uneven_rounds = sorted(
+        number
+        for number, count in round_counts.items()
+        if count != expected_teams // 2
+    )
+    if uneven_rounds:
+        raise DataValidationError(f"Rounds with the wrong match count: {uneven_rounds}")
+    return team_ids
 
 
 def write_csv(path: Path, rows: Iterable[object], fieldnames: Sequence[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as output_file:
-        writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(output_file, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow(asdict(row))
 
 
 def clean_dataset(
-    input_path: Path,
+    manifest_path: Path,
+    aliases_path: Path,
     output_dir: Path,
     competition_id: str,
     competition_name: str,
     country: str,
-    competition_type: str,
     tier: int,
-    season_id: str,
-    season_label: str,
-    expected_matches: int | None,
-    expected_teams: int | None,
-) -> tuple[int, int]:
-    if competition_type != "league":
-        raise DataValidationError(
-            "The current cleaner supports league tables only; cup stages require "
-            "a separate source mapping."
-        )
+    source_root: Path = PROJECT_ROOT,
+) -> tuple[int, int, int]:
     if tier < 1:
         raise DataValidationError("League tier must be positive")
 
-    matches, teams = load_matches(input_path, competition_id, season_id)
-    validate_dataset(matches, teams, expected_matches, expected_teams)
+    aliases = load_aliases(aliases_path)
+    teams_by_id = {team.team_id: team for team in aliases.values()}
+    all_matches: list[Match] = []
+    seasons: list[Season] = []
+    used_team_ids: set[str] = set()
+    seen_match_ids: set[str] = set()
 
-    match_dates = [date.fromisoformat(match.match_date) for match in matches]
-    competitions = [
-        Competition(
+    for source in load_manifest(manifest_path):
+        matches = load_matches(
+            source_root / source.source_file,
             competition_id,
-            competition_name,
-            country,
-            competition_type,
-            tier,
+            source.season_id,
+            aliases,
+            source_file=source.source_file,
         )
-    ]
-    seasons = [
-        Season(
-            season_id=season_id,
-            label=season_label,
-            competition_id=competition_id,
-            start_date=min(match_dates).isoformat(),
-            end_date=max(match_dates).isoformat(),
+        try:
+            used_team_ids |= validate_season(
+                matches, source.expected_matches, source.expected_teams
+            )
+        except DataValidationError as exc:
+            raise DataValidationError(f"{source.season_id}: {exc}") from exc
+
+        for match in matches:
+            if match.match_id in seen_match_ids:
+                raise DataValidationError(f"Duplicate match ID: {match.match_id}")
+            seen_match_ids.add(match.match_id)
+
+        match_dates = [date.fromisoformat(match.match_date) for match in matches]
+        seasons.append(
+            Season(
+                season_id=source.season_id,
+                label=source.label,
+                competition_id=competition_id,
+                start_date=min(match_dates).isoformat(),
+                end_date=max(match_dates).isoformat(),
+                source_file=source.source_file,
+            )
         )
+        all_matches.extend(matches)
+
+    unused_aliases = sorted(set(teams_by_id) - used_team_ids)
+    if unused_aliases:
+        raise DataValidationError(f"Alias table lists teams without matches: {unused_aliases}")
+
+    teams = [teams_by_id[team_id] for team_id in sorted(used_team_ids)]
+    competitions = [
+        Competition(competition_id, competition_name, country, "league", tier)
     ]
 
-    write_csv(
-        output_dir / "matches.csv",
-        matches,
-        tuple(Match.__dataclass_fields__),
-    )
-    write_csv(
-        output_dir / "teams.csv",
-        teams,
-        tuple(Team.__dataclass_fields__),
-    )
+    write_csv(output_dir / "matches.csv", all_matches, tuple(Match.__dataclass_fields__))
+    write_csv(output_dir / "teams.csv", teams, tuple(Team.__dataclass_fields__))
     write_csv(
         output_dir / "competitions.csv",
         competitions,
         tuple(Competition.__dataclass_fields__),
     )
-    write_csv(
-        output_dir / "seasons.csv",
-        seasons,
-        tuple(Season.__dataclass_fields__),
-    )
-    return len(matches), len(teams)
-
-
-def optional_positive_count(value: str) -> int | None:
-    count = int(value)
-    if count < 0:
-        raise argparse.ArgumentTypeError("count cannot be negative")
-    return count or None
+    write_csv(output_dir / "seasons.csv", seasons, tuple(Season.__dataclass_fields__))
+    return len(all_matches), len(teams), len(seasons)
 
 
 def parse_positive_int_arg(value: str) -> int:
@@ -333,52 +473,37 @@ def parse_positive_int_arg(value: str) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Clean an OpenFootball league CSV into ontology-ready tables."
+        description="Clean the OpenFootball league seasons listed in the manifest."
     )
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--aliases", type=Path, default=DEFAULT_ALIASES)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--competition-id", default="premier-league")
     parser.add_argument("--competition-name", default="English Premier League")
     parser.add_argument("--country", default="England")
-    parser.add_argument("--competition-type", choices=("league",), default="league")
     parser.add_argument("--tier", type=parse_positive_int_arg, default=1)
-    parser.add_argument("--season-id", default="2018-19")
-    parser.add_argument("--season-label", default="2018/19")
-    parser.add_argument(
-        "--expected-matches",
-        type=optional_positive_count,
-        default=380,
-        help="Expected match count; use 0 to disable this check (default: 380).",
-    )
-    parser.add_argument(
-        "--expected-teams",
-        type=optional_positive_count,
-        default=20,
-        help="Expected team count; use 0 to disable this check (default: 20).",
-    )
     return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
     try:
-        match_count, team_count = clean_dataset(
-            input_path=args.input,
+        match_count, team_count, season_count = clean_dataset(
+            manifest_path=args.manifest,
+            aliases_path=args.aliases,
             output_dir=args.output_dir,
             competition_id=args.competition_id,
             competition_name=args.competition_name,
             country=args.country,
-            competition_type=args.competition_type,
             tier=args.tier,
-            season_id=args.season_id,
-            season_label=args.season_label,
-            expected_matches=args.expected_matches,
-            expected_teams=args.expected_teams,
         )
     except DataValidationError as exc:
         raise SystemExit(f"Data validation failed: {exc}") from exc
 
-    print(f"Cleaned {match_count} matches and {team_count} teams.")
+    print(
+        f"Cleaned {match_count} matches, {team_count} teams "
+        f"and {season_count} seasons."
+    )
     print(f"Wrote ontology-ready CSV files to {args.output_dir.resolve()}")
     return 0
 

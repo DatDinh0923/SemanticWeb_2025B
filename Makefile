@@ -1,7 +1,7 @@
 PYTHON ?= .semweb/bin/python
 PIP ?= .semweb/bin/pip
 
-.PHONY: setup clean-data rdf validate queries test site pipeline suggest-links endpoint-up endpoint-load endpoint-down
+.PHONY: setup clean-data rdf validate queries queries-endpoint federated test site pipeline suggest-links link-evidence endpoint-up endpoint-load endpoint-down
 
 setup:
 	$(PIP) install -r requirements.txt
@@ -18,6 +18,12 @@ validate:
 queries:
 	$(PYTHON) src/run_sparql.py --all
 
+queries-endpoint:
+	$(PYTHON) src/run_sparql.py --all --endpoint
+
+federated:
+	$(PYTHON) src/run_sparql.py queries/federated/wikidata-club-facts.rq
+
 test:
 	$(PYTHON) -B -m unittest discover -s src -p 'test_*.py' -v
 
@@ -28,6 +34,9 @@ pipeline: clean-data rdf validate test site
 
 suggest-links:
 	$(PYTHON) src/suggest_links.py
+
+link-evidence:
+	$(PYTHON) src/collect_link_evidence.py
 
 endpoint-up:
 	docker compose up -d

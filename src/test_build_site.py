@@ -56,6 +56,18 @@ class StaticSiteTests(unittest.TestCase):
             self.assertIn('href="../../../assets/style.css"', arsenal_page)
             self.assertIn('rel="alternate" type="text/turtle"', arsenal_page)
             self.assertNotIn(f'href="{BASE_URL}assets/style.css"', arsenal_page)
+            # Club pages list the matches that refer to them.
+            self.assertIn("Referenced by (676)", arsenal_page)
+            self.assertIn("2018-12-02-arsenal-tottenham-hotspur", arsenal_page)
+
+            home_page = (output / "index.html").read_text(encoding="utf-8")
+            self.assertIn("10 seasons (2011/12 to 2020/21)", home_page)
+            self.assertIn('href="resource/season/premier-league-2015-16/"', home_page)
+            self.assertIn('href="resource/team/leicester-city/"', home_page)
+            season_page = (
+                output / "resource/season/premier-league-2018-19/index.html"
+            ).read_text(encoding="utf-8")
+            self.assertIn("Referenced by (380)", season_page)
             for subject in local_subjects:
                 self.assertTrue(local_output_path(output, subject).is_file())
 
