@@ -110,9 +110,18 @@ Default local credentials are `admin` / `admin`. Override the password with
 the `FUSEKI_ADMIN_PASSWORD` environment variable. Docker binds Fuseki to
 `127.0.0.1`, so the development endpoint is not exposed to the local network.
 
-- Web interface: <http://localhost:3030/>
+- Web interface: <http://localhost:3030/> (log in as `admin` / `admin`)
 - SPARQL endpoint: <http://localhost:3030/football/sparql>
 - Graph Store endpoint: <http://localhost:3030/football/data>
+
+The dataset list and admin pages require the login; querying does not. Open
+the web interface in a regular browser such as Firefox or Chrome and enter the
+credentials when prompted, or open <http://admin:admin@localhost:3030/>.
+Embedded browsers, such as the VS Code Simple Browser, do not show the login
+prompt, so the dataset list keeps showing "Loading..." there.
+
+If the page never loads at all, run `docker compose logs fuseki`: a stack
+trace there usually means `fuseki/server.ttl` is not valid Turtle.
 
 Query the running endpoint from the terminal:
 
@@ -141,10 +150,9 @@ make site
 python3 -m http.server 8000 --directory _site
 ```
 
-The site is published by `.github/workflows/pages.yml` on every push to
-`main`. GitHub Pages must be enabled once under **Settings -> Pages ->
-Source: GitHub Actions**; see
-[`docs/publication-checklist.md`](docs/publication-checklist.md).
+The site is live at <https://datdinh0923.github.io/SemanticWeb_2025B/>. It is
+published by `.github/workflows/pages.yml` on every push to `main` or
+`dqdat-dev`; see [`docs/publication-checklist.md`](docs/publication-checklist.md).
 
 ## Validation and tests
 
@@ -166,7 +174,7 @@ Source: GitHub Actions**; see
 
 | Level | Evidence |
 | --- | --- |
-| 1 star | CC0 data license and public download once Pages is deployed |
+| 1 star | CC0 data license; public Turtle download at <https://datdinh0923.github.io/SemanticWeb_2025B/download/football-data.ttl> |
 | 2 stars | Structured CSV and RDF data |
 | 3 stars | Non-proprietary CSV and Turtle formats |
 | 4 stars | HTTP URIs for the dataset, competition, seasons, clubs, matches, and ontology, resolvable through the static site |
