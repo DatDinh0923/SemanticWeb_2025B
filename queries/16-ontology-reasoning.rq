@@ -1,7 +1,11 @@
-# CQ16: What does the data look like through the ontology's schema.org view?
-# rdfs:subClassOf* and rdfs:subPropertyOf* follow the ontology at query time,
-# so no reasoner is needed. Requires the ontology to be loaded with the data
-# (run_sparql.py and the Fuseki loader both load it).
+# CQ16 (technical check): What does the data look like through the ontology's
+# schema.org view?
+# This query does NOT use a reasoner, and neither does the Fuseki endpoint.
+# rdfs:subClassOf* and rdfs:subPropertyOf* emulate RDFS subclass and
+# sub-property entailment at query time. src/check_reasoning.py computes the
+# same counts by materializing the OWL 2 RL closure and checks that they agree.
+# Requires the ontology to be loaded with the data (run_sparql.py and the
+# Fuseki loader both load it).
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <https://schema.org/>

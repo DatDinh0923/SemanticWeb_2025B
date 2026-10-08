@@ -7,6 +7,7 @@ The scripts implement the complete data pipeline:
 | `clean_data.py` | Normalize the seasons in `config/seasons.csv` into entity tables. |
 | `convert_to_rdf.py` | Convert the tables and verified external links to RDF/Turtle. |
 | `validate_rdf.py` | Validate the generated graph against SHACL shapes. |
+| `check_reasoning.py` | Compare query counts without and with OWL 2 RL reasoning; check that the axioms catch deliberate errors. |
 | `run_sparql.py` | SPARQL terminal: run saved queries locally or against an endpoint. |
 | `load_fuseki.py` | Load the ontology and data into the Fuseki endpoint. |
 | `build_site.py` | Generate dereferenceable resource pages and public downloads. |
@@ -41,6 +42,7 @@ Every match keeps the source file and line it came from.
 ```bash
 python3 src/convert_to_rdf.py
 python3 src/validate_rdf.py
+python3 src/check_reasoning.py
 python3 src/build_site.py
 ```
 

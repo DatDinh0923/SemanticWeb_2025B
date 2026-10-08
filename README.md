@@ -8,7 +8,7 @@ SPARQL endpoint and terminal for querying it.
 ## Dataset summary
 
 - 1 competition, 10 seasons, 35 clubs, 3,800 matches
-- 52,609 instance-data triples (52,815 with the ontology)
+- 52,609 instance-data triples (52,821 with the ontology)
 - 46 externally linked entities: the competition, every season, and every club
 - 92 `owl:sameAs` links to Wikidata and DBpedia, each backed by saved
   identity evidence
@@ -58,7 +58,8 @@ make pipeline
 ```
 
 This cleans the source data, generates RDF, validates it with SHACL, runs the
-test suite, and builds the publication site in `_site/`. It works offline.
+OWL 2 RL reasoning check, runs the test suite, and builds the publication site
+in `_site/`. It works offline.
 
 Individual commands:
 
@@ -66,6 +67,7 @@ Individual commands:
 python3 src/clean_data.py
 python3 src/convert_to_rdf.py
 python3 src/validate_rdf.py
+python3 src/check_reasoning.py
 python3 src/run_sparql.py --all
 python3 -m unittest discover -s src -p 'test_*.py'
 ```
@@ -164,7 +166,12 @@ published by `.github/workflows/pages.yml` on every push to `main` or
   season, and no repeated fixture.
 - **External links** are published only when verified and backed by passing
   evidence.
-- **The test suite** (61 tests) covers each stage. Among other things it
+- **Reasoning** (`src/check_reasoning.py`) computes the OWL 2 RL closure with
+  owlrl. With the asserted match competitions removed, the property chain
+  re-infers all 3,800 of them and the graph is consistent; deliberately
+  broken matches (a winner on a draw, a team playing itself) are reported as
+  inconsistent. See [`docs/ontology.md`](docs/ontology.md#reasoning-check).
+- **The test suite** (65 tests) covers each stage. Among other things it
   recomputes every season's full league table directly from the original CSV
   files, checks the champions query against the real champions, rejects
   deliberately broken data and links, and checks that the pipeline reproduces

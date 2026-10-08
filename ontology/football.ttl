@@ -14,10 +14,10 @@
     dcterms:description
         "An ontology for football competitions, seasons, teams, and match results."@en ;
     dcterms:created "2026-09-27"^^xsd:date ;
-    dcterms:modified "2026-10-05"^^xsd:date ;
+    dcterms:modified "2026-10-08"^^xsd:date ;
     dcterms:creator <https://github.com/DatDinh0923> ;
     dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
-    owl:versionInfo "0.3.0" ;
+    owl:versionInfo "0.3.1" ;
     rdfs:label "Football Linked Open Data Ontology"@en ;
     rdfs:seeAlso <https://github.com/DatDinh0923/SemanticWeb_2025B> .
 
@@ -34,6 +34,12 @@ schema:competitor a owl:ObjectProperty .
 schema:superEvent a owl:ObjectProperty .
 schema:startDate a owl:DatatypeProperty .
 dcterms:isPartOf a owl:ObjectProperty .
+dcterms:title a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:created a owl:AnnotationProperty .
+dcterms:modified a owl:AnnotationProperty .
+dcterms:creator a owl:AnnotationProperty .
+dcterms:license a owl:AnnotationProperty .
 
 
 # Classes

@@ -90,6 +90,50 @@ python3 src/collect_link_evidence.py --promote  # mark passing rows verified
 DBpedia's public endpoint sometimes answers HTTP 503. The collector reports
 such rows as errors without changing them; retry them with `--only <ids>`.
 
+## What `owl:sameAs` commits to
+
+`owl:sameAs` is the strongest link in Linked Data: it states that two URIs
+denote the same individual, so a reasoner may copy every statement about one
+onto the other. `src/check_reasoning.py` shows this happening: under OWL 2 RL
+all 3,800 matches gain a Wikidata URI as home team, the 35 Wikidata club URIs
+become `foot:FootballTeam`s, and the 46 Wikidata and DBpedia URIs are inferred
+to be the same as each other. Halpin et al. ("When owl:sameAs isn't the
+Same", ISWC 2010) showed that much of the Web uses `owl:sameAs` for weaker
+relations such as "is closely related to" or "describes the same topic", which
+makes such inferences wrong.
+
+The saved evidence shows where our links sit close to that line:
+
+- **Club or team.** `foot:FootballTeam` is "a club whose identity persists
+  across seasons", but the matches are played by the men's first team.
+  Wikidata types Chelsea F.C. (Q9616) as a *men's association football team*
+  while describing it as a *club*, and DBpedia types every club as a
+  `dbo:Organisation`.
+- **Competition or organisation.** DBpedia types the Premier League as a
+  `dbo:Organisation` and `dbo:SoccerLeague`; we model it as a
+  `schema:EventSeries` of seasons.
+- **Season types.** DBpedia types the 2018–19 Premier League as a
+  `dbo:SportsTeamSeason` as well as a `dbo:FootballLeagueSeason`.
+
+None of these makes the merged graph inconsistent, but only because our
+ontology says nothing about Wikidata or DBpedia classes. In every case the
+URIs refer to the same real-world referent as used in practice (the Wikipedia article and the Wikidata item cover the
+club, its first team and its results together). We therefore keep
+`owl:sameAs`, which is what the five-star scheme, VoID linksets and Linked
+Data browsers expect, and limit the risk with the evidence checks above.
+
+Weaker alternatives were considered:
+
+| Predicate | Meaning | Why not used |
+| --- | --- | --- |
+| `skos:exactMatch` | Two concepts can be used interchangeably | Defined between `skos:Concept`s; using it on clubs and seasons would type them as concepts |
+| `schema:sameAs` | A web page that unambiguously identifies the item | No logical semantics, and its range is a URL of a page rather than an entity |
+| `rdfs:seeAlso` | More information is available here | Too weak to carry identity; generic consumers cannot merge data |
+
+If the club/team distinction is needed later, the clean solution is a separate
+class for the club organisation linked to its team, with `owl:sameAs` only
+between resources of the same kind.
+
 ## Candidate discovery
 
 `src/suggest_links.py` queries the Wikidata search API for possible mappings
