@@ -1,8 +1,7 @@
 # Publication checklist
 
-The dataset is published as Linked Open Data at
-<https://datdinh0923.github.io/SemanticWeb_2025B/>. This checklist records how
-it was published and how to check a new release.
+The repository can be developed privately. It becomes public Linked Open Data
+only after the generated site and RDF downloads are reachable without login.
 
 ## Before publication
 
@@ -16,20 +15,19 @@ it was published and how to check a new release.
 ## GitHub configuration
 
 1. The repository is public (done on 2026-10-05).
-2. **Settings -> Pages -> Source** is set to **GitHub Actions** (done on
-   2026-10-05).
-3. **Settings -> Environments -> github-pages** allows deployment from both
-   `main` and `dqdat-dev` (done on 2026-10-05).
-4. A push to `main` or `dqdat-dev` runs `.github/workflows/pages.yml`, which
-   runs the full pipeline and deploys the validated site. The workflow can
-   also be started by hand from the **Actions** tab (`workflow_dispatch`).
-5. Wait for the Pages workflow to finish successfully.
+2. Open **Settings -> Pages** and set **Source** to **GitHub Actions**. Until
+   this is done the Pages API reports `has_pages: false` and every project URI
+   returns 404.
+3. Push to `dqdat-dev` (or merge to `main`); `.github/workflows/pages.yml`
+   builds and deploys the validated site. To deploy from `dqdat-dev`, open
+   **Settings -> Environments -> github-pages** and add `dqdat-dev` under
+   **Deployment branches and tags**; by default only `main` may deploy. The workflow can also be started by hand from the
+   **Actions** tab (`workflow_dispatch`).
+4. Wait for the Pages workflow to finish successfully.
 
 ## Public verification
 
-These URLs returned HTTP 200 without signing in on 2026-10-05, and the
-published Turtle matched the local build byte for byte. Re-check them after
-each release:
+Verify that these return HTTP 200 without signing into GitHub:
 
 ```text
 https://datdinh0923.github.io/SemanticWeb_2025B/
@@ -45,10 +43,11 @@ Each resource page also provides a resource-specific Turtle file named
 
 ## Star status
 
-- **1 star:** the CC0 dataset is available online.
+- **1 star:** achieved publicly when the CC0 dataset is available online.
 - **2 stars:** structured CSV and RDF data are supplied.
 - **3 stars:** CSV and Turtle are open, non-proprietary formats.
 - **4 stars:** the RDF identifies entities with project HTTP URIs.
 - **5 stars:** those entities link to Wikidata and DBpedia with `owl:sameAs`.
 
-All five levels are met by the published site since 2026-10-05.
+Until the site is public, the repository is technically five-star-ready but is
+not yet published five-star open data.
