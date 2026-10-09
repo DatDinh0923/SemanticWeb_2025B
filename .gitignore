@@ -3,3 +3,4 @@ __pycache__/
 .semweb/
 _site/
 data/links/wikidata-suggestions.csv
+docs/
