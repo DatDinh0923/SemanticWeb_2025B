@@ -204,22 +204,4 @@ src/               pipeline, validation, query, endpoint, and site tools
 _site/             generated publication site; not committed
 ```
 
-## Team branches merged into this version
-
-This branch combines the strongest parts of the three team branches:
-
-- **dqdat-dev**: HTTP URI namespace and static Linked Data site, DCAT/VoID/
-  PROV metadata, SHACL shapes, Docker Fuseki, CI, and the test approach.
-- **phongph5**: the ten-season Premier League scope, season manifest, club
-  alias table, per-match source provenance, link evidence files, and
-  standings checked against an independent calculation.
-- **hung**: the richer OWL axioms (cardinalities, disjointness, `participant`
-  property hierarchy, property chain), VoID class partitions, and the
-  federated Wikidata query.
-
-hung's branch also covered the lower divisions and the FA Cup. Those are not
-included because several phoenix clubs received incorrect identities and
-links; see [`docs/data-and-linking.md`](docs/data-and-linking.md) and
-[`docs/multi-season-roadmap.md`](docs/multi-season-roadmap.md).
-
 The data license is documented in [`LICENSE-DATA.md`](LICENSE-DATA.md).

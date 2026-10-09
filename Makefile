@@ -1,7 +1,7 @@
 PYTHON ?= .semweb/bin/python
 PIP ?= .semweb/bin/pip
 
-.PHONY: setup clean-data rdf validate reasoning queries queries-endpoint federated test site pipeline suggest-links link-evidence endpoint-up endpoint-load endpoint-down
+.PHONY: setup clean-data rdf validate reasoning numbers queries queries-endpoint federated test site pipeline suggest-links link-evidence endpoint-up endpoint-load endpoint-down
 
 setup:
 	$(PIP) install -r requirements.txt
@@ -17,6 +17,9 @@ validate:
 
 reasoning:
 	$(PYTHON) src/check_reasoning.py
+
+numbers:
+	$(PYTHON) src/report_numbers.py --reasoning
 
 queries:
 	$(PYTHON) src/run_sparql.py --all

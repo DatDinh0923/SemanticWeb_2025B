@@ -7,6 +7,7 @@ The scripts implement the complete data pipeline:
 | `clean_data.py` | Normalize the seasons in `config/seasons.csv` into entity tables. |
 | `convert_to_rdf.py` | Convert the tables and verified external links to RDF/Turtle. |
 | `validate_rdf.py` | Validate the generated graph against SHACL shapes. |
+| `report_numbers.py` | Print every number the report cites, computed from the current data; run it before updating the report. |
 | `check_reasoning.py` | Compare query counts without and with OWL 2 RL reasoning; check that the axioms catch deliberate errors. |
 | `run_sparql.py` | SPARQL terminal: run saved queries locally or against an endpoint. |
 | `load_fuseki.py` | Load the ontology and data into the Fuseki endpoint. |

@@ -1,8 +1,4 @@
 # CQ14: Which club won each season, computed only from match results?
-# Clubs are ranked by points, then goal difference, as in the Premier League
-# (2011/12 was decided on goal difference). The two are combined into one
-# sortable key, points * 1000 + goal difference, and the champion is the club
-# with the highest key in its season.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX schema: <https://schema.org/>
 

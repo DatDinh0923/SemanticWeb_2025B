@@ -117,7 +117,7 @@ graph without and with reasoning:
 | Matches whose home team is a Wikidata URI (via `owl:sameAs`) | 0 | 3,800 |
 | Wikidata `owl:sameAs` DBpedia pairs (symmetry and transitivity) | 0 | 46 |
 
-The closure grows the graph from 49,015 to 248,220 triples in about 40 s; most
+The closure grows the graph from 49,021 to 248,228 triples in about 40 s; most
 of the growth is `owl:sameAs` copying every statement about a club, season or
 the competition onto its Wikidata and DBpedia URIs. The graph is consistent.
 The four schema.org counts equal those of CQ16, which emulates the same
@@ -140,7 +140,7 @@ reject the second home team; it concludes that the two clubs are the same
 (`team:manchester-united owl:sameAs team:arsenal`). SHACL's `sh:maxCount 1`
 rejects the same data, which is why both are used.
 
-### What the reasoner does not do
+### Limitations of reasoning
 
 - **The SPARQL endpoint serves asserted triples only.** Neither Fuseki nor
   `run_sparql.py` runs a reasoner, so every fact the queries rely on

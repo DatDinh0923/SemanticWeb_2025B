@@ -90,7 +90,7 @@ python3 src/collect_link_evidence.py --promote  # mark passing rows verified
 DBpedia's public endpoint sometimes answers HTTP 503. The collector reports
 such rows as errors without changing them; retry them with `--only <ids>`.
 
-## What `owl:sameAs` commits to
+## Semantics of `owl:sameAs`
 
 `owl:sameAs` is the strongest link in Linked Data: it states that two URIs
 denote the same individual, so a reasoner may copy every statement about one

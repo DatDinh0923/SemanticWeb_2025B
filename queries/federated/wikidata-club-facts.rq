@@ -1,8 +1,4 @@
-# Federated query: enrich the 2018/19 clubs with live Wikidata facts (home
-# venue and founding year) by following the owl:sameAs links.
-# Run it from the terminal: python3 src/run_sparql.py queries/federated/wikidata-club-facts.rq
-# It needs internet access. Fuseki 5 cannot run this one: query.wikidata.org
-# rejects the default Java user agent that Jena sends (HTTP 403).
+# Federated query: enrich the 2018/19 clubs with live Wikidata facts (home venue and founding year) by following the owl:sameAs links.
 PREFIX foot: <https://datdinh0923.github.io/SemanticWeb_2025B/ontology/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -22,13 +18,17 @@ WHERE {
             FILTER(STRSTARTS(STR(?wikidata), "http://www.wikidata.org/entity/"))
         }
     }
-    SERVICE <https://query.wikidata.org/sparql> {
-        OPTIONAL {
-            ?wikidata wdt:P115 ?venue .
-            ?venue rdfs:label ?venueName .
-            FILTER(LANG(?venueName) = "en")
+    # OPTIONAL makes rdflib send each club's ?wikidata binding to the service;
+    # a plain SERVICE is sent unbound and asks Wikidata for every entity.
+    OPTIONAL {
+        SERVICE <https://query.wikidata.org/sparql> {
+            OPTIONAL {
+                ?wikidata wdt:P115 ?venue .
+                ?venue rdfs:label ?venueName .
+                FILTER(LANG(?venueName) = "en")
+            }
+            OPTIONAL { ?wikidata wdt:P571 ?inception . }
         }
-        OPTIONAL { ?wikidata wdt:P571 ?inception . }
     }
     BIND(YEAR(?inception) AS ?founded)
 }
