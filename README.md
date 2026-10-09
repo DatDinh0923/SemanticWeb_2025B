@@ -21,14 +21,14 @@ SPARQL endpoint and terminal for querying it.
 The source data comes from the public-domain
 [football.csv England dataset](https://github.com/footballcsv/england).
 
-## How the project meets the assignment
+## Project
 
 | Requirement | Where |
 | --- | --- |
-| 1. Define an ontology | [`ontology/football.ttl`](ontology/football.ttl), explained in [`docs/ontology.md`](docs/ontology.md) |
+| 1. Define an ontology | [`ontology/football.ttl`](ontology/football.ttl) |
 | 2. Collect relevant data | Ten source CSV files listed in [`config/seasons.csv`](config/seasons.csv); cleaned by [`src/clean_data.py`](src/clean_data.py) |
 | 3. Transform into 4★ | [`src/convert_to_rdf.py`](src/convert_to_rdf.py) → [`data/rdf/football-data.ttl`](data/rdf/football-data.ttl); HTTP URIs served by the static site |
-| 4. Link to other datasets for 5★ | [`data/links/`](data/links/), method in [`docs/data-and-linking.md`](docs/data-and-linking.md) |
+| 4. Link to other datasets for 5★ | [`data/links/`](data/links/) |
 | 5. SPARQL endpoint / terminal | Fuseki via [`docker-compose.yml`](docker-compose.yml); terminal [`src/run_sparql.py`](src/run_sparql.py); [`queries/`](queries/) |
 
 ## Pipeline
@@ -71,9 +71,6 @@ python3 src/check_reasoning.py
 python3 src/run_sparql.py --all
 python3 -m unittest discover -s src -p 'test_*.py'
 ```
-
-On Windows without `make`, run the same commands with `python` and
-`.semweb\Scripts\python.exe`.
 
 ## SPARQL terminal
 
@@ -152,9 +149,7 @@ make site
 python3 -m http.server 8000 --directory _site
 ```
 
-The site is live at <https://datdinh0923.github.io/SemanticWeb_2025B/>. It is
-published by `.github/workflows/pages.yml` on every push to `main` or
-`dqdat-dev`; see [`docs/publication-checklist.md`](docs/publication-checklist.md).
+The site is live at <https://datdinh0923.github.io/SemanticWeb_2025B/>.
 
 ## Validation and tests
 
@@ -170,7 +165,7 @@ published by `.github/workflows/pages.yml` on every push to `main` or
   owlrl. With the asserted match competitions removed, the property chain
   re-infers all 3,800 of them and the graph is consistent; deliberately
   broken matches (a winner on a draw, a team playing itself) are reported as
-  inconsistent. See [`docs/ontology.md`](docs/ontology.md#reasoning-check).
+  inconsistent.
 - **The test suite** (65 tests) covers each stage. Among other things it
   recomputes every season's full league table directly from the original CSV
   files, checks the champions query against the real champions, rejects
