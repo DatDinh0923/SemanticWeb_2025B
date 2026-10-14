@@ -1,0 +1,11 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2a. Tiêu đề mỗi bài báo và số bài phản biện (bài chưa có phản biện hiện 0), nhiều nhất trước.
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?title (COUNT(?r) AS ?reviews)
+WHERE {
+  ?p :title ?title .
+  OPTIONAL { ?r :isPartOf ?p }
+}
+GROUP BY ?title
+ORDER BY DESC(?reviews) ?title

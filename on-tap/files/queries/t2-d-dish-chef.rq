@@ -1,0 +1,10 @@
+# data: de-thi-thu-2.ttl
+# Đề 2 – 3d. Mọi món kèm đầu bếp nấu (nếu có).
+PREFIX :     <http://example.org/food#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?dish ?chef
+WHERE {
+  ?d a :Dish ; :name ?dish .
+  OPTIONAL { ?c :cooks ?d ; :name ?chef }
+}
+ORDER BY ?dish

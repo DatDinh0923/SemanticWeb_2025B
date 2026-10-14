@@ -1,0 +1,17 @@
+# data: ex4-film.ttl
+# Q16. Mỗi đạo diễn làm bao nhiêu phim và danh sách tên phim.
+PREFIX :      <http://example.org/film#>
+PREFIX film:  <http://example.org/film/>
+PREFIX people:<http://example.org/people/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+SELECT ?director (COUNT(?m) AS ?n) (GROUP_CONCAT(?title; separator=", ") AS ?titles)
+WHERE {
+  ?m :director ?d ; dc:title ?title .
+  ?d foaf:name ?director .
+  FILTER (lang(?title) = "en")
+}
+GROUP BY ?director
+ORDER BY DESC(?n)

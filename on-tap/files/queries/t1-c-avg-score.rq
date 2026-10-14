@@ -1,0 +1,11 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2c. Điểm trung bình mỗi bài báo (chỉ bài đã có phản biện), cao nhất trước.
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?title (AVG(?s) AS ?avg)
+WHERE {
+  ?r :isPartOf ?p ; :score ?s .
+  ?p :title ?title .
+}
+GROUP BY ?title
+ORDER BY DESC(?avg)

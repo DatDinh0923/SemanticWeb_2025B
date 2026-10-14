@@ -1,0 +1,12 @@
+# data: ex3-lab-course.ttl
+# Q10. Mỗi môn kèm người tổ chức NẾU CÓ (OPTIONAL) — môn chưa có người tổ chức vẫn hiện.
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?courseName ?organizerName
+WHERE {
+  ?c :credits ?cr ; :name ?courseName .
+  OPTIONAL { ?o :organizes ?c ; :name ?organizerName }
+}
+ORDER BY ?courseName ?organizerName

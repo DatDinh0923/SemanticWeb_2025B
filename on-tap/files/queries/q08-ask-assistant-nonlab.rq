@@ -1,0 +1,10 @@
+# data: ex3-lab-course.ttl
+# Q8. ASK: có trợ giảng nào dạy môn KHÔNG phải môn thực hành không? (kiểm tra ràng buộc 'only')
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+ASK {
+  ?a a :Assistant ; :teaches ?c .
+  FILTER NOT EXISTS { ?c a :LaboratoryCourse }
+}

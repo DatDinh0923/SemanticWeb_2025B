@@ -1,0 +1,9 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2f (đoán kết quả). Hai truy vấn: (i) ?x a :Reviewer (ii) dùng property path.
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?name
+WHERE {
+  ?x a/rdfs:subClassOf* :Reviewer ; :name ?name .
+}
+ORDER BY ?name

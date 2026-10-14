@@ -1,0 +1,15 @@
+# data: ex4-film.ttl
+# Q14. Phim không có diễn viên nào (ứng viên AnimalDocumentary / AnimatedMovie).
+PREFIX :      <http://example.org/film#>
+PREFIX film:  <http://example.org/film/>
+PREFIX people:<http://example.org/people/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+SELECT ?title
+WHERE {
+  ?m dc:title ?title .
+  FILTER NOT EXISTS { ?m ?p ?a . ?p rdfs:subPropertyOf* :actor . }
+}
+ORDER BY ?title

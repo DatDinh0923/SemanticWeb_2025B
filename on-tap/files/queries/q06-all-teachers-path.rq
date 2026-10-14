@@ -1,0 +1,13 @@
+# data: ex3-lab-course.ttl
+# Q6. Tất cả Teacher. SPARQL KHÔNG suy diễn: '?t a :Teacher' trả về rỗng vì dữ liệu chỉ ghi
+#      :Professor / :Assistant -> dùng property path rdfs:subClassOf* để tự đi lên cây lớp.
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?name ?type
+WHERE {
+  ?t rdf:type ?type ; :name ?name .
+  ?type rdfs:subClassOf* :Teacher .
+}
+ORDER BY ?name

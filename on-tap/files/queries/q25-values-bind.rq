@@ -1,0 +1,15 @@
+# data: library.ttl
+# Q25. VALUES + BIND: với 2 nhà xuất bản cho trước, liệt kê sách và 'tuổi' sách tính đến 2026.
+PREFIX :     <http://example.org/library#>
+PREFIX dc:   <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?publisher ?title ?age
+WHERE {
+  VALUES ?publisher { "Springer" "MIT Press" }
+  ?p foaf:name ?publisher .
+  ?b :publishedBy ?p ; dc:title ?title ; :year ?y .
+  BIND (2026 - xsd:integer(str(?y)) AS ?age)
+}
+ORDER BY ?age

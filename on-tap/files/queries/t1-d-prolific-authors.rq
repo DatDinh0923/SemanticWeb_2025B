@@ -1,0 +1,11 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2d. Tác giả nộp từ 2 bài trở lên.
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?name (COUNT(?p) AS ?papers)
+WHERE {
+  ?p :submittedBy ?a .
+  ?a :name ?name .
+}
+GROUP BY ?name
+HAVING (COUNT(?p) >= 2)

@@ -1,0 +1,16 @@
+# data: ex4-film.ttl
+# Q18. Tên phim tiếng Anh, kèm tên tiếng Việt nếu có (FILTER lang đặt TRONG OPTIONAL).
+PREFIX :      <http://example.org/film#>
+PREFIX film:  <http://example.org/film/>
+PREFIX people:<http://example.org/people/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+SELECT ?en ?vi
+WHERE {
+  ?m dc:title ?en .
+  FILTER (lang(?en) = "en")
+  OPTIONAL { ?m dc:title ?vi . FILTER (lang(?vi) = "vi") }
+}
+ORDER BY ?en

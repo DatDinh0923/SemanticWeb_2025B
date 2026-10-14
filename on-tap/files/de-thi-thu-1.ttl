@@ -1,0 +1,24 @@
+# Đề thi thử 1 — dữ liệu cho Câu 2 (SPARQL): hệ thống phản biện bài báo
+@prefix :     <http://example.org/review#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+:WorkshopPaper  rdfs:subClassOf :Paper .
+:SeniorReviewer rdfs:subClassOf :Reviewer .
+:JuniorReviewer rdfs:subClassOf :Reviewer .
+
+:p1 a :Paper         ; :title "Graph Embeddings"        ; :submittedBy :alice , :bob .
+:p2 a :WorkshopPaper ; :title "SPARQL Tricks"           ; :submittedBy :carol .
+:p3 a :Paper         ; :title "OWL Reasoning at Scale"  ; :submittedBy :alice .
+:p4 a :WorkshopPaper ; :title "Linked Data in Vietnam"  ; :submittedBy :bob .
+
+:alice :name "Alice" .  :bob :name "Bob" .  :carol :name "Carol" .
+:dave  a :SeniorReviewer ; :name "Dave"  ; :reviews :p1 , :p3 .
+:erin  a :JuniorReviewer ; :name "Erin"  ; :reviews :p2 .
+:frank a :SeniorReviewer ; :name "Frank" ; :reviews :p1 , :p2 .
+
+:r1 a :Review ; :isPartOf :p1 ; :writtenBy :dave  ; :score 4 .
+:r2 a :Review ; :isPartOf :p1 ; :writtenBy :frank ; :score 2 .
+:r3 a :Review ; :isPartOf :p2 ; :writtenBy :erin  ; :score 5 .
+:r4 a :Review ; :isPartOf :p2 ; :writtenBy :frank ; :score 3 .
+:r5 a :Review ; :isPartOf :p3 ; :writtenBy :dave  ; :score 1 .

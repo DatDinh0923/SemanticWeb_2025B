@@ -1,0 +1,12 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2b. Bài báo có ÍT HƠN 2 phản biện (kể cả 0).
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?title (COUNT(?r) AS ?reviews)
+WHERE {
+  ?p :title ?title .
+  OPTIONAL { ?r :isPartOf ?p }
+}
+GROUP BY ?title
+HAVING (COUNT(?r) < 2)
+ORDER BY ?title

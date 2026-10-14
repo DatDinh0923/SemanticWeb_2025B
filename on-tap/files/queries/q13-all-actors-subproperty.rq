@@ -1,0 +1,18 @@
+# data: ex4-film.ttl
+# Q13. Mọi diễn viên của mọi phim, dù dùng :leading-actor, :supporting-actor, :male-lead hay :female-lead.
+#      Không có suy diễn subPropertyOf -> tự đi theo rdfs:subPropertyOf*.
+PREFIX :      <http://example.org/film#>
+PREFIX film:  <http://example.org/film/>
+PREFIX people:<http://example.org/people/>
+PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?title ?actorName
+WHERE {
+  ?m ?p ?a ; dc:title ?title .
+  ?p rdfs:subPropertyOf* :actor .
+  ?a foaf:name ?actorName .
+  FILTER (lang(?title) = "en")
+}
+ORDER BY ?title ?actorName

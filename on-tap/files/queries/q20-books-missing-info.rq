@@ -1,0 +1,16 @@
+# data: library.ttl
+# Q20. Sách thiếu nhà xuất bản HOẶC thiếu số trang (mẫu OPTIONAL + !bound).
+PREFIX :     <http://example.org/library#>
+PREFIX dc:   <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?title ?publisher ?pages
+WHERE {
+  ?b dc:title ?title .
+  FILTER (lang(?title) = "en")
+  OPTIONAL { ?b :publishedBy ?p . ?p foaf:name ?publisher }
+  OPTIONAL { ?b :pages ?pages }
+  FILTER (!bound(?publisher) || !bound(?pages))
+}
+ORDER BY ?title

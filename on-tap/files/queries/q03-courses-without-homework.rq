@@ -1,0 +1,13 @@
+# data: ex3-lab-course.ttl
+# Q3. Môn học (kể cả môn thực hành) KHÔNG có bài tập về nhà nào.
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?courseName
+WHERE {
+  { ?c a :Course } UNION { ?c a :LaboratoryCourse }
+  ?c :name ?courseName .
+  FILTER NOT EXISTS { ?hw :isPartOf ?c }
+}
+ORDER BY ?courseName

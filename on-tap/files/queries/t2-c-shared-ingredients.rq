@@ -1,0 +1,9 @@
+# data: de-thi-thu-2.ttl
+# Đề 2 – 3c. Nguyên liệu dùng trong từ 2 món trở lên, kèm số món.
+PREFIX :     <http://example.org/food#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?ingredient (COUNT(?d) AS ?dishes)
+WHERE { ?d :hasIngredient ?ingredient }
+GROUP BY ?ingredient
+HAVING (COUNT(?d) >= 2)
+ORDER BY DESC(?dishes)

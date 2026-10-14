@@ -1,0 +1,10 @@
+# data: de-thi-thu-1.ttl
+# Đề 1 – 2e. Phản biện viên KHÔNG phải junior nhưng có phản biện bài workshop.
+PREFIX :     <http://example.org/review#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?name
+WHERE {
+  ?x :reviews ?p ; :name ?name .
+  ?p a :WorkshopPaper .
+  FILTER NOT EXISTS { ?x a :JuniorReviewer }
+}

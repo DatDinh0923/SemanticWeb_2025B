@@ -1,0 +1,13 @@
+# data: library.ttl
+# Q24. Tất cả :Book (kể cả :Textbook, :Novel) qua rdf:type/rdfs:subClassOf*, sách mới nhất trước.
+PREFIX :     <http://example.org/library#>
+PREFIX dc:   <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?title ?year
+WHERE {
+  ?b a/rdfs:subClassOf* :Book ; dc:title ?title ; :year ?year .
+  FILTER (lang(?title) = "en")
+}
+ORDER BY DESC(?year)

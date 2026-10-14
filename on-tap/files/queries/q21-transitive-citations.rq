@@ -1,0 +1,13 @@
+# data: library.ttl
+# Q21. Mọi sách trích dẫn DL Handbook trực tiếp hoặc bắc cầu (:citedBy+).
+PREFIX :     <http://example.org/library#>
+PREFIX dc:   <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?title
+WHERE {
+  :dlHandbook :citedBy+ ?b .
+  ?b dc:title ?title .
+}
+ORDER BY ?title

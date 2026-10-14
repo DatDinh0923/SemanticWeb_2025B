@@ -1,0 +1,15 @@
+# data: library.ttl
+# Q19. Mỗi cuốn sách (tiêu đề tiếng Anh) và danh sách tác giả.
+PREFIX :     <http://example.org/library#>
+PREFIX dc:   <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?title (GROUP_CONCAT(?author; separator="; ") AS ?authors)
+WHERE {
+  ?b dc:title ?title ; :writtenBy ?a .
+  ?a foaf:name ?author .
+  FILTER langMatches(lang(?title), "en")
+}
+GROUP BY ?title
+ORDER BY ?title

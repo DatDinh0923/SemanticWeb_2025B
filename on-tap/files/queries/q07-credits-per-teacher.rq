@@ -1,0 +1,14 @@
+# data: ex3-lab-course.ttl
+# Q7. Tổng số tín chỉ mỗi giáo viên dạy; chỉ giữ người dạy >= 3 tín chỉ.
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?teacherName (SUM(?cr) AS ?total)
+WHERE {
+  ?t :teaches ?c ; :name ?teacherName .
+  ?c :credits ?cr .
+}
+GROUP BY ?teacherName
+HAVING (SUM(?cr) >= 3)
+ORDER BY DESC(?total) ?teacherName

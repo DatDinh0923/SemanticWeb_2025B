@@ -1,0 +1,13 @@
+# data: ex3-lab-course.ttl
+# Q4. Số bài tập về nhà của mỗi môn (môn không có bài tập phải hiện 0), sắp giảm dần.
+PREFIX :     <http://example.org/course#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+SELECT ?courseName (COUNT(?hw) AS ?n)
+WHERE {
+  ?c :credits ?cr ; :name ?courseName .
+  OPTIONAL { ?hw :isPartOf ?c }
+}
+GROUP BY ?courseName
+ORDER BY DESC(?n) ?courseName
