@@ -1,0 +1,54 @@
+# Part 1 – Ex7: Thư viện (RDFS schema + dữ liệu) — dùng cho bài vẽ đồ thị và luyện SPARQL
+@prefix :     <http://example.org/library#> .
+@prefix dc:   <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+########## Schema (RDFS) ##########
+:Book      a rdfs:Class .
+:Textbook  a rdfs:Class ; rdfs:subClassOf :Book .
+:Novel     a rdfs:Class ; rdfs:subClassOf :Book .
+:Author    a rdfs:Class ; rdfs:subClassOf foaf:Person .
+:Publisher a rdfs:Class ; rdfs:subClassOf foaf:Organization .
+:Library   a rdfs:Class .
+
+:writtenBy   a rdf:Property ; rdfs:domain :Book ; rdfs:range :Author .
+:publishedBy a rdf:Property ; rdfs:domain :Book ; rdfs:range :Publisher .
+:year        a rdf:Property ; rdfs:domain :Book ; rdfs:range xsd:gYear .
+:pages       a rdf:Property ; rdfs:domain :Book ; rdfs:range xsd:integer .
+:holds       a rdf:Property ; rdfs:domain :Library ; rdfs:range :Book .
+:citedBy     a rdf:Property ; rdfs:domain :Book ; rdfs:range :Book .
+
+########## Data ##########
+:taLibrary a :Library ; rdfs:label "Ta Quang Buu Library"@en ;
+    :holds :swPrimer , :kgBook , :dlHandbook , :kieu , :owlGuide .
+
+:swPrimer a :Textbook ; dc:title "A Semantic Web Primer"@en ;
+    :writtenBy :antoniou , :vanHarmelen ; :publishedBy :mitPress ;
+    :year "2012"^^xsd:gYear ; :pages 288 .
+:kgBook a :Textbook ; dc:title "Knowledge Graphs"@en ;
+    :writtenBy :hogan ; :publishedBy :springer ;
+    :year "2021"^^xsd:gYear ; :pages 257 ; :citedBy :owlGuide .
+:dlHandbook a :Textbook ; dc:title "The Description Logic Handbook"@en ;
+    :writtenBy :baader ; :publishedBy :cambridge ;
+    :year "2003"^^xsd:gYear ; :pages 574 ; :citedBy :swPrimer , :kgBook .
+:owlGuide a :Book ; dc:title "Semantic Web for the Working Ontologist"@en ;
+    :writtenBy :allemang , :hendler ; :publishedBy :morgan ;
+    :year "2011"^^xsd:gYear .                               # không có :pages
+:kieu a :Novel ; dc:title "Truyện Kiều"@vi , "The Tale of Kieu"@en ;
+    :writtenBy :nguyenDu ; :year "1820"^^xsd:gYear ; :pages 254 .   # không có publisher
+
+:antoniou    a :Author ; foaf:name "Grigoris Antoniou" .
+:vanHarmelen a :Author ; foaf:name "Frank van Harmelen" .
+:hogan       a :Author ; foaf:name "Aidan Hogan" .
+:baader      a :Author ; foaf:name "Franz Baader" .
+:allemang    a :Author ; foaf:name "Dean Allemang" .
+:hendler     a :Author ; foaf:name "James Hendler" .
+:nguyenDu    a :Author ; foaf:name "Nguyễn Du" .
+
+:mitPress  a :Publisher ; foaf:name "MIT Press" .
+:springer  a :Publisher ; foaf:name "Springer" .
+:cambridge a :Publisher ; foaf:name "Cambridge University Press" .
+:morgan    a :Publisher ; foaf:name "Morgan Kaufmann" .

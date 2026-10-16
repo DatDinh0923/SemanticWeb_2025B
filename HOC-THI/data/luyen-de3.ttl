@@ -1,0 +1,13 @@
+@prefix :     <http://hospital.vn/exam#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+:lan   a :Doctor ; :name "Lan" ; :specialty "Nội khoa" .
+:hai   a :Doctor ; :name "Hải" ; :specialty "Nhi khoa" .
+:quang a :Doctor ; :name "Quang" .
+:minh  a :Patient ; :name "Minh" ; :age 35 ; :treatedBy :lan ; :diagnosedWith :Cum .
+:hoa   a :Patient ; :name "Hoa" ; :age 7 ; :treatedBy :hai , :lan ; :diagnosedWith :SotXuatHuyet .
+:nam   a :Patient ; :name "Nam" ; :age 68 ; :diagnosedWith :TieuDuong .
+:binh  a :Patient ; :age 15 ; :treatedBy :hai .
+:Cum           :isA :BenhHoHap .
+:BenhHoHap     :isA :BenhTruyenNhiem .
+:SotXuatHuyet  :isA :BenhTruyenNhiem .
+:TieuDuong     :isA :BenhManTinh .

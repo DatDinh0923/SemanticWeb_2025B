@@ -144,7 +144,9 @@
 |---|---|---|---|
 | Cú pháp | `rdf:Statement` + subject/predicate/object | `GRAPH :g { … }` | `<< :s :p :o >> :source :x` |
 | Chi phí | 4 triple / phát biểu | 1 IRI đồ thị cho nhóm triple | gọn, lồng được |
-| Khẳng định triple gốc? | **không** | có (trong đồ thị đó) | quoted triple **không** được khẳng định; `{| … |}` annotation thì có |
+| Khẳng định triple gốc? | **không** (ngữ nghĩa W3C) | có (trong đồ thị đó) | quoted triple **không** được khẳng định; `{| … |}` annotation thì có |
+
+- *Slide LPG (tr. 22) lưu ý:* "In RDF, when we make a statement about a statement S, S is automatically assumed to be true" — cách hiểu trong thực hành. Khi làm bài lấy ngữ nghĩa W3C làm câu trả lời chính: reify một phát biểu **không** khẳng định triple gốc.
 
 - Ví dụ slide (RDF-star): "Peter nói Hamburg là City, Mary nói là Country" — **không mâu thuẫn** vì không khẳng định.
 - DBpedia CareerStation chiếm ~45% thực thể: minh họa RDF "dài dòng" cho dữ liệu n-ngôi.
@@ -173,7 +175,7 @@
 <details><summary>Dàn ý</summary>
 
 - Số liệu: Cyc **$5.71**, Freebase **$2.25**, NELL 14.25¢, DBpedia **1.85¢**, YAGO 0.83¢.
-- Ý nghĩa: tự động hóa (trích từ Wikipedia) **rẻ hơn hàng trăm lần** nhưng phải đánh đổi về chất lượng.
+- Ý nghĩa: tự động hóa (trích từ Wikipedia) **rẻ hơn 16–250 lần** (Ext_KG tr. 52) nhưng phải đánh đổi về chất lượng.
 - Các hướng tăng độ phủ:
   - red links / list pages;
   - **Cat2Ax** (tiên đề từ category, ví dụ `∃genre.{Rock}`);
@@ -247,10 +249,10 @@ MATCH (a)-[:KNOWS*1..4]->(b) RETURN b        // độ dài đường đi biến 
 2. Vì sao suy diễn RDFS luôn dừng? ⇒ Không tạo tài nguyên mới; số triple có thể có là hữu hạn.
 3. Vì sao OWL Full không quyết định được? ⇒ Không tách class / property / individual (lớp vừa là cá thể); quá biểu đạt.
 4. Vì sao cần rule blocking? ⇒ Luật ∃ sinh cá thể mới vô hạn (ví dụ Jane `hasMother`).
-5. Vì sao `FILTER(?c1 != ?c2)` không chứng minh "có 2 con"? ⇒ UNA + OWA.
+5. Vì sao `FILTER(?c1 != ?c2)` không chứng minh "có 2 con"? ⇒ **Không có** UNA (hai URI khác nhau vẫn có thể là một người) + OWA.
 6. Vì sao dùng `EquivalentTo` thay vì `SubClassOf` cho lớp định nghĩa? ⇒ Để reasoner **tự phân loại** cá thể và lớp vào đó.
 7. Vì sao `owl:sameAs` giữa một người và trang chủ của họ là sai? ⇒ Mọi thuộc tính bị chia sẻ: trang web "có ngày sinh", người "có định dạng HTML".
-8. Vì sao Microdata kém hơn RDFa? ⇒ Chỉ tạo blank node (không URI), không chu trình, không reification ⇒ khó liên kết.
+8. Microdata/schema.org khác Linked Open Data ở đâu? (slide so Microdata với **LOD**, không so với RDFa) ⇒ Microdata nhúng trong cây DOM nên RDF sinh ra luôn là tập cây: không chu trình, không reification; chỉ có blank node + literal (không URI tra cứu được) ⇒ trái nguyên tắc LOD, khó liên kết.
 9. Vì sao không có default datatype trong RDF? ⇒ `"München"@de` khác `"München"@en` khác `"München"^^xsd:string`.
 10. Vì sao tableau dùng NNF? ⇒ Phủ định chỉ đứng trước lớp nguyên tử ⇒ chỉ cần 7 luật, phát hiện mâu thuẫn dạng `A` và `¬A`.
 

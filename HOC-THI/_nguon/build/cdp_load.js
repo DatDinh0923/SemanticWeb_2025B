@@ -1,0 +1,21 @@
+const {spawn} = require('child_process');
+const p = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', ['--headless=new', '--remote-debugging-port=9335', '--user-data-dir=' + process.env.TEMP + '/cdpl' + Date.now(), '--window-size=1300,900', 'about:blank']);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+(async () => {
+  await sleep(2500);
+  const tabs = await (await fetch('http://127.0.0.1:9335/json')).json();
+  const ws = new WebSocket(tabs.find(t => t.type === 'page').webSocketDebuggerUrl); let id = 0; const pend = {};
+  ws.onmessage = e => { const m = JSON.parse(e.data); if (pend[m.id]) { pend[m.id](m.result); delete pend[m.id]; } };
+  await new Promise(r => ws.onopen = r);
+  const send = (method, params = {}) => new Promise(r => { const i = ++id; pend[i] = r; ws.send(JSON.stringify({id: i, method, params})); });
+  const ev = async e => { const r = await send('Runtime.evaluate', {expression: e, returnByValue: true}); return r.exceptionDetails ? 'EXC ' + (r.exceptionDetails.exception && r.exceptionDetails.exception.description) : r.result.value; };
+  await send('Page.navigate', {url: 'file:///C:/Users/hieunt15/SemanticWeb_OnTap/HOC-THI/index.html#VE'}); await sleep(3000);
+  const TTL = '@prefix : <http://example.org/> .' + String.fromCharCode(10) + ':hung :person :SW ; :name "Hùng" .' + String.fromCharCode(10) + ':SW :title "Semantic Web" .';
+  console.log('set', await ev("document.documentElement.style.scrollBehavior='auto'; document.querySelector('#p-VE .inp').value=" + JSON.stringify(TTL) + "; document.querySelector('#p-VE [data-a=load]').scrollIntoView({block:'center'}); 'ok'"));
+  await sleep(300);
+  const r = await ev(`(()=>{const b=document.querySelector('#p-VE [data-a=load]').getBoundingClientRect(); return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);
+  for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', {type, x: r.x, y: r.y, button: 'left', clickCount: 1});
+  await sleep(3500);
+  console.log(await ev(`(()=>{const n=document.querySelector('#p-VE .widget')._net; return 'nodes='+Object.keys(n.getPositions()).length+' | turtle sinh ra: '+document.querySelector('#p-VE .out').textContent})()`));
+  ws.close(); p.kill(); process.exit(0);
+})().catch(e => { console.log('ERR', e); p.kill(); process.exit(1); });

@@ -332,20 +332,18 @@ Barem: OWA (3đ), cách đóng (3đ), trường hợp Beef (2đ).
 flowchart LR
   P([ex:paper1]) -- dcterms:title --> T["#quot;Linked Data in Vietnam#quot;@en"]
   P -- dcterms:creator --> An([ex:an])
-  P -- dcterms:creator --> co([_:coauthor])
+  P -- dcterms:creator --> co((" "))
   P -- dcterms:issued --> Y["#quot;2024#quot;^^xsd:gYear"]
   P -- ex:publishedAt --> ISWC([ex:ISWC])
   An -- foaf:name --> AnN["#quot;An#quot;"]
   co -- rdf:type --> FP([foaf:Person])
   An -- rdf:type --> FP
-  st([_:claim]) -- rdf:type --> RS([rdf:Statement])
+  st((" ")) -- rdf:type --> RS([rdf:Statement])
   st -- rdf:subject --> P
   st -- rdf:predicate --> cc([ex:citationCount])
   st -- rdf:object --> N["50"]
   st -- ex:claimedBy --> Binh([ex:binh])
   Binh -- foaf:name --> BN["#quot;Bình#quot;"]
-  classDef bnode stroke-dasharray: 5 5
-  class co,st bnode
 ```
 ```turtle
 @prefix ex:      <http://example.org/> .

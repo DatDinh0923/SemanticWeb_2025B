@@ -1,0 +1,20 @@
+# Đề thi thử 2 — dữ liệu cho Câu 3 (SPARQL): nhà hàng
+@prefix :     <http://example.org/food#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+:Meat    rdfs:subClassOf :AnimalProduct .
+:Seafood rdfs:subClassOf :AnimalProduct .
+:Vegetable rdfs:subClassOf :PlantProduct .
+:Grain     rdfs:subClassOf :PlantProduct .
+
+:beef a :Meat . :pork a :Meat . :shrimp a :Seafood .
+:noodle a :Grain . :onion a :Vegetable . :carrot a :Vegetable . :herb a :Vegetable .
+
+:pho     a :Dish ; :name "Phở bò"@vi     ; :price 50000 ; :hasIngredient :beef , :noodle , :onion .
+:buncha  a :Dish ; :name "Bún chả"@vi    ; :price 45000 ; :hasIngredient :pork , :noodle .
+:goicuon a :Dish ; :name "Gỏi cuốn"@vi   ; :price 30000 ; :hasIngredient :shrimp , :noodle , :herb .
+:raucu   a :Dish ; :name "Rau củ xào"@vi ; :price 35000 ; :hasIngredient :carrot , :onion .
+
+:lan  a :HeadChef ; :name "Lan"  ; :cooks :pho , :buncha ; :manages :minh .
+:minh a :Chef     ; :name "Minh" ; :cooks :goicuon .

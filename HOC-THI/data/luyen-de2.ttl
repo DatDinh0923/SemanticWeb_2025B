@@ -1,0 +1,82 @@
+# Part 3 – Ex3: Laboratory-course ontology (OWL 2, Turtle)
+# Đề: "A laboratory-course is a course. Courses are organized by teachers.
+#      Teachers can be professors or assistants. The professor teaches the
+#      courses, while the assistant only teaches the practical courses.
+#      Homework is part of the course."
+@prefix :     <http://example.org/course#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/course> a owl:Ontology ;
+    rdfs:label "Laboratory-course ontology (Exercise Part 3 – Ex3)"@en .
+
+########## T-Box: classes ##########
+:Course           a owl:Class ; rdfs:label "Course"@en .
+:LaboratoryCourse a owl:Class ; rdfs:label "Laboratory course"@en ;
+    rdfs:subClassOf :Course .                                  # A laboratory-course is a course
+:Teacher          a owl:Class ; rdfs:label "Teacher"@en ;
+    owl:equivalentClass [ a owl:Class ;                        # Teachers can be professors or assistants
+                          owl:unionOf ( :Professor :Assistant ) ] .
+:Professor        a owl:Class ; rdfs:label "Professor"@en ;
+    rdfs:subClassOf :Teacher ,
+        [ a owl:Restriction ; owl:onProperty :teaches ;        # The professor teaches the courses
+          owl:someValuesFrom :Course ] .
+:Assistant        a owl:Class ; rdfs:label "Assistant"@en ;
+    rdfs:subClassOf :Teacher ,
+        [ a owl:Restriction ; owl:onProperty :teaches ;        # the assistant ONLY teaches practical courses
+          owl:allValuesFrom :LaboratoryCourse ] .
+:Homework         a owl:Class ; rdfs:label "Homework"@en ;
+    rdfs:subClassOf
+        [ a owl:Restriction ; owl:onProperty :isPartOf ;       # Homework is part of the course
+          owl:someValuesFrom :Course ] .
+
+# Mỗi course được tổ chức bởi ít nhất một teacher
+:Course rdfs:subClassOf
+        [ a owl:Restriction ; owl:onProperty :isOrganizedBy ;
+          owl:someValuesFrom :Teacher ] .
+
+# Giả định hợp lý (ghi rõ trong bài làm): các nhóm khái niệm tách rời nhau
+[] a owl:AllDisjointClasses ; owl:members ( :Course :Teacher :Homework ) .
+:Professor owl:disjointWith :Assistant .
+
+########## T-Box: properties ##########
+:organizes a owl:ObjectProperty ;
+    rdfs:domain :Teacher ; rdfs:range :Course .
+:isOrganizedBy a owl:ObjectProperty ;
+    owl:inverseOf :organizes .
+:teaches a owl:ObjectProperty ;
+    rdfs:domain :Teacher ; rdfs:range :Course .
+:isTaughtBy a owl:ObjectProperty ;
+    owl:inverseOf :teaches .
+:isPartOf a owl:ObjectProperty ;
+    rdfs:domain :Homework ; rdfs:range :Course .
+:hasPart a owl:ObjectProperty ;
+    owl:inverseOf :isPartOf .
+:name a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:range xsd:string .
+:credits a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:domain :Course ; rdfs:range xsd:integer .
+
+########## A-Box: dữ liệu mẫu để luyện SPARQL ##########
+:hung  a :Professor ; :name "Hung" ;
+       :teaches :SemanticWeb , :DataIntegration ; :organizes :SemanticWeb .
+:lan   a :Professor ; :name "Lan" ;
+       :teaches :MachineLearning ; :organizes :MachineLearning , :DataIntegration .
+:minh  a :Assistant ; :name "Minh" ;
+       :teaches :SemanticWebLab .
+:an    a :Assistant ; :name "An" ;
+       :teaches :SemanticWebLab , :MLLab .
+
+:SemanticWeb     a :Course ;           :name "Semantic Web" ;       :credits 3 .
+:DataIntegration a :Course ;           :name "Data Integration" ;   :credits 2 .
+:MachineLearning a :Course ;           :name "Machine Learning" ;   :credits 3 .
+:SemanticWebLab  a :LaboratoryCourse ; :name "Semantic Web Lab" ;   :credits 1 .
+:MLLab           a :LaboratoryCourse ; :name "Machine Learning Lab" ; :credits 1 .
+
+:hw1 a :Homework ; :name "RDF exercise"      ; :isPartOf :SemanticWeb .
+:hw2 a :Homework ; :name "RDFS exercise"     ; :isPartOf :SemanticWeb .
+:hw3 a :Homework ; :name "Tableau exercise"  ; :isPartOf :SemanticWeb .
+:hw4 a :Homework ; :name "Lab report"        ; :isPartOf :SemanticWebLab .
+:hw5 a :Homework ; :name "Regression report" ; :isPartOf :MachineLearning .

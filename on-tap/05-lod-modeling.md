@@ -35,7 +35,7 @@
 ### A5. `owl:sameAs` — dùng đúng và lạm dụng (★★★ — hay hỏi "chỉ ra lỗi")
 - **Nghĩa:** hai URI chỉ **cùng một thực thể** ⇒ mọi phát biểu về URI này đúng cho URI kia (rất mạnh!).
 - **Dùng đúng:** cùng một người trong DBpedia và trong dữ liệu của bạn.
-- **Lạm dụng (ví dụ slide):** một người vs **trang chủ** của họ (dùng `foaf:homepage`); **Starbucks** chuỗi cửa hàng vs **công ty**; **Hamburg** thành phố vs **bang**; quốc hội là **tổ chức** vs **tòa nhà**. Hậu quả: suy ra "tòa nhà quốc hội có 700 nghị sĩ", "công ty có giờ mở cửa"…
+- **Lạm dụng (ví dụ slide):** một người vs **trang chủ** của họ (dùng `foaf:homepage`); **một cửa hàng Starbucks** (quán ở O7) vs **công ty** Starbucks; **Hamburg** thành phố vs **bang**; quốc hội là **tổ chức** vs **tòa nhà**. Hậu quả: suy ra "tòa nhà quốc hội có 700 nghị sĩ", "công ty có giờ mở cửa"…
 - **Thay thế:** `rdfs:seeAlso` (liên quan), `foaf:homepage`, `skos:closeMatch`, quan hệ riêng (`:hasHeadquarters`).
 
 ### A6. Bộ dữ liệu & từ vựng (★★)
@@ -124,7 +124,7 @@
 Vi phạm **rigidity**: Person, Animal rigid; Passenger anti-rigid (một người chỉ là hành khách khi đang đi xe) ⇒ không được làm lớp cha. Hậu quả: mọi Person bị suy ra là Passenger. Sửa: `Person —hasRole→ PassengerRole` (hoặc `Passenger ≡ ∃travelsOn.Vehicle` và **không** đặt Person dưới Passenger).
 </details>
 
-**L2 (D9). `Book ⊑ BookCopy`? `BookEdition ⊑ Book`? Áp dụng tiêu chí đồng nhất.**
+**L2 (D9). `BookCopy ⊑ Book`? `BookEdition ⊑ Book`? (slide 07 ghi "Book > Book edition", "Book > Book copy") Áp dụng tiêu chí đồng nhất.**
 <details><summary>Đáp án</summary>
 
 Book đồng nhất theo (tiêu đề, tác giả)/ISBN; Edition theo ISBN hoặc (tiêu đề, tác giả, số lần in); Copy theo **mã kiểm kê**. Lớp con có tiêu chí lớp cha không có ⇒ vi phạm identity ⇒ dùng quan hệ: `Copy —isCopyOf→ Edition —isEditionOf→ Book`.

@@ -73,7 +73,7 @@
 ### A6. Hai nguyên lý ngữ nghĩa (★★★ — gốc của rất nhiều câu "vì sao")
 - **Non-unique name assumption (không giả định tên duy nhất):** hai URI khác nhau **có thể** chỉ cùng một thực thể (`:Munich`, `:München`).
 - **Open World Assumption (OWA):** điều không được nói ra **không phải là sai**, chỉ là **chưa biết**.
-- Ví dụ slide: `:Peter :fatherOf :Julia , :Mary .` — Peter có mấy con? **Ít nhất 1** (Julia và Mary có thể là một người — UNA), **có thể nhiều hơn 2** (OWA).
+- Ví dụ slide: `:Peter :fatherOf :Julia , :Mary .` — Peter có mấy con? **Ít nhất 1** (Julia và Mary có thể là một người — vì **không có** UNA), **có thể nhiều hơn 2** (OWA). Muốn kết luận ≥ 2 con phải thêm `:Julia owl:differentFrom :Mary`.
 
 ### A7. RDF trên Web (★)
 - `<link rel="meta" href="…rdf">` trong HTML; **content negotiation**: header `Accept: text/turtle` → server trả `303 See Other` tới bản RDF.
@@ -126,7 +126,7 @@
 
 - **Axiomatic triples** (luôn đúng, kể cả với đồ thị rỗng), ví dụ: `rdf:type rdfs:domain rdfs:Resource`, `rdfs:domain rdfs:domain rdf:Property`, `rdfs:range rdfs:domain rdf:Property`, `rdfs:subClassOf rdfs:domain rdfs:Class`, `rdfs:subPropertyOf rdfs:range rdf:Property`, `rdfs:Datatype rdfs:subClassOf rdfs:Class`… ⇒ mọi URI đều `rdf:type rdfs:Resource`.
 - **Blank node trong câu hỏi = biến tồn tại** *(Interpolation Lemma, RDF 1.1)*: đồ thị G entail E ⇔ tồn tại cách thay blank node của E bằng term của G sao cho mọi triple của E nằm trong bao đóng của G.
-- **KHÔNG có luật nào** (trong RDFS chuẩn): domain/range **không** kế thừa xuống subproperty; domain **không** đi lên superclass; **không** có inverse; **không** có phủ định. *(Các luật ext1–ext4 kiểu "domain kế thừa" chỉ có trong ngữ nghĩa extensional của RDF 1.0 — không dùng khi làm bài.)*
+- **KHÔNG có luật nào** (trong RDFS chuẩn) sinh ra bộ-3 schema `subP rdfs:domain C` từ domain/range của property cha (→ hỏi bộ-3 đó thì trả lời **UNKNOWN**) — nhưng ở mức cá thể domain/range vẫn "truyền": `x subP y` ⇒ rdfs7 ⇒ `x P y` ⇒ rdfs2 ⇒ `x a C` (rdfs3 tương tự cho range; slide: *"inherited by sub properties"*); domain **không** đi lên superclass; **không** có inverse; **không** có phủ định. *(Các luật ext1–ext4 kiểu "domain kế thừa" chỉ có trong ngữ nghĩa extensional của RDF 1.0 — không dùng khi làm bài.)*
 
 ### B4. Forward chaining (★★)
 ```
@@ -159,7 +159,7 @@ lặp:
 5. **Bảng tổng kết** (No. | Statement | Value | Justification).
 
 ### D5. Vẽ đồ thị RDF (quy ước như bài 29.08)
-- **Ellipse** = resource (URI), **chữ nhật** = literal, **ellipse nét đứt** = blank node; mũi tên **subject → object**, nhãn = predicate (viết dạng prefix).
+- **Ellipse** = resource (URI), **chữ nhật** = literal, **elip rỗng (không nhãn)** = blank node; mũi tên **subject → object**, nhãn = predicate (viết dạng prefix).
 - Vẽ T-Box phía trên, A-Box phía dưới, kẻ đường ngang phân cách (như hình Part 2 Ex1).
 - Đếm lại số cạnh = số triple — ghi "Đồ thị có N triple".
 
@@ -208,15 +208,13 @@ lặp:
 ```mermaid
 flowchart LR
   doc1([ex:doc1]) -- dcterms:creator --> minh["#quot;Minh#quot;"]
-  doc2([ex:doc2]) -- dcterms:creator --> author([_:author])
+  doc2([ex:doc2]) -- dcterms:creator --> author((" "))
   doc3([ex:doc3]) -- dcterms:creator --> author
-  stmt([_:stmt]) -- rdf:type --> st([rdf:Statement])
+  stmt((" ")) -- rdf:type --> st([rdf:Statement])
   stmt -- rdf:subject --> doc1
   stmt -- rdf:predicate --> pub([dcterms:publisher])
   stmt -- rdf:object --> w3c([https://www.w3.org/])
   stmt -- dcterms:source --> doc3
-  classDef bnode stroke-dasharray: 5 5
-  class author,stmt bnode
 ```
 ```turtle
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -371,15 +369,13 @@ flowchart LR
   Minh -- :teaches --> sw["#quot;Semantic Web#quot;"]
   Minh -- :teaches --> di["#quot;Data Integration#quot;"]
   Minh -- foaf:member --> SOICT([:SOICT])
-  b1([_:b1]) -- foaf:knows --> Minh
-  b1 -- foaf:member --> b2([_:b2])
+  b1((" ")) -- foaf:knows --> Minh
+  b1 -- foaf:member --> b2((" "))
   b2 -- rdf:type --> Company([:Company])
-  classDef bnode stroke-dasharray: 5 5
-  class b1,b2 bnode
 ```
 Đọc thành lời: *Minh là giáo viên, dạy "Semantic Web" và "Data Integration", là thành viên SOICT. Có một người (không rõ là ai) quen Minh và là thành viên của một công ty nào đó.* — **7 triple**, 2 blank node.
 
-N-Triples (D6):
+N-Triples:
 ```
 <http://example.org/Minh> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Teacher> .
 <http://example.org/Minh> <http://example.org/teaches> "Semantic Web" .
@@ -471,7 +467,7 @@ flowchart BT
 | 2 | `:Man rdfs:subClassOf :Person` | **TRUE** | có sẵn trong G |
 | 3 | `:Carl a :Person` | **TRUE** | rdfs9 (D4) |
 | 4 | `:Carl a :Parent` | **TRUE** | rdfs3 + rdfs9 (D3) |
-| 5 | `:Carl :hasChild :Ann` | UNKNOWN | `:hasChild` không xuất hiện trong G — RDFS không có inverse; không luật nào tạo được predicate mới (Anonymity: URI không có trong G thì không entail được) |
+| 5 | `:Carl :hasChild :Ann` | UNKNOWN | `:hasChild` không xuất hiện trong G — RDFS không có inverse; các luật RDFS không tạo ra IRI mới, nên không luật nào sinh được triple có predicate `:hasChild` |
 | 6 | `:Carl a :Man` | **TRUE** | có sẵn |
 | 7 | `:Carl a :Father` | **TRUE** | rdfs3 (D2) |
 | 8 | `:Child rdf:type rdfs:Resource` | **TRUE** | rdfs4a (Child là subject của triple) |
@@ -480,13 +476,13 @@ flowchart BT
 | 11 | `:Ann :hasParent :Carl` | **TRUE** | rdfs7 (D1) |
 | 12 | `:Ann :hasParent _:x` | **TRUE** | blank node = biến tồn tại: `_:x ↦ :Carl` cho D1 (luật se1: thay object bằng blank node) |
 | 13 | `:Ann :hasParent [ rdf:type :Person ]` | **TRUE** | `_:b ↦ :Carl`: D1 và D4 cùng đúng |
-| 14 | `:hasFather rdfs:domain :Person` | UNKNOWN | domain **không kế thừa** từ superproperty xuống subproperty (rdfs2 chỉ dùng domain có sẵn) |
+| 14 | `:hasFather rdfs:domain :Person` | UNKNOWN | không luật RDFS nào sinh ra bộ-3 `subP rdfs:domain C` (rdfs2 chỉ *dùng* domain có sẵn). Ở mức cá thể thì domain vẫn "truyền": `:Ann :hasFather :Carl` ⇒ rdfs7 ⇒ rdfs2 ⇒ `:Ann a :Person` (slide: *"inherited by sub properties"*) — nhưng mệnh đề hỏi bộ-3 schema |
 | 15 | `rdfs:range rdf:type rdfs:Resource` | **TRUE** | rdfs4a trên axiomatic triple `rdfs:range rdfs:domain rdf:Property` |
 | 16 | `:hasFather rdfs:range :Father` | **TRUE** | **có sẵn trong G** (`:hasFather … rdfs:range :Father`) |
-| 17 | `:hasFather rdfs:domain [ rdfs:subClassOf :Person ]` | UNKNOWN | không suy ra được bất kỳ `rdfs:domain` nào cho hasFather ⇒ không có ứng viên cho blank node |
+| 17 | `:hasFather rdfs:domain [ rdfs:subClassOf :Person ]` | UNKNOWN | không suy ra được bộ-3 `rdfs:domain` nào cho hasFather (cùng lý do mệnh đề 14 — bộ-3 schema không được sinh, dù ở mức cá thể domain vẫn "truyền") ⇒ không có ứng viên cho blank node |
 | 18 | `:Father rdfs:subClassOf [ rdfs:subClassOf :Person ]` | **TRUE** | `_:b ↦ :Person`: D6 + D7 (rdfs10) — hoặc `_:b ↦ :Parent` (Father ⊑ Parent có sẵn, Parent ⊑ Person có sẵn) |
 
-> ⚠️ **Đính chính bài về nhà 12.9 (câu 3 = mệnh đề 16):** bài nộp ghi *Unknown* với lý do "No range is declared for :hasFather in G" — **sai**: đề gốc có `:hasFather a rdf:Property ; rdfs:subPropertyOf :hasParent ; rdfs:range :Father .` ⇒ mệnh đề có sẵn trong G ⇒ **TRUE** (bài 5.9 của chính bạn cũng dùng triple này ở bước D2). Lý luận "range không kế thừa từ superproperty" vẫn đúng nhưng không áp dụng ở đây.
+> ⚠️ **Đính chính bài về nhà 12.9 (câu 3 = mệnh đề 16):** bài nộp ghi *Unknown* với lý do "No range is declared for :hasFather in G" — **sai**: đề gốc có `:hasFather a rdf:Property ; rdfs:subPropertyOf :hasParent ; rdfs:range :Father .` ⇒ mệnh đề có sẵn trong G ⇒ **TRUE** (bài 5.9 của chính bạn cũng dùng triple này ở bước D2). Lý luận "bộ-3 `rdfs:range` không suy ra được từ superproperty" vẫn đúng nhưng không áp dụng ở đây.
 > ⚠️ **Đính chính nhỏ bài 5.9:** luật "thay IRI ở vị trí **object** bằng blank node" trong RDF 1.0 Semantics tên là **se1**; **se2** là thay ở vị trí **subject**. (RDF 1.1 không đặt tên luật, dùng Interpolation Lemma.)
 
 ---
@@ -511,7 +507,7 @@ flowchart BT
 **R2 (D4).** G: `:Student rdfs:subClassOf :Person . :enrolledIn rdfs:domain :Student ; rdfs:range :Course . :takesExam rdfs:subPropertyOf :enrolledIn . :lan :takesExam :SW .` — true hay unknown? (a) `:lan a :Person` (b) `:SW a :Course` (c) `:takesExam rdfs:range :Course` (d) `:lan :enrolledIn [ a :Course ]` (e) `:SW a :Student`.
 <details><summary>Đáp án</summary>
 
-(a) TRUE — rdfs7 → `lan enrolledIn SW`, rdfs2 → Student, rdfs9 → Person. (b) TRUE — rdfs3. (c) UNKNOWN — range không kế thừa xuống subproperty. (d) TRUE — `_:b ↦ :SW`. (e) UNKNOWN — không có gì nói SW là Student (và cũng không mâu thuẫn nếu thêm vào: RDFS không có disjoint).
+(a) TRUE — rdfs7 → `lan enrolledIn SW`, rdfs2 → Student, rdfs9 → Person. (b) TRUE — rdfs3. (c) UNKNOWN — không luật RDFS nào sinh ra bộ-3 `subP rdfs:range C` (dù ở mức cá thể range vẫn "truyền": `x takesExam y` ⇒ rdfs7 ⇒ rdfs3 ⇒ `y a :Course`, chính là câu b). (d) TRUE — `_:b ↦ :SW`. (e) UNKNOWN — không có gì nói SW là Student (và cũng không mâu thuẫn nếu thêm vào: RDFS không có disjoint).
 </details>
 
 **R3 (D6).** Viết N-Triples cho `:a :p ( :x :y ) .` (collection).

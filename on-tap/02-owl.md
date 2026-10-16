@@ -39,7 +39,7 @@
 | `owl:ReflexiveProperty` *(OWL 2)* | p(a,a) với mọi a | `relativeOf` | `⊤ ⊑ ∃p.Self` |
 | `owl:IrreflexiveProperty` *(OWL 2)* | không bao giờ p(a,a) | `parentOf` | `⊤ ⊑ ¬∃p.Self` |
 | `owl:AsymmetricProperty` *(OWL 2)* | p(a,b) ⇒ ¬p(b,a) | `tallerThan` | |
-| `owl:FunctionalProperty` | mỗi a có tối đa 1 giá trị | `hasCapital`: `:Finland :hasCapital :Helsinki , :Helsingfors` ⇒ **Helsinki sameAs Helsingfors** (không phải mâu thuẫn — UNA!) | `⊤ ⊑ ≤1 p` |
+| `owl:FunctionalProperty` | mỗi a có tối đa 1 giá trị | `hasCapital`: `:Finland :hasCapital :Helsinki , :Helsingfors` ⇒ **Helsinki sameAs Helsingfors** (không phải mâu thuẫn — vì **không có** UNA!) | `⊤ ⊑ ≤1 p` |
 | `owl:InverseFunctionalProperty` | giá trị xác định duy nhất chủ thể — "khóa chính" | `capitalOf` | `⊤ ⊑ ≤1 p⁻` |
 
 - **Chỉ ObjectProperty** được Symmetric/Transitive/Inverse/Reflexive… (literal không làm subject được). DatatypeProperty chỉ được Functional.
@@ -62,9 +62,10 @@ Cú pháp chung: một blank node `a owl:Restriction ; owl:onProperty :p ; <ràn
 | `owl:allValuesFrom C` | `p only C` | `∀p.C` | `VeganRecipe ⊑ ∀hasIngredient.Vegetable` |
 | `owl:hasValue a` | `p value a` | `∃p.{a}` | `AfricanStates ⊑ ∃locatedOnContinent.{Africa}` |
 | `owl:minCardinality n` | `p min n` | `≥n p` | |
-| `owl:maxCardinality n` | `p max n` | `≤n p` | `StandardBicycle`: `hasMotor` cardinality 0 |
-| `owl:cardinality n` | `p exactly n` | `=n p` | `Human`: `hasMother` exactly 1 |
+| `owl:maxCardinality n` | `p max n` | `≤n p` | |
+| `owl:cardinality n` | `p exactly n` | `=n p` | `StandardBicycle`: `hasMotor` **`owl:cardinality 0`** (slide dùng cardinality, không phải maxCardinality); `Human`: `hasMother` exactly 1 |
 | `owl:minQualifiedCardinality n` + `owl:onClass C` *(OWL 2)* | `p min n C` | `≥n p.C` | `LiteratePerson ⊑ ≥1000 hasRead.Book` |
+| `owl:qualifiedCardinality n` / `owl:maxQualifiedCardinality n` + `owl:onClass C` *(OWL 2)* | `p exactly n C` / `p max n C` | `=n p.C` / `≤n p.C` | |
 | `owl:hasSelf true` *(OWL 2)* | `p Self` | `∃p.Self` | `AutoDidact ≡ ∃teaches.Self` |
 
 **Năm điều hay bị hỏi:**
@@ -74,13 +75,13 @@ Cú pháp chung: một blank node `a owl:Restriction ; owl:onProperty :p ; <ràn
 4. **subClassOf vs equivalentClass** (primitive vs defined class):
    - `Soccer ⊑ ∃requires.Ball` + `BallSports ⊑ ∃requires.Ball` ⇒ **không** suy ra Soccer ⊑ BallSports.
    - `BallSports ≡ ∃requires.Ball` ⇒ reasoner **xếp Soccer vào BallSports** (điều kiện đủ). Cẩn thận: thể dục dụng cụ có dùng bóng cũng bị xếp vào.
-   - *Reasoner chỉ tự xếp lớp vào dưới **defined class** (lớp có EquivalentTo).*
+   - *Quy tắc kinh nghiệm trong Protégé: muốn reasoner tự xếp lớp vào dưới một lớp thì lớp đó nên là **defined class** (có EquivalentTo). Nhưng không tuyệt đối: domain/range, GCI, disjointness cũng sinh quan hệ lớp con dưới primitive class (xem IceCream ⊑ Pizza ở Phần F).*
 5. **Restriction lồng nhau / làm domain-range:** `GrandParent ≡ ∃hasChild.(≥1 hasChild)`; range = `≥1 containsLetter`; domain = `∃hasBodyPart.Brain` (chỉ DL/Full).
 
 OWL 1 không kết hợp được cardinality với class filler — OWL 2 có **qualified cardinality** (`onClass`).
 
 ### A5. Toán tử tập hợp, lớp đóng (★★★)
-- `owl:unionOf` (FacultyMembers = Professor ⊔ Lecturer …), `owl:intersectionOf` (SwimmingMammals = Mammal ⊓ SwimmingAnimal), `owl:complementOf` (LivingThings ↔ non-living), `owl:disjointWith` (nấm ăn được vs nấm độc).
+- `owl:unionOf` (FacultyMembers = Students ⊔ Professors — ví dụ slide), `owl:intersectionOf` (SwimmingMammals = Mammal ⊓ SwimmingAnimal), `owl:complementOf` (LivingThings ↔ non-living), `owl:disjointWith` (nấm ăn được vs nấm độc).
 - Kết hợp: `VegetarianRecipe ⊑ ∀hasIngredient.¬(Meat ⊔ Fish)`.
 - **`owl:oneOf` — lớp đóng (closed class):** `PeopleInOfficeD219 ≡ {Tim, John, Mary}`. Câu hỏi slide: thêm `:Mike a :PeopleInD219` thì sao? ⇒ Mike phải **sameAs** một trong ba người; nếu Mike `differentFrom` cả ba ⇒ **inconsistent**.
 - **Sudoku (slide):** ô = cá thể, lớp `Number` đóng `{1,…,9}`, các ô cùng hàng/cột/khối `differentFrom` nhau, ô cho trước `sameAs` số ⇒ reasoner giải được — cần **O** (nominals) nên chỉ Pellet/HermiT.
@@ -90,7 +91,7 @@ OWL 1 không kết hợp được cardinality với class filler — OWL 2 có *
 |---|---|---|
 | Disjoint union | `:Wine owl:disjointUnionOf ( :Red :Rose :White )` | Wine = Red ⊔ Rosé ⊔ White, đôi một rời nhau |
 | Nhiều lớp rời nhau | `[] a owl:AllDisjointClasses ; owl:members ( … )` | |
-| Phủ định quan hệ | `[] a owl:NegativePropertyAssertion ; owl:sourceIndividual :Paul ; owl:assertionProperty :fatherOf ; owl:targetIndividual :Peter` | "Paul không phải bố Peter" ≡ `Paul a ¬∃fatherOf.{Peter}` |
+| Phủ định quan hệ (slide viết `owl:NegativeObjectPropertyAssertion`, tên chuẩn W3C trong RDF là `owl:NegativePropertyAssertion`) | `[] a owl:NegativePropertyAssertion ; owl:sourceIndividual :Paul ; owl:assertionProperty :fatherOf ; owl:targetIndividual :Peter` | "Paul không phải bố Peter" ≡ `Paul a ¬∃fatherOf.{Peter}` |
 | Property chain | `:hasGrandparent owl:propertyChainAxiom ( :hasParent :hasParent )` | `hasSibling ← hasParent ∘ hasParent⁻` |
 | Self | `owl:hasSelf true` | AutoDidact |
 | Key | `:Person owl:hasKey ( :hasSSN )` | *(bổ sung)* |
@@ -110,7 +111,7 @@ Class: Professor
 ObjectProperty: teaches
     Domain: Teacher
     Range: Course
-    Characteristics: Functional, InverseFunctional, Transitive, Symmetric, Asymmetric, Reflexive, Irreflexive
+    Characteristics: Functional, InverseFunctional, Transitive, Symmetric, Asymmetric, Reflexive, Irreflexive   # danh sách từ khoá, không dùng hết cùng lúc — vài đặc tính mâu thuẫn nhau
     InverseOf: isTaughtBy
     SubPropertyOf: involvedIn
     SubPropertyChain: hasParent o hasParent
@@ -136,6 +137,8 @@ DifferentIndividuals: hung, lan, minh
 | với mọi | `∀p.C` | `p only C` | `… owl:allValuesFrom :C ]` |
 | giá trị | `∃p.{a}` | `p value a` | `… owl:hasValue :a ]` |
 | ít nhất n (định tính) | `≥n p.C` | `p min n C` | `… owl:minQualifiedCardinality "n"^^xsd:nonNegativeInteger ; owl:onClass :C ]` |
+| đúng n (định tính) | `=n p.C` | `p exactly n C` | `… owl:qualifiedCardinality "n"^^xsd:nonNegativeInteger ; owl:onClass :C ]` |
+| tối đa n (định tính) | `≤n p.C` | `p max n C` | `… owl:maxQualifiedCardinality "n"^^xsd:nonNegativeInteger ; owl:onClass :C ]` |
 | tối đa n | `≤n p` | `p max n` | `… owl:maxCardinality "n"^^xsd:nonNegativeInteger ]` |
 | đúng n | `=n p` | `p exactly n` | `… owl:cardinality "n"^^xsd:nonNegativeInteger ]` |
 | liệt kê | `{a, b}` | `{a, b}` | `[ a owl:Class ; owl:oneOf ( :a :b ) ]` |
@@ -143,7 +146,7 @@ DifferentIndividuals: hung, lan, minh
 | tự thân | `∃p.Self` | `p Self` | `… owl:hasSelf true ]` |
 | dữ liệu có ngưỡng | `∃age.int[≥18]` | `age some xsd:integer[>= 18]` | `owl:onDatatype xsd:integer ; owl:withRestrictions ( [ xsd:minInclusive 18 ] )` |
 
-**Lỗi cú pháp Turtle hay gặp:** cardinality phải là `"n"^^xsd:nonNegativeInteger`; đã dùng `owl:onClass` thì phải dùng `…QualifiedCardinality`; `intersectionOf/unionOf/oneOf/members/disjointUnionOf/propertyChainAxiom` nhận **danh sách `( )`**, còn `complementOf` nhận **một** lớp.
+**Lỗi cú pháp Turtle hay gặp:** cardinality viết `"n"^^xsd:nonNegativeInteger` (chuẩn OWL 2; slide thầy viết `^^xsd:integer` — cả hai đều được chấp nhận); đã dùng `owl:onClass` thì phải dùng `…QualifiedCardinality`; `intersectionOf/unionOf/oneOf/members/disjointUnionOf/propertyChainAxiom` nhận **danh sách `( )`**, còn `complementOf` nhận **một** lớp.
 
 ---
 
@@ -300,13 +303,13 @@ Course ⊑ ≥2 hasPart.Homework                     Manchester: Course SubClass
 LaboratoryCourse ⊑ =1 isTaughtBy.Assistant       LaboratoryCourse SubClassOf: isTaughtBy exactly 1 Assistant
 Professor ⊑ ≤3 organizes.Course                  Professor SubClassOf: organizes max 3 Course
 ```
-(`isTaughtBy ≡ teaches⁻`.) Turtle dùng `owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass :Homework`. Lưu ý OWA + UNA: 2 homework phải `differentFrom` nhau mới được tính là 2; reasoner không báo lỗi khi môn chỉ có 1 homework (có thể còn homework chưa biết).
+(`isTaughtBy ≡ teaches⁻`.) Turtle dùng `owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ; owl:onClass :Homework` (=1 → `owl:qualifiedCardinality`, ≤3 → `owl:maxQualifiedCardinality`, cùng kèm `owl:onClass`). Lưu ý OWA + không có UNA: 2 homework phải `differentFrom` nhau mới được tính là 2; reasoner không báo lỗi khi môn chỉ có 1 homework (có thể còn homework chưa biết).
 </details>
 
 **V4. Định nghĩa lớp: "LabTeacher là giáo viên dạy ít nhất một môn thực hành"; "BusyProfessor là giáo sư dạy ít nhất 3 môn". Ai trong dữ liệu mẫu được xếp vào?**
 <details><summary>Đáp án</summary>
 
-`LabTeacher ≡ Teacher ⊓ ∃teaches.LaboratoryCourse` (Manchester: `Teacher and teaches some LaboratoryCourse`) — phải là **EquivalentTo** để reasoner tự xếp ⇒ minh, an. `BusyProfessor ≡ Professor ⊓ ≥3 teaches.Course` ⇒ không ai (hung dạy 2 môn; và kể cả có 3 tên khác nhau, cần `differentFrom` vì UNA).
+`LabTeacher ≡ Teacher ⊓ ∃teaches.LaboratoryCourse` (Manchester: `Teacher and teaches some LaboratoryCourse`) — phải là **EquivalentTo** để reasoner tự xếp ⇒ minh, an. `BusyProfessor ≡ Professor ⊓ ≥3 teaches.Course` ⇒ không ai (hung dạy 2 môn; và kể cả có 3 tên khác nhau, cần `differentFrom` vì **không có** UNA).
 </details>
 
 **V5 (nối sang tableau). Chứng minh `Assistant ⊓ ∃teaches.Course ⊑ ∃teaches.LaboratoryCourse`.**

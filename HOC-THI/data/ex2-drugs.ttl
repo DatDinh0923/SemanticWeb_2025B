@@ -1,0 +1,34 @@
+# Part 3 – Ex2: Medicinal-product ontology (OWL 2, Turtle)
+# Đề: Medicinal products include over-the-counter drugs and prescription based drugs.
+#     Each drug consists of an active substance. Each drug can be replaced by zero
+#     or more other drugs. Panadol is an OTC drug. Tramadol is a prescription based drug.
+#     Loperamide is an active substance.
+@prefix :     <http://example.org/drug#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/drug> a owl:Ontology .
+
+:MedicinalProduct a owl:Class ;
+    # "Each drug consists of an active substance" -> ít nhất một hoạt chất
+    rdfs:subClassOf [ a owl:Restriction ; owl:onProperty :includes ;
+                      owl:someValuesFrom :ActiveSubstance ] .
+:OverTheCounterDrug     a owl:Class ; rdfs:subClassOf :MedicinalProduct .
+:PrescriptionBasedDrug  a owl:Class ; rdfs:subClassOf :MedicinalProduct ;
+    owl:disjointWith :OverTheCounterDrug .
+:ActiveSubstance a owl:Class ; owl:disjointWith :MedicinalProduct .
+
+# "include" = gồm (ít nhất) hai loại; nếu muốn "chỉ gồm" thì thêm phủ (covering axiom):
+# :MedicinalProduct owl:equivalentClass [ owl:unionOf ( :OverTheCounterDrug :PrescriptionBasedDrug ) ] .
+
+:includes a owl:ObjectProperty ;
+    rdfs:domain :MedicinalProduct ; rdfs:range :ActiveSubstance .
+# "can be replaced by zero or more other drugs" -> KHÔNG cần restriction (min 0 luôn đúng)
+:isSubstitutableBy a owl:ObjectProperty , owl:SymmetricProperty , owl:IrreflexiveProperty ;
+    rdfs:domain :MedicinalProduct ; rdfs:range :MedicinalProduct .
+
+:Panadol    a :OverTheCounterDrug , owl:NamedIndividual .
+:Tramadol   a :PrescriptionBasedDrug , owl:NamedIndividual .
+:Loperamide a :ActiveSubstance , owl:NamedIndividual .

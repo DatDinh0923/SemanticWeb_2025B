@@ -1,0 +1,710 @@
+[
+ {
+  "d": "D1",
+  "q": "Vị trí nào trong triple KHÔNG được là literal?",
+  "opts": [
+   "Object",
+   "Subject",
+   "Cả subject và object",
+   "Không vị trí nào"
+  ],
+  "a": 1,
+  "why": "Subject chỉ là IRI hoặc blank node; predicate chỉ là IRI; literal chỉ ở object."
+ },
+ {
+  "d": "D1",
+  "q": "Câu 'Nguyễn Văn A cảm thấy đây là cuốn sách hay' nên biểu diễn bằng?",
+  "opts": [
+   "Collection ( )",
+   "Reification rdf:Statement",
+   "rdf:Bag",
+   "owl:sameAs"
+  ],
+  "a": 1,
+  "why": "Phát biểu về một phát biểu (ý kiến) → reification, không khẳng định trực tiếp."
+ },
+ {
+  "d": "D1",
+  "q": "'Sách được viết bởi nhóm tác giả gồm Gamma, Helm, Johnson, Vlissides' – cấu trúc phù hợp nhất?",
+  "opts": [
+   "Collection ( … )",
+   "4 triple rdf:type",
+   "Reification",
+   "owl:unionOf"
+  ],
+  "a": 0,
+  "why": "Danh sách đóng, có thứ tự → collection, bung thành rdf:first/rdf:rest/rdf:nil."
+ },
+ {
+  "d": "D1",
+  "q": "Trên đồ thị RDF theo quy ước của thầy, literal được vẽ bằng?",
+  "opts": [
+   "Elip có tên",
+   "Elip rỗng",
+   "Hình chữ nhật",
+   "Mũi tên"
+  ],
+  "a": 2,
+  "why": "IRI: elip; blank node: elip rỗng; literal: hình chữ nhật."
+ },
+ {
+  "d": "D1",
+  "q": "'Sinh viên A đạt điểm 10 môn Semantic Web' – cách biểu diễn đúng?",
+  "opts": [
+   ":A :score 10 .",
+   ":A :score [ :value 10 ; :course :sw ] .",
+   ":A a 10 .",
+   "10 :scoreOf :A ."
+  ],
+  "a": 1,
+  "why": "Quan hệ 3 thành phần (sinh viên, điểm, môn) → blank node n-ngôi."
+ },
+ {
+  "d": "D2",
+  "q": "Trong N-Triples, blank node được viết là?",
+  "opts": [
+   "[ ]",
+   "_:b1",
+   "<_:b1>",
+   "?b1"
+  ],
+  "a": 1,
+  "why": "N-Triples không có viết tắt [ ]; blank node có nhãn _:x."
+ },
+ {
+  "d": "D2",
+  "q": "Turtle ':a :p :b , :c ; :q :d .' sinh bao nhiêu triple?",
+  "opts": [
+   "2",
+   "3",
+   "4",
+   "1"
+  ],
+  "a": 1,
+  "why": ":a :p :b; :a :p :c; :a :q :d."
+ },
+ {
+  "d": "D2",
+  "q": "'[] foaf:knows :Minh' – blank node ở vị trí nào?",
+  "opts": [
+   "Object",
+   "Predicate",
+   "Subject",
+   "Không phải triple hợp lệ"
+  ],
+  "a": 2,
+  "why": "[] đứng đầu câu là subject."
+ },
+ {
+  "d": "D2",
+  "q": "Trong RDF/XML, phần tử lồng không có rdf:about tương ứng với?",
+  "opts": [
+   "IRI mới",
+   "Literal",
+   "Blank node",
+   "Lỗi cú pháp"
+  ],
+  "a": 2,
+  "why": "Nút lồng không có định danh = blank node."
+ },
+ {
+  "d": "D3",
+  "q": "':teaches rdfs:domain :Teacher .' và ':x :teaches :y .' thì suy ra?",
+  "opts": [
+   ":y a :Teacher",
+   ":x a :Teacher",
+   "Báo lỗi nếu :x không phải Teacher",
+   "Không suy ra gì"
+  ],
+  "a": 1,
+  "why": "Domain áp cho subject (rdfs2); RDFS không kiểm tra lỗi."
+ },
+ {
+  "d": "D3",
+  "q": "Khai báo 'URI3 là một thuộc tính' trong RDFS?",
+  "opts": [
+   ":URI3 a rdfs:Class",
+   ":URI3 a rdf:Property",
+   ":URI3 rdfs:subClassOf rdf:Property",
+   ":URI3 a owl:Thing"
+  ],
+  "a": 1,
+  "why": "rdf:Property là lớp của các thuộc tính."
+ },
+ {
+  "d": "D3",
+  "q": "Một property có 2 rdfs:domain C và D nghĩa là?",
+  "opts": [
+   "Subject thuộc C hoặc D",
+   "Subject thuộc cả C và D (giao)",
+   "Lỗi",
+   "Chỉ lấy domain đầu"
+  ],
+  "a": 1,
+  "why": "Nhiều domain = giao."
+ },
+ {
+  "d": "D3",
+  "q": "Dùng property 'sai kiểu' trong RDFS thì?",
+  "opts": [
+   "Báo lỗi ràng buộc",
+   "Máy suy ra kiểu mới",
+   "Triple bị bỏ qua",
+   "Đồ thị không hợp lệ"
+  ],
+  "a": 1,
+  "why": "Domain/range là tiên đề suy diễn chứ không phải ràng buộc kiểm tra."
+ },
+ {
+  "d": "D4",
+  "q": "Luật rdfs9 là?",
+  "opts": [
+   "subClass bắc cầu",
+   "Kế thừa kiểu: C ⊑ D, x a C ⇒ x a D",
+   "Domain",
+   "Range"
+  ],
+  "a": 1,
+  "why": "rdfs9: x a C + C subClassOf D ⇒ x a D; rdfs11 là bắc cầu."
+ },
+ {
+  "d": "D4",
+  "q": "Mệnh đề không suy ra được từ KB RDFS thì trả lời?",
+  "opts": [
+   "Sai",
+   "Không xác định (unknown)",
+   "Đúng",
+   "Mâu thuẫn"
+  ],
+  "a": 1,
+  "why": "OWA: không biết ≠ sai."
+ },
+ {
+  "d": "D4",
+  "q": "':Ann :hasFather :Carl .' và ':hasFather rdfs:range :Father .' ⇒?",
+  "opts": [
+   ":Ann a :Father",
+   ":Carl a :Father (rdfs3)",
+   ":Carl :hasChild :Ann",
+   "Không suy ra gì"
+  ],
+  "a": 1,
+  "why": "Range áp cho object."
+ },
+ {
+  "d": "D4",
+  "q": "RDFS có suy ra được ':Carl :hasChild :Ann' từ ':Ann :hasFather :Carl' không?",
+  "opts": [
+   "Có, bằng rdfs7",
+   "Có, bằng rdfs3",
+   "Không, RDFS không có inverse",
+   "Có nếu có domain"
+  ],
+  "a": 2,
+  "why": "Inverse chỉ có trong OWL."
+ },
+ {
+  "d": "D4",
+  "q": "Luật rdfs7?",
+  "opts": [
+   "p ⊑ q, x p y ⇒ x q y",
+   "p ⊑ q, q ⊑ r ⇒ p ⊑ r",
+   "x p y ⇒ p a rdf:Property",
+   "C a Class ⇒ C ⊑ C"
+  ],
+  "a": 0,
+  "why": "rdfs7 kế thừa triple lên property cha."
+ },
+ {
+  "d": "D5",
+  "q": "'Phương tiện lưỡng cư vừa là PT đường bộ vừa là PT đường thủy' → DL?",
+  "opts": [
+   "Bộ ⊔ Thủy",
+   "Bộ ⊓ Thủy",
+   "¬Bộ ⊓ Thủy",
+   "∃Bộ.Thủy"
+  ],
+  "a": 1,
+  "why": "'vừa… vừa…' = giao."
+ },
+ {
+  "d": "D5",
+  "q": "'Đường giao thông là tên gọi chung cho đường bộ, thủy, không' → OWL?",
+  "opts": [
+   "owl:intersectionOf",
+   "owl:unionOf",
+   "owl:oneOf",
+   "owl:disjointWith"
+  ],
+  "a": 1,
+  "why": "Tên gọi chung = hợp."
+ },
+ {
+  "d": "D5",
+  "q": "'Giá trị nhiên liệu có thể là xăng, dầu hoặc điện' → range là?",
+  "opts": [
+   "[ owl:unionOf (:xăng :dầu :điện) ]",
+   "[ owl:oneOf (:xăng :dầu :điện) ]",
+   "rdfs:Literal",
+   "owl:Thing"
+  ],
+  "a": 1,
+  "why": "Liệt kê cá thể → oneOf."
+ },
+ {
+  "d": "D5",
+  "q": "'Không có thú cưng nào vừa là chó vừa là mèo' → DL?",
+  "opts": [
+   "Dog ⊑ Cat",
+   "Dog ⊓ Cat ⊑ ⊥",
+   "Dog ⊔ Cat ⊑ Pet",
+   "Dog ≡ ¬Pet"
+  ],
+  "a": 1,
+  "why": "Rời nhau = owl:disjointWith."
+ },
+ {
+  "d": "D5",
+  "q": "'Chương trình đa nền tảng chạy trên tối thiểu 2 HĐH' → restriction?",
+  "opts": [
+   "owl:someValuesFrom",
+   "owl:minQualifiedCardinality 2 ; owl:onClass :OS",
+   "owl:maxCardinality 2",
+   "owl:hasValue 2"
+  ],
+  "a": 1,
+  "why": "Tối thiểu n cái thuộc lớp C → minQualifiedCardinality + onClass."
+ },
+ {
+  "d": "D5",
+  "q": "'Phụ thuộc là thuộc tính bắc cầu' → ?",
+  "opts": [
+   "owl:SymmetricProperty",
+   "owl:TransitiveProperty",
+   "owl:FunctionalProperty",
+   "rdfs:subPropertyOf"
+  ],
+  "a": 1,
+  "why": "Bắc cầu = transitive."
+ },
+ {
+  "d": "D6",
+  "q": "C ≡ ∃p.F, x p y, y a F ⇒?",
+  "opts": [
+   "y a C",
+   "x a C",
+   "x a F",
+   "Không suy ra"
+  ],
+  "a": 1,
+  "why": "x có ít nhất một p-giá trị thuộc F nên x ∈ C."
+ },
+ {
+  "d": "D6",
+  "q": "p là FunctionalProperty, x p a, x p b ⇒ OWL suy ra?",
+  "opts": [
+   "Mâu thuẫn",
+   "a owl:sameAs b",
+   "a owl:differentFrom b",
+   "Không gì"
+  ],
+  "a": 1,
+  "why": "Không có UNA nên a, b là một."
+ },
+ {
+  "d": "D6",
+  "q": "q owl:inverseOf p, x p y ⇒?",
+  "opts": [
+   "y p x",
+   "y q x",
+   "x q y",
+   "q ⊑ p"
+  ],
+  "a": 1,
+  "why": "Nghịch đảo."
+ },
+ {
+  "d": "D6",
+  "q": "x là A và là B, A disjointWith B ⇒ reasoner kết luận?",
+  "opts": [
+   "x là ⊥, KB vẫn nhất quán",
+   "KB không nhất quán",
+   "x sameAs A",
+   "Không gì"
+  ],
+  "a": 1,
+  "why": "Cá thể thuộc hai lớp rời nhau → inconsistency."
+ },
+ {
+  "d": "D7",
+  "q": "Điểm cố định (fixpoint) trong Datalog là?",
+  "opts": [
+   "Bước đầu tiên",
+   "Khi áp luật không sinh thêm dữ kiện mới",
+   "Khi có mâu thuẫn",
+   "Khi hết luật"
+  ],
+  "a": 1,
+  "why": "Lặp áp luật đến khi tập dữ kiện không đổi."
+ },
+ {
+  "d": "D7",
+  "q": "Trong cây chứng minh Datalog, lá của cây là?",
+  "opts": [
+   "Luật",
+   "Dữ kiện ban đầu (B0)",
+   "Biến",
+   "Câu hỏi"
+  ],
+  "a": 1,
+  "why": "Lá là các fact cho sẵn; nút trong là kết luận của luật."
+ },
+ {
+  "d": "D7",
+  "q": "Luật Đường-hai-chiều(Y,X) ← Đường-hai-chiều(X,Y) biểu diễn tính chất?",
+  "opts": [
+   "Bắc cầu",
+   "Đối xứng",
+   "Phản xạ",
+   "Hàm"
+  ],
+  "a": 1,
+  "why": "Đổi chỗ X, Y = đối xứng."
+ },
+ {
+  "d": "D7",
+  "q": "Ở mỗi bước Bi ta áp luật lên?",
+  "opts": [
+   "Chỉ dữ kiện mới của bước trước",
+   "Toàn bộ tập dữ kiện hiện có",
+   "Chỉ câu hỏi",
+   "Kết quả bước sau"
+  ],
+  "a": 1,
+  "why": "Naive evaluation: áp mọi luật lên toàn bộ tập dữ kiện hiện có."
+ },
+ {
+  "d": "D8",
+  "q": "'Lấy nhãn nếu có, để trống nếu không' dùng?",
+  "opts": [
+   "FILTER",
+   "OPTIONAL",
+   "UNION",
+   "MINUS"
+  ],
+  "a": 1,
+  "why": "OPTIONAL = left join."
+ },
+ {
+  "d": "D8",
+  "q": "'Các ngôn ngữ có pointer HOẶC class' – cách nào đúng?",
+  "opts": [
+   "{ ?x :hasFeature :pointer } UNION { ?x :hasFeature :class }",
+   "?x :hasFeature :pointer , :class .",
+   "FILTER(?f = :pointer && ?f = :class)",
+   "OPTIONAL { ?x :hasFeature :pointer }"
+  ],
+  "a": 0,
+  "why": "Hoặc → UNION (hoặc FILTER với ||, hoặc VALUES). Dấu , là AND."
+ },
+ {
+  "d": "D8",
+  "q": "'Các môn KHÔNG có homework' dùng?",
+  "opts": [
+   "OPTIONAL",
+   "FILTER NOT EXISTS { ?c :hasHomework ?h }",
+   "FILTER(?h = false)",
+   "UNION"
+  ],
+  "a": 1,
+  "why": "Phủ định → NOT EXISTS / MINUS."
+ },
+ {
+  "d": "D8",
+  "q": "Đếm số phim của mỗi đạo diễn?",
+  "opts": [
+   "SELECT ?d COUNT(?m)",
+   "SELECT ?d (COUNT(?m) AS ?n) WHERE {…} GROUP BY ?d",
+   "SELECT ?d WHERE {…} HAVING COUNT",
+   "ORDER BY COUNT(?m)"
+  ],
+  "a": 1,
+  "why": "Hàm tổng hợp phải có AS và GROUP BY."
+ },
+ {
+  "d": "D8",
+  "q": "Diễn viên đóng ít nhất 2 phim?",
+  "opts": [
+   "FILTER(COUNT(?m) >= 2)",
+   "GROUP BY ?a HAVING(COUNT(?m) >= 2)",
+   "LIMIT 2",
+   "OPTIONAL"
+  ],
+  "a": 1,
+  "why": "Lọc sau gom nhóm → HAVING."
+ },
+ {
+  "d": "D8",
+  "q": "'Khẳng định :OOPL cho ngôn ngữ có tính năng class' dùng?",
+  "opts": [
+   "SELECT",
+   "ASK",
+   "CONSTRUCT { ?x a :OOPL } WHERE { ?x :hasFeature :class }",
+   "DESCRIBE"
+  ],
+  "a": 2,
+  "why": "Tạo triple mới → CONSTRUCT."
+ },
+ {
+  "d": "D8",
+  "q": "Tìm mọi cá thể của Person kể cả lớp con, không có reasoner?",
+  "opts": [
+   "?x a :Person",
+   "?x a/rdfs:subClassOf* :Person",
+   "?x rdfs:subClassOf :Person",
+   "?x a+ :Person"
+  ],
+  "a": 1,
+  "why": "Property path rdf:type rồi subClassOf* (0 hoặc nhiều bước)."
+ },
+ {
+  "d": "D8",
+  "q": "Truy vấn trả true/false?",
+  "opts": [
+   "SELECT",
+   "ASK",
+   "CONSTRUCT",
+   "DESCRIBE"
+  ],
+  "a": 1,
+  "why": "ASK."
+ },
+ {
+  "d": "D8",
+  "q": "Lọc máy bay bay lần đầu sau năm 1950?",
+  "opts": [
+   "FILTER(?y > 1950)",
+   "OPTIONAL(?y > 1950)",
+   "HAVING(?y > 1950) không cần GROUP BY",
+   "?y > 1950 ."
+  ],
+  "a": 0,
+  "why": "So sánh trong FILTER."
+ },
+ {
+  "d": "D8",
+  "q": "Trong SELECT có biến không nằm trong GROUP BY và không nằm trong hàm tổng hợp thì?",
+  "opts": [
+   "Hợp lệ",
+   "Lỗi",
+   "Tự động DISTINCT",
+   "Bị bỏ qua"
+  ],
+  "a": 1,
+  "why": "Mọi biến chiếu ra phải được gom nhóm hoặc tổng hợp."
+ },
+ {
+  "d": "D9",
+  "q": "OPTIONAL dịch sang đại số SPARQL thành?",
+  "opts": [
+   "Join",
+   "LeftJoin",
+   "Union",
+   "Minus"
+  ],
+  "a": 1,
+  "why": "OPTIONAL = LeftJoin."
+ },
+ {
+  "d": "D9",
+  "q": "SELECT ?pet dịch thành?",
+  "opts": [
+   "Filter",
+   "Project(…, {?pet})",
+   "Distinct",
+   "Slice"
+  ],
+  "a": 1,
+  "why": "Chọn cột = Project."
+ },
+ {
+  "d": "D9",
+  "q": "Hai mapping μ1, μ2 tương thích (compatible) khi?",
+  "opts": [
+   "Có cùng số biến",
+   "Mọi biến chung có cùng giá trị",
+   "Không có biến chung",
+   "Giá trị khác nhau"
+  ],
+  "a": 1,
+  "why": "Compatible: trùng giá trị trên mọi biến chung."
+ },
+ {
+  "d": "D9",
+  "q": "FILTER trong nhóm { A OPTIONAL B FILTER f } đặt ở đâu trong biểu thức?",
+  "opts": [
+   "Bên trong A",
+   "Bọc ngoài cùng: Filter(f, LeftJoin(A,B))",
+   "Bên trong B",
+   "Không dịch"
+  ],
+  "a": 1,
+  "why": "FILTER áp cho toàn nhóm, bọc ngoài cùng."
+ },
+ {
+  "d": "D10",
+  "q": "Nút nào được kiểm tra bởi shape có sh:targetClass :PL?",
+  "opts": [
+   "Mọi nút trong đồ thị",
+   "Các nút có rdf:type :PL",
+   "Các nút có thuộc tính :hasFeature",
+   "Chỉ :PL"
+  ],
+  "a": 1,
+  "why": "targetClass chọn instance của lớp (cả lớp con qua rdfs:subClassOf)."
+ },
+ {
+  "d": "D10",
+  "q": "'Mỗi NNLT có tối thiểu 1 tính năng' dùng?",
+  "opts": [
+   "sh:maxCount 1",
+   "sh:minCount 1",
+   "sh:minExclusive 1",
+   "sh:hasValue 1"
+  ],
+  "a": 1,
+  "why": "Số lượng giá trị tối thiểu → minCount."
+ },
+ {
+  "d": "D10",
+  "q": "'Năm cất cánh phải > 1900' dùng?",
+  "opts": [
+   "sh:minInclusive 1900",
+   "sh:minExclusive 1900",
+   "sh:minCount 1900",
+   "sh:maxExclusive 1900"
+  ],
+  "a": 1,
+  "why": "> là exclusive; >= là inclusive."
+ },
+ {
+  "d": "D10",
+  "q": "SHACL theo giả thiết nào?",
+  "opts": [
+   "OWA",
+   "CWA – thiếu giá trị là vi phạm",
+   "Không giả thiết",
+   "Giống OWL"
+  ],
+  "a": 1,
+  "why": "SHACL kiểm tra dữ liệu có sẵn (đóng)."
+ },
+ {
+  "d": "D11",
+  "q": "Chức năng nào KHÔNG phải của reasoner?",
+  "opts": [
+   "Kiểm tra nhất quán",
+   "Phân loại lớp",
+   "Vẽ giao diện Protégé",
+   "Suy ra cá thể thuộc lớp"
+  ],
+  "a": 2,
+  "why": "Reasoner: consistency, satisfiability, classification, realization, entailment, explanation."
+ },
+ {
+  "d": "D11",
+  "q": "Classification là?",
+  "opts": [
+   "Tìm lớp của cá thể",
+   "Tính cây phân cấp subsumption giữa các lớp",
+   "Kiểm tra mâu thuẫn",
+   "Trả lời SPARQL"
+  ],
+  "a": 1,
+  "why": "Realization mới là tìm lớp của cá thể."
+ },
+ {
+  "d": "D11",
+  "q": "Nguyên tắc Linked Data thứ 4?",
+  "opts": [
+   "Dùng URI",
+   "Dùng HTTP URI",
+   "Trả thông tin theo chuẩn",
+   "Liên kết tới URI khác"
+  ],
+  "a": 3,
+  "why": "URI, HTTP URI, thông tin hữu ích theo chuẩn, link."
+ },
+ {
+  "d": "D11",
+  "q": "Dữ liệu CSV có giấy phép mở đạt mấy sao?",
+  "opts": [
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "a": 1,
+  "why": "★★★ = định dạng không độc quyền."
+ },
+ {
+  "d": "D12",
+  "q": "NNF của ¬∃R.C là?",
+  "opts": [
+   "∃R.¬C",
+   "∀R.¬C",
+   "¬∀R.C",
+   "∀R.C"
+  ],
+  "a": 1,
+  "why": "Đẩy ¬ vào: ¬∃ = ∀¬."
+ },
+ {
+  "d": "D12",
+  "q": "Để chứng minh C ⊑ D bằng tableau ta thêm?",
+  "opts": [
+   "C(x)",
+   "(C ⊓ ¬D)(x) và chứng minh mọi nhánh đóng",
+   "D(x)",
+   "¬C ⊔ D"
+  ],
+  "a": 1,
+  "why": "Phản chứng: giả sử có x thuộc C nhưng không thuộc D."
+ },
+ {
+  "d": "D12",
+  "q": "Luật nào tách nhánh?",
+  "opts": [
+   "Luật 4 (⊓)",
+   "Luật 5 (⊔)",
+   "Luật 6 (∃)",
+   "Luật 7 (∀)"
+  ],
+  "a": 1,
+  "why": "⊔ sinh 2 nhánh."
+ },
+ {
+  "d": "D12",
+  "q": "Vì sao cần blocking?",
+  "opts": [
+   "Để tách nhánh",
+   "Luật ∃ có thể sinh cá thể mới vô hạn",
+   "Để chuyển NNF",
+   "Để đóng nhánh"
+  ],
+  "a": 1,
+  "why": "Ví dụ Woman ⊑ ∃hasMother.Woman."
+ },
+ {
+  "d": "D12",
+  "q": "Nhánh tableau đóng khi?",
+  "opts": [
+   "Có ∃",
+   "Chứa X(a) và ¬X(a)",
+   "Hết luật",
+   "Có 2 cá thể"
+  ],
+  "a": 1,
+  "why": "Mâu thuẫn trực tiếp."
+ }
+]

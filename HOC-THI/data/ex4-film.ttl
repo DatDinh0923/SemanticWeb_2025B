@@ -1,0 +1,83 @@
+# Part 3 – Ex4: Film ontology (OWL 2, Turtle) + dữ liệu Avatar của đề + dữ liệu mở rộng để luyện SPARQL
+@prefix :       <http://example.org/film#> .
+@prefix film:   <http://example.org/film/> .
+@prefix people: <http://example.org/people/> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/film> a owl:Ontology .
+
+########## Classes ##########
+:Movie a owl:Class .
+:Person a owl:Class ;
+    owl:disjointUnionOf ( :Man :Woman ) .        # Man ⊔ Woman ≡ Person, Man ⊓ Woman ⊑ ⊥
+:Man   a owl:Class .
+:Woman a owl:Class .
+
+# A love movie has at least one male leading actor and one female leading actor
+:LoveMovie a owl:Class ;
+    rdfs:subClassOf :Movie ,
+        [ a owl:Restriction ; owl:onProperty :male-lead ;   owl:someValuesFrom :Man ] ,
+        [ a owl:Restriction ; owl:onProperty :female-lead ; owl:someValuesFrom :Woman ] .
+
+:AnimalDocumentary a owl:Class ; rdfs:subClassOf :Movie .
+:AnimatedMovie     a owl:Class ; rdfs:subClassOf :Movie .
+
+# A film without an actor is either an Animal Documentary or an Animated Movie
+[ a owl:Class ;
+  owl:intersectionOf ( :Movie
+                       [ a owl:Restriction ; owl:onProperty :actor ; owl:cardinality "0"^^xsd:nonNegativeInteger ] ) ]
+    rdfs:subClassOf [ a owl:Class ; owl:unionOf ( :AnimalDocumentary :AnimatedMovie ) ] .
+
+########## Properties ##########
+dc:title a owl:DatatypeProperty ; rdfs:domain :Movie .
+:director a owl:ObjectProperty ; rdfs:domain :Movie ; rdfs:range :Person .
+
+:actor a owl:ObjectProperty ; rdfs:domain :Movie ; rdfs:range :Person .
+:leading-actor    a owl:ObjectProperty ; rdfs:subPropertyOf :actor .
+:supporting-actor a owl:ObjectProperty ; rdfs:subPropertyOf :actor .
+:male-lead   a owl:ObjectProperty ; rdfs:subPropertyOf :leading-actor ; rdfs:range :Man .
+:female-lead a owl:ObjectProperty ; rdfs:subPropertyOf :leading-actor ; rdfs:range :Woman .
+
+foaf:name a owl:DatatypeProperty .
+:releaseYear a owl:DatatypeProperty , owl:FunctionalProperty ; rdfs:domain :Movie ; rdfs:range xsd:gYear .
+
+########## Dữ liệu của đề ##########
+film:avatar a :Movie ;
+    dc:title "Avatar"@en ;
+    :director people:james ;
+    :leading-actor people:sam ;
+    :leading-actor people:zoe ;
+    :supporting-actor people:michelle .
+people:james    a :Man   ; foaf:name "James Cameron" .
+people:sam      a :Man   ; foaf:name "Sam Worthington" .
+people:zoe      a :Woman ; foaf:name "Zoe Saldana" .
+people:michelle a :Woman ; foaf:name "Michelle Rodriguez" .
+
+########## Dữ liệu mở rộng (để luyện SPARQL) ##########
+film:avatar :releaseYear "2009"^^xsd:gYear .
+film:titanic a :Movie ; dc:title "Titanic"@en , "Titanic"@vi ;
+    :releaseYear "1997"^^xsd:gYear ; :director people:james ;
+    :male-lead people:leo ; :female-lead people:kate ;
+    :supporting-actor people:billy .
+film:terminator a :Movie ; dc:title "The Terminator"@en ;
+    :releaseYear "1984"^^xsd:gYear ; :director people:james ;
+    :leading-actor people:arnold ; :supporting-actor people:michael .
+film:inception a :Movie ; dc:title "Inception"@en ;
+    :releaseYear "2010"^^xsd:gYear ; :director people:nolan ;
+    :leading-actor people:leo ; :supporting-actor people:michael .
+film:planet a :Movie ; dc:title "Our Planet"@en ;
+    :releaseYear "2019"^^xsd:gYear .                      # không có actor
+film:fantasia a :AnimatedMovie ; dc:title "Fantasia"@en ;
+    :releaseYear "1940"^^xsd:gYear .
+
+people:leo     a :Man   ; foaf:name "Leonardo DiCaprio" .
+people:kate    a :Woman ; foaf:name "Kate Winslet" .
+people:billy   a :Man   ; foaf:name "Billy Zane" .
+people:arnold  a :Man   ; foaf:name "Arnold Schwarzenegger" .
+people:michael a :Man   ; foaf:name "Michael Biehn" .
+people:nolan   a :Man   ; foaf:name "Christopher Nolan" .

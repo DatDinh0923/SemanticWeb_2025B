@@ -72,7 +72,7 @@
 
 - **Nhánh đóng (closed):** chứa đồng thời `X` và `¬X` (ví dụ `Person(Peter)` và `¬Person(Peter)`).
 - **Consistent** ⇔ không áp được luật nào nữa **và** còn ít nhất 1 nhánh mở.
-- **Rule blocking (tr. 62–64):** luật 6 có thể sinh cá thể mới vô hạn (ví dụ Jane: `Woman ⊑ ∃hasMother.Woman`). Quy tắc của slide: *đã dùng luật 6 cho cá thể `a` một lần thì block luật 6 cho `a`* ⇒ thuật toán dừng.
+- **Rule blocking (tr. 62–64):** luật 6 có thể sinh cá thể mới vô hạn (ví dụ Jane: `Woman ⊑ ∃hasMother.Woman`). Quy tắc của slide (tr. 63: *"If rule 6 was used, block A for T"*): đã áp luật 6 cho **một assertion** `(∃R.C)(a)` thì block chính assertion đó trong nhánh T — mỗi assertion ∃ chỉ sinh cá thể mới **một lần** (không phải "một lần cho mỗi cá thể"). Cá thể mới b có thể sinh assertion ∃ mới ⇒ reasoner thật dùng thêm *subset blocking* (b bị chặn khi tập khái niệm của b ⊆ tập của tổ tiên) để chắc chắn dừng.
 - **Mẹo làm bài nhanh:** ưu tiên luật không tách nhánh (1, 2, 4, 6, 7) trước luật 5; khi áp luật 3 hãy chọn cá thể "có liên quan" (cá thể đang có ∀/∃) để nhánh đóng sớm.
 
 ### 1.6 Kiến thức lý thuyết đi kèm (★★)
@@ -103,7 +103,7 @@
 | **QL** | subclass đơn giản, inverse | ⊔, ∀, hasSelf, cardinality, functional | truy vấn dữ liệu lớn trong CSDL quan hệ (viết lại query → SQL) |
 | **RL** | các tiên đề dạng luật (Datalog), `Person ← Student` | ∃ ở vế phải, ⊔ ở vế phải, qualified card. ngoài 0/1 | suy diễn bằng luật trên triple store |
 
-  Mỗi profile suy diễn được trong **thời gian đa thức**; gộp lại (OWL 2 DL) thì hàm mũ trở lên.
+  Mỗi profile suy diễn được trong **thời gian đa thức**; nhưng suy diễn trên **hợp của hai profile** thì chỉ làm được trong thời gian hàm mũ (slide 06 tr. 13 — nói về việc gộp hai profile, không phải về OWL 2 DL).
 - **Giới hạn của OWL → luật (SWRL, RIF):** "Nếu A là Woman và A childOf B thì A daughterOf B" — không biểu diễn được bằng OWL thuần, cần rule `Woman(?a) ∧ childOf(?a,?b) → daughterOf(?a,?b)`.
 
 ---
@@ -193,7 +193,7 @@ flowchart TD
   A["1d, 1e: Professor(i), (∀supervises.¬Employee)(i)"] -->|"3a (i)"| B["+ (¬Professor ⊔ ∃supervises.PhDStudent)(i)"]
   B -->|5| B1["¬Professor(i) ✗"]
   B -->|5| B2["(∃supervises.PhDStudent)(i)"]
-  B2 -->|"6 (block 6 cho i)"| C["supervises(i,b0), PhDStudent(b0)"]
+  B2 -->|"6 (block assertion ∃ này)"| C["supervises(i,b0), PhDStudent(b0)"]
   C -->|"7 (với e)"| D["¬Employee(b0)"]
   D -->|"3c (i)"| E["+ (¬Professor ⊔ ∀supervises.(¬Student ⊔ Employee))(i)"]
   E -->|5| E1["¬Professor(i) ✗"]
@@ -244,8 +244,8 @@ Chỉ cần chiều ⊑: a) `¬Bachelor ⊔ (Man ⊓ ∀marriedTo.⊥)`, b) `¬M
 **P4 — Blocking.** `Person ⊑ ∃hasParent.Person`, `Person(Ann)`. Consistent không?
 <details><summary>Đáp án</summary>
 
-a) `¬Person ⊔ ∃hasParent.Person`. 3a(Ann) → 5: `¬Person(Ann)` ✗ | `∃hasParent.Person(Ann)` → 6: `hasParent(Ann,b0)`, `Person(b0)` — **đã dùng luật 6 ⇒ block luật 6 trong tableau này** (đúng thuật toán slide tr. 63: "If rule 6 was used, block A for T"). 3a(b0) → 5: `¬Person(b0)` ✗ | `∃hasParent.Person(b0)` — luật 6 bị block, không còn luật nào áp được, không có mâu thuẫn ⇒ nhánh **mở** ⇒ **consistent**.
-*(bổ sung — reasoner thật dùng "subset/equality blocking": cá thể b0 bị chặn nếu tập khái niệm của nó ⊆ tập của tổ tiên Ann; ở đây hai tập như nhau nên b0 bị chặn. Kết luận giống nhau.)*
+a) `¬Person ⊔ ∃hasParent.Person`. 3a(Ann) → 5: `¬Person(Ann)` ✗ | `∃hasParent.Person(Ann)` → 6: `hasParent(Ann,b0)`, `Person(b0)` — **block assertion `(∃hasParent.Person)(Ann)`** (slide tr. 63: "If rule 6 was used, block A for T" — A là chính assertion này). 3a(b0) → 5: `¬Person(b0)` ✗ | `∃hasParent.Person(b0)` — đây là assertion **mới** nên luật 6 của slide chưa chặn nó; cứ áp tiếp sẽ sinh b1, b2… vô hạn.
+Dừng được nhờ **subset/equality blocking** (bổ sung — cách reasoner thật làm): b0 bị chặn vì tập khái niệm của nó {Person, ¬Person ⊔ ∃hasParent.Person, ∃hasParent.Person} ⊆ tập của tổ tiên Ann ⇒ không áp luật 6 cho b0; không còn luật nào áp được, không có mâu thuẫn ⇒ nhánh **mở** ⇒ **consistent** (kết luận đúng dưới subset blocking).
 </details>
 
 **P5 — Instance + OWA (biến thể Ex2).** `GoodCourse ≡ Course ⊓ ∃hasPart.Homework`, `Course(SW)`, `hasPart(SW, hw1)`. SW có phải GoodCourse? Nếu thêm `Homework(hw1)`?

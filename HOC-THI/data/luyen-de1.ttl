@@ -1,0 +1,13 @@
+@prefix :     <http://semweb.edu.vn/exam#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+:CPP    a :PL ; rdfs:label "C++" ; :creator :bjarne_stroustrup ; :year 1985 ; :influencedBy :C ;
+        :hasFeature :type , :function , :pointer , :class , :template .
+:C      a :PL ; rdfs:label "C" ; :creator :dennis_ritchie ; :year 1972 ;
+        :hasFeature :type , :pointer , :function .
+:Java   a :PL ; rdfs:label "Java" ; :creator :james_gosling ; :year 1995 ; :influencedBy :CPP ;
+        :hasFeature :type , :class .
+:Kotlin a :PL ; :creator :jetbrains ; :year 2011 ; :influencedBy :Java ;
+        :hasFeature :class , :function .
+:Python :year 1991 ; :hasFeature :function , :class .
+:Lisp   a :PL ; :year 1958 ; :hasFeature :function .
+:Ruby   a :PL ; :influencedBy :Lisp .

@@ -36,7 +36,7 @@ WHERE {
 | logic | `&& \|\| !` |
 | chuỗi | `regex(?n, "^Ann$")`, `regex(?n, "ann", "i")`; `"Ann"` bằng `=` so khớp **nguyên chuỗi**; `regex(?n,"Ann")` khớp cả "Mary-Ann" |
 | kiểu | `isURI(?x)`, `isBLANK(?x)`, `isLITERAL(?x)`, `DATATYPE(?x)`, `LANG(?x)`, `bound(?x)` |
-- Ví dụ slide: anh/chị/em lớn tuổi hơn — `FILTER(?b1 < ?b2)` trên ngày sinh.
+- Ví dụ slide: *Persons with younger siblings* — `?p1 :siblingOf ?p2 . ?p1 :age ?a1 . ?p2 :age ?a2 . FILTER(?a2 < ?a1)` (so sánh **tuổi**).
 
 ### A4. UNION, OPTIONAL
 ```sparql
@@ -49,7 +49,7 @@ WHERE {
 ### A5. Sắp xếp, phân trang, trùng lặp
 - `ORDER BY ?x`, `ORDER BY DESC(?pop)`; **không có thứ tự mặc định**.
 - `LIMIT 100`, `OFFSET 100` (ví dụ: 100 thành phố lớn nhất).
-- `DISTINCT` loại **dòng kết quả trùng** — không phải loại thực thể trùng ngoài đời (UNA).
+- `DISTINCT` loại **dòng kết quả trùng** — không phải loại thực thể trùng ngoài đời (vì **không có** UNA, hai URI khác nhau vẫn có thể là một người).
 
 ### A6. Bốn dạng truy vấn
 | Dạng | Trả về | Ghi chú |
@@ -94,7 +94,7 @@ ORDER BY DESC(?n)
 | `p+` | 1 hoặc nhiều bước | `:dlHandbook :citedBy+ ?b` (Q21) |
 | `p?` | 0 hoặc 1 bước | |
 | `!p` | mọi predicate trừ p | `?x !rdf:type ?y` |
-- Thành ngữ quan trọng: **`?x a/rdfs:subClassOf* :C`** = mọi thể hiện của C kể cả lớp con (giả lập rdfs9 + rdfs11); **`?s ?p ?o . ?p rdfs:subPropertyOf* :actor`** = giả lập rdfs7. Không giả lập được domain/range.
+- Thành ngữ quan trọng: **`?x a/rdfs:subClassOf* :C`** = mọi thể hiện của C kể cả lớp con (giả lập rdfs9 + rdfs11); **`?s ?p ?o . ?p rdfs:subPropertyOf* :actor`** = giả lập rdfs7. Domain/range cũng giả lập được: `?x ?p ?y . ?p rdfs:domain :C` ⇒ ?x thuộc C (rdfs2); `?x ?p ?y . ?p rdfs:range :C` ⇒ ?y thuộc C (rdfs3).
 - Phần tử của danh sách RDF: `:list rdf:rest*/rdf:first ?e`.
 
 ### B3. Phủ định *(bổ sung)*
@@ -874,7 +874,7 @@ SELECT ?name WHERE { ?m :director ?d . ?d foaf:name ?name }
 | "James Cameron" |
 | "Christopher Nolan" |
 
-James Cameron xuất hiện **3 lần** (một lần mỗi phim). `SELECT DISTINCT ?name` ⇒ 2 dòng. Nhớ: DISTINCT loại **dòng trùng**, không gộp hai URI khác nhau chỉ cùng một người (UNA).
+James Cameron xuất hiện **3 lần** (một lần mỗi phim). `SELECT DISTINCT ?name` ⇒ 2 dòng. Nhớ: DISTINCT loại **dòng trùng**, không gộp hai URI khác nhau chỉ cùng một người (vì **không có** UNA, hai URI khác nhau vẫn có thể là một người).
 </details>
 
 ---
@@ -889,7 +889,7 @@ James Cameron xuất hiện **3 lần** (một lần mỗi phim). `SELECT DISTIN
 | SELECT biến chưa GROUP BY | lỗi cú pháp | thêm vào GROUP BY hoặc `SAMPLE()` |
 | đếm với join thường | nhóm 0 phần tử biến mất | `OPTIONAL` + `COUNT(?x)` |
 | hiểu ASK false = "sai" | sai lý thuyết (OWA) | "không tìm thấy trong dữ liệu" |
-| `FILTER(?a != ?b)` = "hai người khác nhau" | sai lý thuyết (UNA) | cần `owl:differentFrom` để khẳng định |
+| `FILTER(?a != ?b)` = "hai người khác nhau" | sai lý thuyết (**không có** UNA: hai URI khác nhau vẫn có thể là một người) | cần `owl:differentFrom` để khẳng định |
 | so sánh năm `xsd:gYear` | một số engine không so sánh được | `xsd:integer(str(?y)) > 1990` |
 | thứ tự `GROUP_CONCAT` | không xác định | không dựa vào thứ tự |
 

@@ -1,0 +1,49 @@
+/* Bản in: đen trắng hoàn toàn */
+@page{size:A4;margin:14mm 13mm 14mm 13mm}
+*{box-sizing:border-box;color:#000 !important;background:#fff !important;box-shadow:none !important}
+html,body{margin:0;background:#fff}
+body{font:10.5pt/1.42 "Times New Roman","Segoe UI",serif}
+h1,h2,h3,h4{font-family:Arial,"Segoe UI",sans-serif;break-after:avoid;page-break-after:avoid}
+.part{break-before:page;page-break-before:always}
+.part:first-of-type{break-before:auto}
+.part-head{border:2.5pt solid #000;padding:6pt 10pt;margin:0 0 10pt}
+.part-head .tag{font:800 15pt Arial,sans-serif;border:1.5pt solid #000;padding:0 6pt;margin-right:8pt}
+.part-head h1{display:inline;font-size:16pt}
+.part-head p{margin:4pt 0 0;font-style:italic}
+h2{font-size:13.5pt;border-bottom:1.2pt solid #000;padding-bottom:2pt;margin:14pt 0 6pt}
+h3{font-size:12pt;margin:12pt 0 4pt;text-decoration:underline}
+h3::before{content:"■ "}
+h4{font-size:11pt;margin:8pt 0 3pt}
+p{margin:4pt 0}
+ul,ol{margin:3pt 0 3pt 16pt;padding:0}
+code{font-family:Consolas,"Courier New",monospace;font-size:9.4pt}
+pre{font:9.2pt/1.32 Consolas,"Courier New",monospace;border:0.8pt solid #000;padding:5pt 7pt;margin:5pt 0;white-space:pre-wrap;word-break:break-word;break-inside:avoid;page-break-inside:avoid}
+table{border-collapse:collapse;margin:5pt 0;font-size:9.6pt;break-inside:auto;width:auto;max-width:100%}
+tr{break-inside:avoid;page-break-inside:avoid}
+th,td{border:0.8pt solid #000;padding:2pt 5pt;vertical-align:top;text-align:left}
+th{font-weight:700}
+blockquote{margin:4pt 0;padding:2pt 8pt;border-left:2.5pt solid #000;font-style:italic}
+details{margin:5pt 0;border:0;padding:0}
+details > summary{list-style:none;font:700 10.5pt Arial,sans-serif;margin:6pt 0 2pt}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▶ "}
+details.hint > summary::before{content:"◇ "}
+details.hint{border-left:1pt dashed #000;padding-left:7pt}
+details.ans{border-left:2.5pt solid #000;padding-left:7pt}
+.gimg{display:block;max-width:100%;max-height:150mm;margin:4pt auto;border:0.6pt solid #000;break-inside:avoid;page-break-inside:avoid}
+.graph-box{border:0}
+li.task{list-style:none;margin-left:-12pt}
+li.task::before{content:"☐ "}
+.toc{columns:2;column-gap:12mm;font-size:10pt}
+.toc div{display:flex;gap:4pt;break-inside:avoid}
+.toc div span.d{flex:1;border-bottom:0.6pt dotted #000;margin-bottom:3pt}
+.toc .l1{font-weight:700;margin-top:4pt}
+.toc .l2{padding-left:10pt}
+.cheat{columns:2;column-gap:8mm;column-rule:0.6pt solid #000}
+.cheat pre,.cheat table{break-inside:avoid}
+.noprint,.widget,.quiz,.donebox,.work,.codebar,.timer{display:none !important}
+a{text-decoration:none}
+img{max-width:100%}
+.gfig{text-align:center;margin:4pt 0 8pt;break-inside:avoid;page-break-inside:avoid}.gfig svg{max-height:165mm}
+
+.mmfig{text-align:center;break-inside:avoid;margin:4pt 0}.mmfig svg{max-width:100%;height:auto;filter:grayscale(1)}

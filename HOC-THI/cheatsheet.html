@@ -1,0 +1,1095 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Cheatsheet Semantic Web</title>
+<style>
+@page{size:A4;margin:9mm 8mm 11mm 8mm}
+*{box-sizing:border-box;color:#000 !important;background:#fff !important}
+body{margin:0;font:8.35pt/1.27 Arial,"Segoe UI",sans-serif}
+.top h1{font-size:13pt;margin:0 0 3pt;border:2pt solid #000;padding:3pt 6pt}
+.top p.sub{margin:0 0 4pt;font-style:italic}
+.cols{column-count:2;column-gap:5mm;column-rule:0.6pt solid #000}
+h2{font-size:10.5pt;margin:6pt 0 3pt;padding:2pt 5pt;border:1.6pt solid #000;break-after:avoid;break-inside:avoid}
+h2 + *{break-before:avoid}
+p{margin:2.5pt 0}
+ul,ol{margin:2pt 0 2pt 13pt;padding:0}
+li{margin:0.5pt 0}
+code{font:7.9pt/1.25 Consolas,"Courier New",monospace}
+pre{font:7.4pt/1.2 Consolas,"Courier New",monospace;border:0.6pt solid #000;padding:2.5pt 4pt;margin:3pt 0;white-space:pre-wrap;word-break:break-word;break-inside:avoid}
+pre code{font:inherit}
+table{border-collapse:collapse;margin:3pt 0;width:100%;font-size:7.9pt;break-inside:auto}
+tr{break-inside:avoid}
+th,td{border:0.6pt solid #000;padding:1pt 3pt;vertical-align:top;text-align:left}
+th{font-weight:700}
+.top table{font-size:8.6pt}
+.gfig{text-align:center;margin:2pt 0;break-inside:avoid}.gfig svg{max-height:62mm;max-width:100%}.mmfig svg{filter:grayscale(1)}
+em{font-style:italic}
+</style></head><body>
+<div class="top"><h1>CHEATSHEET SEMANTIC WEB · mang vào phòng thi</h1>
+<p class="sub">Đọc câu hỏi → bảng dưới tìm mã dạng → lật tới khung <b>D…</b> → chép khuôn, thay dữ liệu của đề. Bản đầy đủ: TAI-LIEU-DAY-DU.pdf (không cần in).</p>
+<h2>0 · BẢN ĐỒ ĐỀ THI: dấu hiệu → dạng → mục</h2>
+<p><strong>Bức tranh chung — 5 việc:</strong> ① <strong>Dữ liệu</strong> RDF/Turtle (D1, D2) → ② <strong>Định nghĩa</strong> RDFS/OWL (D3, D5) → ③ <strong>Suy diễn</strong> bằng reasoner: luật RDFS, OWL, tableau, Datalog (D4, D6, D12, D7, D11) → ④ <strong>Hỏi</strong> SPARQL + đại số (D8, D9) → ⑤ <strong>Kiểm tra</strong> SHACL (D10).</p>
+<table>
+<thead>
+<tr>
+<th>Đề có câu…</th>
+<th>Dạng</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Tạo RDF / Turtle <strong>và vẽ đồ thị</strong>&quot; cho đoạn văn</td>
+<td>Câu văn → Turtle + đồ thị</td>
+<td><strong>D1</strong> · tr.1</td>
+</tr>
+<tr>
+<td>&quot;Biểu diễn đồ thị sau bằng Turtle / vẽ đồ thị cho triple / RDF-XML&quot;</td>
+<td>Chuyển đổi</td>
+<td><strong>D2</strong> · tr.2</td>
+</tr>
+<tr>
+<td>&quot;Dùng RDF/RDFS biểu diễn: URI1 là lớp, có domain…&quot;</td>
+<td>RDFS schema</td>
+<td><strong>D3</strong> · tr.2</td>
+</tr>
+<tr>
+<td>&quot;Viết bộ-3 <strong>suy ra được</strong> (RDFS)&quot;, &quot;đúng hay sai&quot;</td>
+<td>Suy diễn RDFS</td>
+<td><strong>D4</strong> · tr.2</td>
+</tr>
+<tr>
+<td>&quot;Định nghĩa lớp/thuộc tính bằng <strong>RDFS + OWL</strong>&quot;, &quot;biểu thức <strong>DL</strong>&quot;</td>
+<td>OWL + DL</td>
+<td><strong>D5</strong> · tr.2</td>
+</tr>
+<tr>
+<td>&quot;Tầng nào (RDFS hay OWL)… bổ sung ràng buộc để suy ra…&quot;</td>
+<td>Suy diễn OWL</td>
+<td><strong>D6</strong> · tr.3</td>
+</tr>
+<tr>
+<td>&quot;Chứng minh bằng <strong>tableau</strong>&quot;, NNF, consistency</td>
+<td>Tableau</td>
+<td><strong>D12</strong> · tr.3</td>
+</tr>
+<tr>
+<td>&quot;Chương trình <strong>Datalog</strong>… <strong>cây chứng minh</strong>… <strong>điểm cố định</strong>&quot;</td>
+<td>Datalog</td>
+<td><strong>D7</strong> · tr.3</td>
+</tr>
+<tr>
+<td>&quot;Viết truy vấn <strong>SPARQL</strong>&quot; (câu 2.5đ)</td>
+<td>SPARQL</td>
+<td><strong>D8</strong> · tr.3</td>
+</tr>
+<tr>
+<td>&quot;Viết <strong>biểu thức đại số SPARQL</strong>, giải thích từng bước&quot;</td>
+<td>Đại số</td>
+<td><strong>D9</strong> · tr.4</td>
+</tr>
+<tr>
+<td>&quot;Tạo <strong>khuôn hình SHACL</strong>&quot;, &quot;nút nào được kiểm / vi phạm&quot;</td>
+<td>SHACL</td>
+<td><strong>D10</strong> · tr.4</td>
+</tr>
+<tr>
+<td>&quot;Chức năng của <strong>reasoner</strong> trong KB&quot;, câu lý thuyết</td>
+<td>Lý thuyết</td>
+<td><strong>D11</strong> · tr.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prefix chép đầu bài:</strong></p>
+<pre><code class="language-turtle">@prefix rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix owl:  &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix xsd:  &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix sh:   &lt;http://www.w3.org/ns/shacl#&gt; .
+@prefix :     &lt;http://example.org/&gt; .
+</code></pre>
+<p><strong>Khi nào dùng prefix nào:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Dùng khi nào</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rdf:</code></td>
+<td>cú pháp lõi: <code>a</code> (= <code>rdf:type</code>), <code>rdf:Property</code>, reification (<code>Statement/subject/predicate/object</code>), collection (<code>first/rest/nil</code>)</td>
+</tr>
+<tr>
+<td><code>rdfs:</code></td>
+<td>schema cơ bản: <code>Class</code>, <code>subClassOf</code>, <code>subPropertyOf</code>, <code>domain</code>, <code>range</code>, <code>label</code>, <code>comment</code></td>
+</tr>
+<tr>
+<td><code>owl:</code></td>
+<td>câu hỏi thuộc phần OWL/DL (D5-D6): <code>equivalentClass/Property</code>, <code>disjointWith</code>, <code>unionOf/intersectionOf/complementOf</code>, <code>Restriction</code> (<code>someValuesFrom/allValuesFrom/hasValue</code>), cardinality, <code>inverseOf</code>, <code>TransitiveProperty/SymmetricProperty/FunctionalProperty</code>, <code>sameAs</code></td>
+</tr>
+<tr>
+<td><code>xsd:</code></td>
+<td>literal có kiểu cụ thể: <code>&quot;10&quot;^^xsd:integer</code>, <code>&quot;2024-01-01&quot;^^xsd:date</code>, <code>xsd:float</code>. Số/chuỗi đơn giản thì khỏi cần gắn.</td>
+</tr>
+<tr>
+<td><code>foaf:</code></td>
+<td>đề nói về người/quan hệ xã hội và <strong>có cho sẵn</strong> prefix này: <code>foaf:name</code>, <code>foaf:knows</code>, <code>foaf:member</code>. Đề không cho thì tự định nghĩa property riêng dưới <code>:</code>.</td>
+</tr>
+<tr>
+<td><code>dc:</code> / <code>dcterms:</code></td>
+<td>metadata mô tả tài liệu (sách, bài báo): <code>dc:title</code>, <code>dc:creator</code>, <code>dc:date</code>. Ít gặp — chỉ thêm khi đề nhắc &quot;tác giả/tiêu đề/ngày xuất bản&quot; của một tài liệu.</td>
+</tr>
+<tr>
+<td><code>sh:</code></td>
+<td>chỉ dùng ở phần SHACL (D10): <code>NodeShape</code>, <code>targetClass</code>, <code>property</code>, <code>minCount/maxCount</code>, <code>datatype</code>, <code>pattern</code>...</td>
+</tr>
+</tbody>
+</table>
+<p>Đề cho sẵn prefix nào thì dùng đúng cái đó; đề không cho thì chỉ cần <code>rdf, rdfs, owl, xsd</code> là đủ cho hầu hết câu, các prefix còn lại thêm khi ngữ cảnh gợi ý.</p>
+<p><strong>Mẹo chung:</strong> ghi rõ IRI tự đặt · mỗi bước có lý do (tên luật / tên phép) · không chắc thì viết <strong>cả 2 cách</strong> và nói khác nhau ở đâu.</p>
+</div>
+<div class="cols"><h2>D1 · Câu văn → Turtle + vẽ đồ thị</h2>
+<table>
+<thead>
+<tr>
+<th>Đề nói…</th>
+<th>Dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;A <strong>nghĩ / cảm thấy / nhận xét / cho rằng</strong> X&quot;</td>
+<td><strong>reification</strong> <code>[a rdf:Statement; rdf:subject…; rdf:predicate…; rdf:object…]</code></td>
+</tr>
+<tr>
+<td>&quot;<strong>gồm / danh sách / nhóm tác giả / xếp hạng</strong>&quot;</td>
+<td><strong>collection</strong> <code>( :a :b :c )</code> → rdf:first/rest/nil (thứ tự: <code>rdf:Seq</code>)</td>
+</tr>
+<tr>
+<td>&quot;đạt <strong>điểm 10 môn X</strong>&quot;, quan hệ ≥ 3 thành phần</td>
+<td><strong>n-ary</strong>: <code>:sv :score [ :value 10 ; :course :X ]</code></td>
+</tr>
+<tr>
+<td>&quot;một người nào đó / không rõ tên&quot;</td>
+<td>blank node <code>[]</code></td>
+</tr>
+<tr>
+<td>tên, số, ngày</td>
+<td>literal: <code>&quot;Ann&quot;</code>, <code>10</code>, <code>&quot;2024-01-01&quot;^^xsd:date</code>, <code>&quot;Avatar&quot;@en</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Khuôn:</strong> ① prefix → ② đặt IRI cho từng thực thể → ③ Turtle → ④ vẽ: <strong>IRI = elip, literal = chữ nhật, blank = elip rỗng</strong>, mỗi triple = 1 mũi tên có nhãn → ⑤ đếm triple nếu đề giới hạn.</p>
+<p><strong>Liệt kê HẾT triple (Notes):</strong> với mỗi thực thể: <code>a :Lớp</code> · tên/nhãn (literal) · mọi quan hệ trong câu · thuộc tính số/ngày có kiểu · quan hệ ngược nếu câu hàm ý · reification nếu là ý kiến.
+Vị trí: <strong>S</strong> = IRI/blank · <strong>P</strong> = chỉ IRI · <strong>O</strong> = IRI/blank/literal.</p>
+<p><strong>Mẫu (2022-C1 — đáp án thầy):</strong></p>
+<pre><code class="language-turtle">@prefix b: &lt;http://exam.hust.edu.vn/book/&gt; .
+b:nguyen-van-a b:name &quot;Nguyễn Văn A&quot; ;
+  b:feels [ a rdf:Statement ; rdf:subject b:design-patterns ;
+            rdf:predicate rdf:type ; rdf:object b:GoodBook ] .
+b:design-patterns a b:Book ; b:title &quot;Design Patterns: …&quot; ;
+  b:writtenBy ( b:erich-gamma b:richard-helm b:ralph-johnson b:john-vlissides ) .
+b:erich-gamma b:name &quot;Erich Gamma&quot; .   # … tương tự 3 tác giả còn lại
+</code></pre>
+<p><strong>Hình mẫu reification + collection:</strong></p>
+<pre><code class="language-turtle-graph">@prefix : &lt;http://example.org/&gt; .
+:An :thinks [ a rdf:Statement ; rdf:subject :CPP ; rdf:predicate :is ; rdf:object :Interesting ] .
+:TIOBE :ranking ( :C :CPP ) .
+</code></pre>
+<p><strong>2023-C1 (thầy):</strong> <code>:sw_course :ref (:foswt :learning_sparql :sw_ontologist); rdfs:label &quot;The Semantic Web&quot;.</code> · <code>:nva a :Student; :score [:value 10; :course :sw_course].</code> · <code>[a :Teacher; :course :sw_course] :comment [a rdf:Statement; rdf:subject :nva; rdf:predicate rdf:type; rdf:object :ExcellentStudent].</code></p>
+<h2>D2 · Đồ thị ↔ Turtle ↔ N-Triples ↔ RDF/XML</h2>
+<ul>
+<li><strong>Đồ thị → Turtle:</strong> đi từng nút có mũi tên ra = subject; gom cạnh cùng subject bằng <code>;</code>, cùng predicate bằng <code>,</code>. Nút <strong>không có tên / chữ thường</strong> (&quot;a dragon&quot;) = <strong>blank node</strong>.</li>
+<li><strong>Turtle → đồ thị:</strong> bung <code>;</code> <code>,</code> <code>[]</code> <code>()</code> thành từng triple, vẽ từng cạnh. <code>[]</code> = elip rỗng; <code>()</code> = chuỗi elip rỗng rdf:first/rest → rdf:nil.</li>
+<li><strong>N-Triples:</strong> mỗi dòng 1 triple, IRI đầy đủ <code>&lt;…&gt;</code>, blank <code>_:b1</code>, kết thúc <code>.</code></li>
+</ul>
+<p><strong>P1 Ex4 (Georges/Michael — 9 triple):</strong></p>
+<pre><code class="language-turtle">:Georges a :Saint ; foaf:name &quot;Georges&quot; ; :defeated [ a :Dragon ] .
+:Michael a :Saint , :Archangel ; foaf:name &quot;Michael&quot; ; :defeated :Satan .
+:Satan foaf:name &quot;Satan&quot; .
+</code></pre>
+<p><strong>Khung RDF/XML:</strong></p>
+<pre><code class="language-xml">&lt;rdf:RDF xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+         xmlns:foaf=&quot;http://xmlns.com/foaf/0.1/&quot; xmlns:ex=&quot;http://example.org/&quot;&gt;
+  &lt;rdf:Description rdf:about=&quot;http://example.org/Michael&quot;&gt;
+    &lt;rdf:type rdf:resource=&quot;http://example.org/Archangel&quot;/&gt;   &lt;!-- IRI object --&gt;
+    &lt;foaf:name&gt;Michael&lt;/foaf:name&gt;                            &lt;!-- literal --&gt;
+    &lt;ex:defeated rdf:resource=&quot;http://example.org/Satan&quot;/&gt;
+    &lt;ex:knows rdf:nodeID=&quot;b1&quot;/&gt;                               &lt;!-- blank node --&gt;
+  &lt;/rdf:Description&gt;
+  &lt;rdf:Description rdf:nodeID=&quot;b1&quot;&gt;&lt;rdf:type rdf:resource=&quot;http://example.org/Dragon&quot;/&gt;&lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;
+</code></pre>
+<p><strong>P1 Ex6 (<code>[] foaf:knows :Minh; foaf:member [a :Company]</code>):</strong> 2 blank node; <code>:teaches &quot;Semantic Web&quot;, &quot;Data Integration&quot;</code> = 2 cạnh tới 2 chữ nhật.</p>
+<h2>D3 · RDFS schema</h2>
+<table>
+<thead>
+<tr>
+<th>Câu</th>
+<th>RDFS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X là lớp</td>
+<td><code>:X a rdfs:Class .</code></td>
+</tr>
+<tr>
+<td>p là thuộc tính</td>
+<td><code>:p a rdf:Property .</code></td>
+</tr>
+<tr>
+<td>a là thể hiện của X</td>
+<td><code>:a a :X .</code></td>
+</tr>
+<tr>
+<td>X là lớp con của Y</td>
+<td><code>:X rdfs:subClassOf :Y .</code></td>
+</tr>
+<tr>
+<td>p là thuộc tính con của q</td>
+<td><code>:p rdfs:subPropertyOf :q .</code></td>
+</tr>
+<tr>
+<td>p có miền X, khoảng Y</td>
+<td><code>:p rdfs:domain :X ; rdfs:range :Y .</code></td>
+</tr>
+<tr>
+<td>nhãn / chú thích</td>
+<td><code>rdfs:label &quot;…&quot;@vi ; rdfs:comment &quot;…&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>P1 Ex3:</strong> <code>:URI1 a rdfs:Class . :URI2 a rdfs:Class . :URI3 a rdf:Property ; rdfs:domain :URI1 ; rdfs:range :URI2 . :URI4 a :URI1 . :URI5 a :URI2 . :URI6 a :URI2 .</code>
+<strong>Giới hạn RDFS</strong> (lý do phải sang OWL): không có phủ định/disjoint, không cardinality, không inverse/transitive, domain/range chỉ toàn cục (không ràng buộc theo từng lớp), không định nghĩa lớp bằng điều kiện.</p>
+<h2>D4 · Suy diễn RDFS</h2>
+<table>
+<thead>
+<tr>
+<th>Luật</th>
+<th>Nếu có</th>
+<th>Suy ra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>rdfs2</strong></td>
+<td><code>p rdfs:domain C</code> + <code>x p y</code></td>
+<td><code>x a C</code></td>
+</tr>
+<tr>
+<td><strong>rdfs3</strong></td>
+<td><code>p rdfs:range C</code> + <code>x p y</code></td>
+<td><code>y a C</code> (y không là literal)</td>
+</tr>
+<tr>
+<td><strong>rdfs5</strong></td>
+<td><code>p ⊑ q</code>, <code>q ⊑ r</code> (subPropertyOf)</td>
+<td><code>p subPropertyOf r</code></td>
+</tr>
+<tr>
+<td><strong>rdfs7</strong></td>
+<td><code>p subPropertyOf q</code> + <code>x p y</code></td>
+<td><code>x q y</code></td>
+</tr>
+<tr>
+<td><strong>rdfs9</strong></td>
+<td><code>C subClassOf D</code> + <code>x a C</code></td>
+<td><code>x a D</code></td>
+</tr>
+<tr>
+<td><strong>rdfs11</strong></td>
+<td><code>C ⊑ D</code>, <code>D ⊑ E</code> (subClassOf)</td>
+<td><code>C subClassOf E</code></td>
+</tr>
+<tr>
+<td>rdfs4a/4b</td>
+<td><code>x p y</code></td>
+<td><code>x a rdfs:Resource</code>, <code>y a rdfs:Resource</code></td>
+</tr>
+<tr>
+<td>rdf1</td>
+<td><code>x p y</code></td>
+<td><code>p a rdf:Property</code></td>
+</tr>
+<tr>
+<td>rdfs6 / 8 / 10</td>
+<td><code>p a rdf:Property</code> / <code>C a rdfs:Class</code></td>
+<td><code>p ⊑ p</code> / <code>C ⊑ rdfs:Resource</code> / <code>C ⊑ C</code></td>
+</tr>
+<tr>
+<td>se1 / se2</td>
+<td><code>x p y</code></td>
+<td><code>x p _:b</code> / <code>_:b p y</code> (thay bằng blank)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Format trả lời (như thầy):</strong> <code>:a a :D .  &lt;=  :a :r :b .  :r rdfs:domain :D .</code> — mỗi triple suy ra ghi <strong>luật + 2 triple cơ sở</strong>, đánh số D1, D2… để dùng lại.
+<strong>Đúng/sai:</strong> suy ra được (hoặc có sẵn) ⇒ <strong>TRUE</strong> + chỉ ra bước; không suy ra được ⇒ <strong>UNKNOWN</strong> (OWA, RDFS không có phủ định) — giải thích vì sao không luật nào sinh ra. Blank node trong câu hỏi = &quot;tồn tại&quot;: chỉ ra phép thay <code>_:x ↦ :Carl</code>.
+<strong>Bẫy:</strong> bộ-3 <code>subP rdfs:domain C</code> <strong>không</strong> suy ra được bằng luật RDFS (→ UNKNOWN), nhưng ở mức cá thể vẫn &quot;truyền&quot;: <code>x subP y</code> ⇒ rdfs7 ⇒ rdfs2 ⇒ <code>x a C</code> (slide: &quot;inherited by sub properties&quot;); <strong>không</strong> có inverse (hasChild ≠ hasParent⁻¹); predicate không có trong G ⇒ unknown.</p>
+<p><strong>2022-C2 (thầy):</strong> <code>:a a :D &lt;= :a :r :b. :r rdfs:domain :D.</code> · <code>:a a :F &lt;= :a a :D. :D rdfs:subClassOf :F.</code> · <code>:c a :E &lt;= :c a :C. :C rdfs:subClassOf :E.</code> · <code>:b a :C &lt;= :a :r :b. :r rdfs:range :C.</code> · <code>:b a :E &lt;= :b a :C. :C rdfs:subClassOf :E.</code></p>
+<p><strong>P2 Ex2 (gia đình):</strong> 1 <code>Father ⊑ Person</code> TRUE (rdfs11) · 2 <code>Man ⊑ Person</code> TRUE (có sẵn) · 3 <code>Carl a Person</code> TRUE (rdfs9) · 4 <code>Carl a Parent</code> TRUE (range hasFather=Father, rdfs3 → Father ⊑ Parent, rdfs9) · 5 <code>Carl hasChild Ann</code> UNKNOWN (không inverse) · 6 <code>Carl a Man</code> TRUE (có sẵn) · 7 <code>Carl a Father</code> TRUE (rdfs3) · 8 <code>Child a rdfs:Resource</code> TRUE (rdfs4a).</p>
+<h2>D5 · Thiết kế ontology OWL + DL</h2>
+<table>
+<thead>
+<tr>
+<th>Câu tiếng Việt</th>
+<th>DL</th>
+<th>OWL Turtle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C là một loại D</td>
+<td><code>C ⊑ D</code></td>
+<td><code>:C rdfs:subClassOf :D</code></td>
+</tr>
+<tr>
+<td>C chính là / được định nghĩa là D</td>
+<td><code>C ≡ D</code></td>
+<td><code>owl:equivalentClass</code></td>
+</tr>
+<tr>
+<td>không có cá thể nào vừa C vừa D</td>
+<td><code>C ⊓ D ⊑ ⊥</code></td>
+<td><code>:C owl:disjointWith :D</code></td>
+</tr>
+<tr>
+<td>vừa là C vừa là D</td>
+<td><code>C ⊓ D</code></td>
+<td><code>[owl:intersectionOf (:C :D)]</code></td>
+</tr>
+<tr>
+<td>C hoặc D; &quot;gồm có C và D&quot; (tên chung)</td>
+<td><code>C ⊔ D</code></td>
+<td><code>[owl:unionOf (:C :D)]</code></td>
+</tr>
+<tr>
+<td>không phải C</td>
+<td><code>¬C</code></td>
+<td><code>[owl:complementOf :C]</code></td>
+</tr>
+<tr>
+<td>giá trị chỉ có thể là a, b, c</td>
+<td><code>{a,b,c}</code></td>
+<td><code>[owl:oneOf (:a :b :c)]</code></td>
+</tr>
+<tr>
+<td>có ít nhất một R là C</td>
+<td><code>∃R.C</code></td>
+<td><code>[a owl:Restriction; owl:onProperty :R; owl:someValuesFrom :C]</code></td>
+</tr>
+<tr>
+<td>mọi R (nếu có) đều là C</td>
+<td><code>∀R.C</code></td>
+<td><code>… owl:allValuesFrom :C</code></td>
+</tr>
+<tr>
+<td>có R là a</td>
+<td><code>∃R.{a}</code></td>
+<td><code>… owl:hasValue :a</code></td>
+</tr>
+<tr>
+<td>tối thiểu / tối đa / đúng n</td>
+<td><code>≥n R</code>, <code>≤n R</code>, <code>=n R</code></td>
+<td><code>owl:minCardinality</code> / <code>maxCardinality</code> / <code>cardinality</code> <code>&quot;n&quot;^^xsd:nonNegativeInteger</code></td>
+</tr>
+<tr>
+<td>tối thiểu n R là C</td>
+<td><code>≥n R.C</code></td>
+<td><code>owl:minQualifiedCardinality n ; owl:onClass :C</code></td>
+</tr>
+<tr>
+<td>miền của R là C</td>
+<td><code>∃R.⊤ ⊑ C</code></td>
+<td><code>:R rdfs:domain :C</code></td>
+</tr>
+<tr>
+<td>khoảng của R là C</td>
+<td><code>⊤ ⊑ ∀R.C</code></td>
+<td><code>:R rdfs:range :C</code></td>
+</tr>
+<tr>
+<td>R là nghịch đảo của S</td>
+<td><code>R ≡ S⁻</code></td>
+<td><code>:R owl:inverseOf :S</code></td>
+</tr>
+<tr>
+<td>R bắc cầu / đối xứng / hàm</td>
+<td><code>Trans(R)</code>, <code>R ≡ R⁻</code>, <code>⊤ ⊑ ≤1 R</code></td>
+<td><code>a owl:TransitiveProperty</code> / <code>SymmetricProperty</code> / <code>FunctionalProperty</code></td>
+</tr>
+<tr>
+<td>R tương đương S; R con của S</td>
+<td><code>R ≡ S</code>; <code>R ⊑ S</code></td>
+<td><code>owl:equivalentProperty</code>; <code>rdfs:subPropertyOf</code></td>
+</tr>
+<tr>
+<td>C gồm đúng A, B tách rời</td>
+<td><code>C ≡ A ⊔ B</code>, <code>A ⊓ B ⊑ ⊥</code></td>
+<td><code>owl:disjointUnionOf (:A :B)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Khuôn:</strong> ① liệt kê lớp, thuộc tính (object/datatype), cá thể → ② mỗi câu đề → 1 tiên đề DL → ③ dịch sang Turtle → ④ khai <code>a owl:Class / owl:ObjectProperty</code> → ⑤ giải thích lựa chọn (vì sao ∃ hay ∀, ⊑ hay ≡).</p>
+<p><strong>2023-C2 (thầy):</strong> <code>:PT_ĐườngBộ, :PT_ĐườngThủy, :PT_ĐườngKhông rdfs:subClassOf :PT_GiaoThông</code> · <code>:Đường_Giao_Thông owl:unionOf (:Đường_Bộ :Đường_Thủy :Đường_Không)</code> · <code>:vận_hành rdfs:domain :PT_GiaoThông; rdfs:range :Đường_Giao_Thông</code> · <code>:nhiên_liệu rdfs:domain :PT_GiaoThông; rdfs:range [owl:oneOf (:xăng :dầu :điện)]</code> · <code>:PT_LưỡngCư owl:unionOf ([owl:intersectionOf (:Bộ :Thủy)] [owl:intersectionOf (:Bộ :Không)] [owl:intersectionOf (:Thủy :Không)])</code>.
+DL: <code>LưỡngCư ≡ (Bộ ⊓ Thủy) ⊔ (Bộ ⊓ Không) ⊔ (Thủy ⊓ Không)</code> · <code>∃vận_hành.⊤ ⊑ PTGT</code>, <code>⊤ ⊑ ∀vận_hành.ĐườngGT</code> · <code>∃nhiên_liệu.⊤ ⊑ PTGT</code>, <code>⊤ ⊑ ∀nhiên_liệu.{xăng, dầu, điện}</code>.</p>
+<p><strong>2022-C4:</strong> <code>Dog ⊑ Pet</code>, <code>Cat ⊑ Pet</code>, <code>Dog ⊓ Cat ⊑ ⊥</code> ⇒ <code>:Dog rdfs:subClassOf :Pet . :Cat rdfs:subClassOf :Pet . :Cat owl:disjointWith :Dog .</code></p>
+<p><strong>6390-C2 (mẫu):</strong></p>
+<pre><code class="language-turtle">:dependsOn a owl:ObjectProperty , owl:TransitiveProperty .   # a. Trans(dependsOn)
+:dependsOn owl:equivalentProperty :uses .                    # b. dependsOn ≡ uses
+:gpp a :CppCompiler . :clangpp a :CppCompiler . :msvc a :CppCompiler .  # c. (hoặc owl:oneOf)
+:CppProgram owl:equivalentClass [ owl:intersectionOf ( :Program        # d. Program ⊓ ∃writtenIn.{CPP} ⊓ ∃compiledBy.CppCompiler
+   [ a owl:Restriction ; owl:onProperty :writtenIn ; owl:hasValue :CPP ]
+   [ a owl:Restriction ; owl:onProperty :compiledBy ; owl:someValuesFrom :CppCompiler ] ) ] .
+:CrossPlatformProgram owl:equivalentClass [ owl:intersectionOf ( :Program   # e. Program ⊓ ≥2 runsOn.OS
+   [ a owl:Restriction ; owl:onProperty :runsOn ;
+     owl:minQualifiedCardinality &quot;2&quot;^^xsd:nonNegativeInteger ; owl:onClass :OperatingSystem ] ) ] .
+</code></pre>
+<h2>D6 · Suy diễn OWL / reasoner</h2>
+<table>
+<thead>
+<tr>
+<th>Có trong KB</th>
+<th>Reasoner suy ra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C ⊑ ∀p.F</code>, <code>x a C</code>, <code>x p y</code></td>
+<td><code>y a F</code></td>
+</tr>
+<tr>
+<td><code>C ≡ ∃p.F</code>, <code>x p y</code>, <code>y a F</code></td>
+<td><code>x a C</code></td>
+</tr>
+<tr>
+<td><code>C ≡ ∃p.{v}</code> (hasValue), <code>x p v</code></td>
+<td><code>x a C</code> (và ngược lại <code>x a C</code> ⇒ <code>x p v</code>)</td>
+</tr>
+<tr>
+<td><code>C ≡ A ⊓ B</code>, <code>x a A</code>, <code>x a B</code></td>
+<td><code>x a C</code></td>
+</tr>
+<tr>
+<td><code>p owl:inverseOf q</code>, <code>x p y</code></td>
+<td><code>y q x</code></td>
+</tr>
+<tr>
+<td>p Transitive, <code>x p y</code>, <code>y p z</code></td>
+<td><code>x p z</code></td>
+</tr>
+<tr>
+<td>p Symmetric, <code>x p y</code></td>
+<td><code>y p x</code></td>
+</tr>
+<tr>
+<td>p Functional, <code>x p y</code>, <code>x p z</code></td>
+<td><code>y owl:sameAs z</code></td>
+</tr>
+<tr>
+<td><code>C ⊓ D ⊑ ⊥</code>, <code>x a C</code>, <code>x a D</code></td>
+<td><strong>mâu thuẫn</strong> (inconsistent)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OWA:</strong> <code>∀p.F</code> <strong>không</strong> suy ra được cho x chỉ từ dữ liệu (có thể còn p-giá trị chưa biết) ⇒ &quot;x a C&quot; với <code>C ≡ ∀p.F</code> là <strong>không xác định</strong>.</p>
+<p><strong>2022-C3 (Molly là mèo, Spot không):</strong> RDFS không làm được (range chỉ toàn cục: đổi range thành Cat ⇒ cả Spot cũng là mèo). OWL: <code>:Cat rdfs:subClassOf [a owl:Restriction; owl:onProperty bio:offspring; owl:allValuesFrom bio:Cat]</code> (Cat ⊑ ∀offspring.Cat) ⇒ Milo a Cat, Milo offspring Molly ⇒ Molly a Cat; Fido không phải Cat nên không suy gì về Spot. <em>(Đáp án thầy: <code>bio:sprungBy owl:inverseOf bio:offspring . bio:Cat owl:equivalentClass [a owl:Restriction; owl:onProperty bio:sprungBy; owl:allValuesFrom bio:Cat]</code> — ghi cả hai.)</em></p>
+<p><strong>6390-C3:</strong> a) Từ <code>C ≡ ∀p.F</code> và <code>C ⊑ D, E</code> ⇒ <code>[a owl:Restriction; owl:onProperty :p; owl:allValuesFrom :F] rdfs:subClassOf :D , :E</code> (mọi cá thể có mọi p-giá trị là F thì là D và E). Không suy được <code>:y a :C</code> (OWA). b) DL: <code>C ⊑ D ⊓ E</code>, <code>C ≡ ∀p.F</code>; ngữ nghĩa: <code>Cᴵ ⊆ Dᴵ ∩ Eᴵ</code>, <code>Cᴵ = { x | ∀y: (x,y) ∈ pᴵ → y ∈ Fᴵ }</code>.</p>
+<h2>D12 · Tableau</h2>
+<p><strong>NNF:</strong> <code>C ⊑ D</code> → <code>¬C ⊔ D</code> · <code>C ≡ D</code> → <code>¬C ⊔ D</code> và <code>¬D ⊔ C</code> · <code>¬(C⊓D)</code> → <code>¬C ⊔ ¬D</code> · <code>¬(C⊔D)</code> → <code>¬C ⊓ ¬D</code> · <code>¬∃R.C</code> → <code>∀R.¬C</code> · <code>¬∀R.C</code> → <code>∃R.¬C</code> · <code>C ⊓ D ⊑ ⊥</code> → <code>¬C ⊔ ¬D</code> · domain <code>∃R.⊤ ⊑ C</code> → <code>∀R.⊥ ⊔ C</code> · range → <code>∀R.C</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Nr</th>
+<th>Có</th>
+<th>Làm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>C(a)</code></td>
+<td>thêm <code>C(a)</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>R(a,b)</code></td>
+<td>thêm <code>R(a,b)</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>C</code> (tiên đề TBox)</td>
+<td>chọn cá thể a, thêm <code>C(a)</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>(C ⊓ D)(a)</code></td>
+<td>thêm <code>C(a)</code>, <code>D(a)</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>(C ⊔ D)(a)</code></td>
+<td><strong>tách nhánh</strong>: T1 + <code>C(a)</code>, T2 + <code>D(a)</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>(∃R.C)(a)</code></td>
+<td>thêm <code>R(a,b)</code>, <code>C(b)</code> với b <strong>mới</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>(∀R.C)(a)</code></td>
+<td>với mọi b có <code>R(a,b)</code>: thêm <code>C(b)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quy trình:</strong> ① đưa câu hỏi về <strong>consistency</strong>: kiểm <code>KB ⊨ C(a)</code> ⇒ thêm <code>¬C(a)</code>; kiểm <code>C ⊑ D</code> ⇒ thêm <code>(C ⊓ ¬D)(x)</code> với x mới → ② chuyển mọi tiên đề sang NNF → ③ áp luật (ưu tiên 1,2,4,6,7 trước 5) → ④ nhánh <strong>đóng</strong> khi có <code>X(a)</code> và <code>¬X(a)</code> → ⑤ <strong>mọi nhánh đóng</strong> ⇒ KB+phủ định mâu thuẫn ⇒ điều cần chứng minh <strong>đúng</strong>; còn nhánh mở không áp được luật ⇒ <strong>không</strong> suy ra. <strong>Blocking:</strong> luật 6 áp cho cá thể a một lần thì chặn (tránh vô hạn).</p>
+<p><strong>Mẫu:</strong> KB <code>A ⊑ B</code>, <code>A(a)</code>. Hỏi <code>B(a)</code>? Thêm <code>¬B(a)</code>; NNF <code>¬A ⊔ B</code>; luật 3 tại a: <code>(¬A ⊔ B)(a)</code>; luật 5: T1 <code>¬A(a)</code> ✗ (với <code>A(a)</code>), T2 <code>B(a)</code> ✗ (với <code>¬B(a)</code>) ⇒ mọi nhánh đóng ⇒ <code>B(a)</code> đúng.</p>
+<h2>D7 · Datalog</h2>
+<p><strong>Khuôn:</strong> B0 = dữ kiện cho sẵn · B(i+1) = Bi + mọi dữ kiện <strong>mới</strong> suy ra từ Bi bằng 1 lần áp các luật · dừng khi một bước không thêm gì ⇒ <strong>điểm cố định</strong> ở bước cuối có thêm. Viết rõ &quot;B1: + {…}&quot;. Cây chứng minh: gốc = khẳng định; con = các tiền đề của luật đã dùng; lá = dữ kiện B0.</p>
+<p><strong>2023-C3 (thầy):</strong>
+B0: {1C(A,B), 1C(B,C), 2C(D,C)}
+B1: + {2C(C,D), Đi(A,B), Đi(B,C), Đi(D,C)}
+B2: + {Đi(C,D), Đi(A,C)}
+B3: + {Đi(B,D), Đi(A,D), Đi(C,C), Đi(D,D)} — B4 không thêm ⇒ <strong>điểm cố định ở B3</strong>.
+<em>(1C = Đường-một-chiều, 2C = Đường-hai-chiều, Đi = Có-đường-đi)</em></p>
+<pre><code class="language-text">Có-đường-đi(A,D)                          [luật bắc cầu]
+├── Có-đường-đi(A,C)                       [luật bắc cầu]
+│   ├── Có-đường-đi(A,B) ← Đường-một-chiều(A,B)
+│   └── Có-đường-đi(B,C) ← Đường-một-chiều(B,C)
+└── Có-đường-đi(C,D) ← Đường-hai-chiều(C,D) ← Đường-hai-chiều(D,C)   [luật đối xứng]
+</code></pre>
+<h2>D8 · SPARQL (câu 2.5 điểm)</h2>
+<pre><code class="language-sparql">PREFIX : &lt;http://example.org/&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+SELECT DISTINCT ?x ?name (COUNT(?y) AS ?n)
+WHERE {
+  ?x a :C ; :p ?y .                     # khớp mẫu (cùng subject dùng ;)
+  OPTIONAL { ?x rdfs:label ?name }      # &quot;nếu có, để trống nếu không&quot;
+  FILTER (?y &gt; 1990 &amp;&amp; ?x != :A)
+  FILTER NOT EXISTS { ?x :bad ?z }      # &quot;không có&quot;
+}
+GROUP BY ?x ?name  HAVING (COUNT(?y) &gt;= 2)
+ORDER BY DESC(?n)  LIMIT 10
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Đề nói</th>
+<th>Dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;nếu có / để trống nếu không&quot;</td>
+<td><code>OPTIONAL { }</code></td>
+</tr>
+<tr>
+<td>&quot;A hoặc B&quot;</td>
+<td><code>{ … } UNION { … }</code> hoặc <code>FILTER (?t = :A || ?t = :B)</code> hoặc <code>VALUES ?t { :A :B }</code></td>
+</tr>
+<tr>
+<td>&quot;không có / chưa có&quot;</td>
+<td><code>FILTER NOT EXISTS { }</code> / <code>MINUS { }</code> / <code>OPTIONAL + FILTER(!bound(?v))</code></td>
+</tr>
+<tr>
+<td>&quot;đếm / mỗi / tổng / trung bình&quot;</td>
+<td><code>GROUP BY</code> + <code>COUNT / SUM / AVG / MIN / MAX</code>; biến SELECT không gộp phải có trong GROUP BY</td>
+</tr>
+<tr>
+<td>&quot;ít nhất 2 / nhiều hơn&quot;</td>
+<td><code>HAVING (COUNT(?x) &gt;= 2)</code></td>
+</tr>
+<tr>
+<td>&quot;kể cả gián tiếp / bắc cầu&quot;</td>
+<td>path <code>:p+</code> (≥1), <code>:p*</code> (≥0), <code>rdfs:subClassOf*</code>, <code>^:p</code> (ngược), <code>:p/:q</code> (nối)</td>
+</tr>
+<tr>
+<td>&quot;khẳng định / tạo triple mới&quot;</td>
+<td><code>CONSTRUCT { ?x a :New } WHERE { … }</code></td>
+</tr>
+<tr>
+<td>&quot;có … không?&quot;</td>
+<td><code>ASK { … }</code></td>
+</tr>
+<tr>
+<td>&quot;chứa / bắt đầu bằng&quot;</td>
+<td><code>FILTER regex(?s, &quot;abc&quot;, &quot;i&quot;)</code>, <code>CONTAINS(?s,&quot;x&quot;)</code>, <code>STRSTARTS</code></td>
+</tr>
+<tr>
+<td>&quot;tiếng Anh&quot;</td>
+<td><code>FILTER (lang(?t) = &quot;en&quot;)</code></td>
+</tr>
+<tr>
+<td>&quot;ghép tên thành 1 cột&quot;</td>
+<td><code>GROUP_CONCAT(?n; separator=&quot;, &quot;)</code></td>
+</tr>
+<tr>
+<td>&quot;sắp xếp / top k&quot;</td>
+<td><code>ORDER BY DESC(?v) LIMIT k</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Đề cũ — đáp án:</strong></p>
+<pre><code class="language-sparql"># 2023-C4a: thủy phi cơ + trực thăng, kèm nhãn nếu có
+SELECT * WHERE { { ?p a ?t } OPTIONAL { ?p rdfs:label ?label }
+                 FILTER (?t = :Seaplane || ?t = :Helicopter) }
+# → :Caspar :Seaplane | :Convair :Seaplane | :Mi26 :Helicopter &quot;Mil Mi-26&quot;
+
+# 2022-C5a: mèo của Anna và con của chúng
+SELECT ?pet WHERE { { bio:Anna bio:own ?pet . ?pet a bio:Cat . }
+  UNION { bio:Anna bio:own ?x . ?x a bio:Cat . ?x bio:offspring ?pet . } }
+# → bio:Milo, bio:Kitty
+
+# 6390-C4a: NNLT có con trỏ hoặc lớp       → :CPP, :C, :Java
+SELECT DISTINCT ?pl WHERE { ?pl a :PL ; :hasFeature ?f . FILTER (?f = :pointer || ?f = :class) }
+# 6390-C4b: NNLT + người sáng lập nếu có    → Lisp, Ruby: ?creator trống
+SELECT ?pl ?creator WHERE { ?pl a :PL . OPTIONAL { ?pl :creator ?creator } }
+# 6390-C4c: khẳng định OOPL               → CPP, Java, Python a :OOPL
+CONSTRUCT { ?pl a :OOPL } WHERE { ?pl :hasFeature :class }
+</code></pre>
+<p><strong>Bẫy:</strong> quên <code>.</code> giữa các triple · quên PREFIX · FILTER so sánh IRI dùng <code>=</code>, chuỗi dùng <code>&quot;…&quot;</code> · biến trong OPTIONAL có thể trống · đếm cả bài chưa có: <code>COUNT(?r)</code> + OPTIONAL (không phải <code>COUNT(*)</code>) · literal số không có ngoặc kép.</p>
+<h2>D9 · Đại số SPARQL</h2>
+<table>
+<thead>
+<tr>
+<th>Cú pháp</th>
+<th>Đại số</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nhóm triple <code>{ t1 . t2 }</code></td>
+<td><code>BGP(t1 . t2)</code></td>
+</tr>
+<tr>
+<td>hai nhóm cạnh nhau</td>
+<td><code>Join(P1, P2)</code></td>
+</tr>
+<tr>
+<td><code>P OPTIONAL { Q }</code></td>
+<td><code>LeftJoin(P, Q)</code> (FILTER trong OPTIONAL → <code>LeftJoin(P, Q, expr)</code>)</td>
+</tr>
+<tr>
+<td><code>{P} UNION {Q}</code></td>
+<td><code>Union(P, Q)</code></td>
+</tr>
+<tr>
+<td><code>FILTER(e)</code></td>
+<td><code>Filter(e, …)</code> bọc <strong>cả nhóm</strong> chứa nó (đặt ngoài cùng nhóm)</td>
+</tr>
+<tr>
+<td><code>GROUP BY</code> + hàm gộp</td>
+<td><code>Group(…)</code>, <code>Aggregate(…)</code></td>
+</tr>
+<tr>
+<td><code>SELECT ?x ?y</code></td>
+<td><code>Project(…, {?x, ?y})</code> · <code>DISTINCT</code> → <code>Distinct</code> · <code>ORDER BY</code> → <code>OrderBy</code> · <code>LIMIT</code> → <code>Slice</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Định nghĩa:</strong> μ = ánh xạ biến → giá trị. Hai μ <strong>tương thích</strong> nếu biến chung cùng giá trị. <code>Join</code> = {μ1 ∪ μ2 tương thích} · <code>LeftJoin</code> = Join ∪ {μ1 không có μ2 nào tương thích} · <code>Union</code> = Ω1 ∪ Ω2 · <code>Filter</code> = giữ μ làm e đúng · <code>Project</code> = chỉ giữ các biến chọn.</p>
+<p><strong>Khuôn:</strong> ① viết biểu thức (từ trong ra ngoài) → ② tính <strong>BGP</strong> trước, mỗi bước 1 bảng → ③ áp lần lượt Join/LeftJoin/Union → Filter → Project → ④ bảng kết quả cuối.</p>
+<p><strong>2023-C4b (thầy):</strong> <code>Filter(?t = :Seaplane || ?t = :Helicopter, LeftJoin(BGP(?p a ?t), BGP(?p rdfs:label ?label)))</code></p>
+<table>
+<thead>
+<tr>
+<th>Bước</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BGP(?p a ?t)</td>
+<td>(Caspar,Seaplane) (Convair,Seaplane) (Su27,JetFighter) (Mig35,JetFighter) (Mi26,Helicopter)</td>
+</tr>
+<tr>
+<td>BGP(?p rdfs:label ?label)</td>
+<td>(Mi26,&quot;Mil Mi-26&quot;)</td>
+</tr>
+<tr>
+<td>LeftJoin</td>
+<td>5 dòng trên, Mi26 có thêm ?label = &quot;Mil Mi-26&quot;</td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>Caspar Seaplane – · Convair Seaplane – · Mi26 Helicopter &quot;Mil Mi-26&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2022-C5b (thầy):</strong> <code>Project(Union(BGP(Anna own ?pet . ?pet a Cat), BGP(Anna own ?x . ?x a Cat . ?x offspring ?pet)), {?pet})</code> · B1: {?pet→Milo} · B2: {?x→Milo, ?pet→Kitty} · Union: 2 dòng (dòng 1 ?x trống) · Project ?pet: <strong>Milo, Kitty</strong>.</p>
+<p><strong>6390-C4d:</strong> <code>Distinct(Project(Filter(?f = :pointer || ?f = :class, BGP(?pl a :PL . ?pl :hasFeature ?f)), {?pl}))</code> · BGP: 11 dòng (CPP×5, C×3, Java×2, Lisp×1 — Python không <code>a :PL</code>, Ruby không có feature) · Filter: (CPP,pointer) (CPP,class) (C,pointer) (Java,class) · Project + Distinct: <strong>CPP, C, Java</strong>.</p>
+<h2>D10 · SHACL</h2>
+<pre><code class="language-turtle">:XShape a sh:NodeShape ;
+  sh:targetClass :X ;                 # nút được kiểm = mọi ?n a :X
+  sh:property [ sh:path :p ;
+                sh:minCount 1 ; sh:maxCount 1 ;          # bắt buộc / tối đa
+                sh:datatype xsd:integer ;                # kiểu literal
+                sh:minExclusive 1900 ] ;                 # &gt; 1900 (minInclusive: ≥)
+  sh:property [ sh:path :q ; sh:class :Y ; sh:in ( :a :b ) ; sh:pattern &quot;^A&quot; ] .
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Ràng buộc</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sh:targetClass</code> / <code>targetNode</code> / <code>targetSubjectsOf</code> / <code>targetObjectsOf</code></td>
+<td>chọn nút được kiểm</td>
+</tr>
+<tr>
+<td><code>sh:minCount</code> / <code>sh:maxCount</code></td>
+<td>số giá trị tối thiểu / tối đa</td>
+</tr>
+<tr>
+<td><code>sh:datatype</code> / <code>sh:class</code> / <code>sh:nodeKind</code></td>
+<td>kiểu literal / lớp của giá trị / IRI-Literal-BlankNode</td>
+</tr>
+<tr>
+<td><code>sh:minInclusive</code> <code>minExclusive</code> <code>maxInclusive</code> <code>maxExclusive</code></td>
+<td>≥ &gt; ≤ &lt;</td>
+</tr>
+<tr>
+<td><code>sh:in</code> / <code>sh:hasValue</code> / <code>sh:pattern</code> / <code>sh:minLength</code></td>
+<td>thuộc danh sách / phải có giá trị / regex / độ dài</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Trả lời &quot;nút nào được kiểm / vi phạm&quot;:</strong> ① liệt kê nút khớp target (chỉ những nút có <code>a :X</code> — <strong>không</strong> suy diễn ngoài subClassOf) → ② kiểm từng ràng buộc cho từng nút → ③ nêu nút vi phạm + lý do → ④ đề xuất thêm dữ liệu. SHACL = <strong>thế giới đóng</strong> (thiếu là vi phạm), khác OWL (thiếu là chưa biết).</p>
+<p><strong>2023-C5 (thầy):</strong> <code>:SeaPlaneShape a sh:NodeShape; sh:targetClass :Seaplane; sh:property [sh:path :flight; sh:minExclusive 1900].</code> → Caspar (flight 1900, không &gt; 1900) <strong>vi phạm</strong>. <code>:JetFighterShape … sh:targetClass :JetFighter; sh:property [sh:path :crew; sh:minCount 1]; sh:property [sh:path :speed; sh:minCount 1].</code> → Su27 thiếu speed, Mig35 thiếu crew.
+<strong>6390-C5:</strong> <code>:PLFeatures a sh:NodeShape; sh:targetClass :PL; sh:property [sh:path :hasFeature; sh:minCount 1].</code> Kiểm: CPP, C, Java, Lisp, Ruby; <strong>Python không được kiểm</strong> (không <code>a :PL</code>). <strong>Ruby vi phạm</strong> (0 tính năng) → thêm <code>:Ruby :hasFeature :class .</code></p>
+<h2>D11 · Lý thuyết mở</h2>
+<p><strong>Chức năng của reasoner trong KB</strong> (viết theo ý, mỗi ý 1 ví dụ):</p>
+<ol>
+<li><strong>Kiểm tra tính nhất quán</strong> (consistency): KB có mâu thuẫn không — vd <code>Cat ⊓ Dog ⊑ ⊥</code> mà <code>Tom a Cat, Dog</code>.</li>
+<li><strong>Kiểm tra lớp thỏa được</strong> (satisfiability): lớp có thể có cá thể không — lớp con của hai lớp tách rời là rỗng.</li>
+<li><strong>Phân loại</strong> (classification): tính cây subsumption đầy đủ — suy ra <code>Father ⊑ Person</code>.</li>
+<li><strong>Realization / kiểm tra cá thể</strong>: tìm mọi lớp của cá thể — <code>Carl a Father</code> ⇒ <code>Carl a Person</code>.</li>
+<li><strong>Suy ra tri thức ẩn</strong> (entailment, materialization): sinh triple ngầm định — rdfs2/3/7/9, inverseOf, transitive.</li>
+<li><strong>Hỗ trợ trả lời truy vấn</strong>: truy vấn trả về cả kết quả suy ra (SPARQL entailment regime).</li>
+<li><strong>Giải thích</strong> (justification): chỉ ra các tiên đề dẫn tới kết luận / mâu thuẫn — sửa lỗi ontology.
+Cơ chế: RDFS/OWL RL dùng luật (forward chaining), OWL DL dùng <strong>tableau</strong>. Reasoner: HermiT, Pellet, FaCT++. Theo <strong>OWA</strong>: chưa suy ra được ≠ sai.</li>
+</ol>
+<p><strong>Ngắn gọn khác:</strong> <strong>OWA</strong> (thiếu = chưa biết; OWL/RDFS) ↔ <strong>CWA</strong> (thiếu = sai; CSDL, SHACL) · <strong>không UNA</strong>: hai IRI có thể cùng một vật (owl:sameAs) · <strong>LOD 4 nguyên tắc</strong>: dùng URI · HTTP URI · trả về thông tin hữu ích (RDF, SPARQL) · liên kết tới URI khác · <strong>5 sao</strong>: web (giấy phép mở) → máy đọc được → định dạng mở → RDF/URI → liên kết dữ liệu khác · <strong>RDFS vs OWL</strong>: OWL thêm phủ định, disjoint, cardinality, inverse/transitive, định nghĩa lớp bằng điều kiện · <strong>SHACL vs OWL</strong>: kiểm dữ liệu (đóng) ↔ suy diễn (mở).</p>
+</div>
+<script src="lib/vis-network.min.js"></script><script src="lib/mermaid.min.js"></script><script>/* rdf.js — dùng chung cho web và bản in: Turtle mini-parser + vẽ đồ thị RDF (vis-network) */
+var RDF = (function () {
+  var RDFNS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
+  var STD = {
+    rdf: RDFNS, rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+    owl: 'http://www.w3.org/2002/07/owl#', xsd: 'http://www.w3.org/2001/XMLSchema#',
+    foaf: 'http://xmlns.com/foaf/0.1/', dc: 'http://purl.org/dc/elements/1.1/',
+    dcterms: 'http://purl.org/dc/terms/', sh: 'http://www.w3.org/ns/shacl#',
+    schema: 'http://schema.org/'
+  };
+
+  function lineCol(src, at) { var pre = src.slice(0, at).split('\n'); return 'dòng ' + pre.length + ', cột ' + (pre[pre.length - 1].length + 1); }
+
+  function tokenize(src) {
+    var toks = [], i = 0, n = src.length, m;
+    function lc(at) { return lineCol(src, at); }
+    function push(t, at) { t.pos = at; toks.push(t); }
+    var reName = /^(?:[A-Za-z_À-￿][\wÀ-￿\-.]*)?:(?:[\wÀ-￿\-.:%+]*[\wÀ-￿\-:%+])?/;
+    while (i < n) {
+      var c = src[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (c === '#') { while (i < n && src[i] !== '\n') i++; continue; }
+      var rest = src.slice(i);
+      if (c === '<') { var j = src.indexOf('>', i); if (j < 0 || /[\s"]/.test(src.slice(i + 1, j))) throw new Error('Thiếu dấu ">" đóng IRI mở bằng "<" (' + lc(i) + ')'); push({k: 'iri', v: src.slice(i + 1, j)}, i); i = j + 1; continue; }
+      if (c === '"' || c === "'") {
+        var q = c, triple = rest.startsWith(q + q + q), s = '', k = i + (triple ? 3 : 1);
+        var start = i;
+        while (k < n) {
+          if (src[k] === '\\') { var e = src[k + 1]; s += e === 'n' ? '\n' : e === 't' ? '\t' : e; k += 2; continue; }
+          if (triple ? src.startsWith(q + q + q, k) : src[k] === q) break;
+          s += src[k]; k++;
+        }
+        if (k >= n) throw new Error('Thiếu dấu ' + q + ' đóng chuỗi (' + lc(start) + ')');
+        i = k + (triple ? 3 : 1);
+        var tok = {k: 'lit', v: s, pos: start};
+        if (src[i] === '@') { m = /^@([A-Za-z0-9\-]+)/.exec(src.slice(i)); if (!m) throw new Error('Sau "@" phải có mã ngôn ngữ, vd "Hà Nội"@vi (' + lc(i) + ')'); tok.lang = m[1]; i += m[0].length; }
+        else if (src.startsWith('^^', i)) {
+          i += 2;
+          if (src[i] === '<') { var j2 = src.indexOf('>', i); if (j2 < 0) throw new Error('Thiếu ">" đóng kiểu dữ liệu (' + lc(i) + ')'); tok.dtIri = src.slice(i + 1, j2); i = j2 + 1; }
+          else { m = reName.exec(src.slice(i)); if (!m || m[0].indexOf(':') < 0) throw new Error('Sau "^^" phải có kiểu, vd xsd:integer (' + lc(i) + ')'); tok.dtName = m[0]; i += m[0].length; }
+        }
+        toks.push(tok); continue;
+      }
+      if ((m = /^@?(prefix|base)\b/i.exec(rest)) && (c === '@' || /^(prefix|base)\s/i.test(rest))) {
+        push({k: 'dir', v: m[1].toLowerCase(), isAt: c === '@'}, i); i += m[0].length; continue;
+      }
+      if ((m = /^[+-]?(\d+\.\d+|\.\d+|\d+)([eE][+-]?\d+)?/.exec(rest))) {
+        push({k: 'num', v: m[0]}, i); i += m[0].length; continue;
+      }
+      if ((m = /^_:([\wÀ-￿\-]+)/.exec(rest))) { push({k: 'bnl', v: m[1]}, i); i += m[0].length; continue; }
+      if ((m = /^(true|false)\b/.exec(rest))) { push({k: 'bool', v: m[1]}, i); i += m[0].length; continue; }
+      if ((m = /^a(?=[\s\[<"(])/.exec(rest))) { push({k: 'a'}, i); i += 1; continue; }
+      if ((m = reName.exec(rest)) && m[0].indexOf(':') >= 0) { push({k: 'pn', v: m[0]}, i); i += m[0].length; continue; }
+      if ('.;,[]()'.indexOf(c) >= 0) { push({k: c}, i); i++; continue; }
+      throw new Error('Không hiểu "' + rest.slice(0, 15).split('\n')[0] + '" (' + lc(i) + ') — tên phải có dấu ":" (vd :Ann), chuỗi phải trong ngoặc kép');
+    }
+    return toks;
+  }
+
+  function parse(src) {
+    var toks = tokenize(src), p = 0, prefixes = {}, triples = [], bn = 0;
+    function peek() { return toks[p] || {k: 'eof'}; }
+    function next() { return toks[p++] || {k: 'eof'}; }
+    function where(t) { return t && t.pos !== undefined ? ' (' + lineCol(src, t.pos) + ')' : ' (cuối văn bản)'; }
+    function expect(k) { var t = next(); if (t.k !== k) throw new Error('Thiếu "' + k + '"' + where(t) + (t.k === 'eof' ? '' : ' — gặp "' + (t.v || t.k) + '"') + (k === '.' ? '. Mỗi câu Turtle kết thúc bằng dấu chấm.' : '')); return t; }
+    function expand(pn) {
+      var i = pn.indexOf(':'), pf = pn.slice(0, i), loc = pn.slice(i + 1);
+      var ns = prefixes.hasOwnProperty(pf) ? prefixes[pf] : STD[pf];
+      if (ns === undefined) { ns = 'http://example.org/' + (pf ? pf + '/' : ''); prefixes[pf] = ns; }  // dễ dãi: đoạn trích thiếu @prefix
+      return ns + loc;
+    }
+    function newBn() { return {t: 'bn', v: 'b' + (++bn)}; }
+    function add(s, pr, o) { triples.push({s: s, p: pr, o: o}); }
+    function term(t) {
+      if (t.k === 'iri') return {t: 'iri', v: t.v};
+      if (t.k === 'pn') return {t: 'iri', v: expand(t.v)};
+      if (t.k === 'a') return {t: 'iri', v: RDFNS + 'type'};
+      if (t.k === 'bnl') return {t: 'bn', v: 'L_' + t.v};
+      if (t.k === 'lit') return {t: 'lit', v: t.v, lang: t.lang, dt: t.dtIri || (t.dtName ? expand(t.dtName) : undefined)};
+      if (t.k === 'num') return {t: 'lit', v: t.v, dt: STD.xsd + (/[eE]/.test(t.v) ? 'double' : t.v.indexOf('.') >= 0 ? 'decimal' : 'integer')};
+      if (t.k === 'bool') return {t: 'lit', v: t.v, dt: STD.xsd + 'boolean'};
+      throw new Error((t.k === 'eof' ? 'Câu Turtle bị cụt' : 'Không mong đợi "' + (t.v || t.k) + '"') + where(t));
+    }
+    function object() {
+      var t = peek();
+      if (t.k === '[') { next(); var b = newBn(); if (peek().k !== ']') predObjList(b); expect(']'); return b; }
+      if (t.k === '(') { next(); return collection(); }
+      return term(next());
+    }
+    function collection() {
+      var items = [];
+      while (peek().k !== ')') { if (peek().k === 'eof') throw new Error('Thiếu ")"'); items.push(object()); }
+      next();
+      if (!items.length) return {t: 'iri', v: RDFNS + 'nil'};
+      var head = newBn(), cur = head;
+      items.forEach(function (it, idx) {
+        add(cur, {t: 'iri', v: RDFNS + 'first'}, it);
+        var nx = idx === items.length - 1 ? {t: 'iri', v: RDFNS + 'nil'} : newBn();
+        add(cur, {t: 'iri', v: RDFNS + 'rest'}, nx); cur = nx;
+      });
+      return head;
+    }
+    function predObjList(s) {
+      for (;;) {
+        var pr = term(next());
+        for (;;) { add(s, pr, object()); if (peek().k === ',') { next(); continue; } break; }
+        if (peek().k === ';') { while (peek().k === ';') next(); var k = peek().k; if (k === '.' || k === ']' || k === 'eof') return; continue; }
+        return;
+      }
+    }
+    while (peek().k !== 'eof') {
+      var t = peek();
+      if (t.k === 'dir') {
+        next();
+        if (t.v === 'prefix') { var pn = next(); var iri = expect('iri'); prefixes[pn.v.replace(/:$/, '')] = iri.v; }
+        else expect('iri');
+        if (t.isAt) expect('.'); else if (peek().k === '.') next();
+        continue;
+      }
+      var s;
+      if (t.k === '[') { next(); s = newBn(); if (peek().k !== ']') predObjList(s); expect(']'); if (peek().k === '.') { next(); continue; } }
+      else if (t.k === '(') { next(); s = collection(); }
+      else s = term(next());
+      predObjList(s);
+      expect('.');
+    }
+    return {triples: triples, prefixes: prefixes};
+  }
+
+  function compact(iri, prefixes) {
+    var best = null, all = Object.assign({}, STD, prefixes || {});
+    Object.keys(all).forEach(function (k) {
+      var ns = all[k];
+      if (ns && iri.indexOf(ns) === 0 && (!best || ns.length > all[best].length)) best = k;
+    });
+    if (best !== null && /^[\wÀ-￿\-.]*$/.test(iri.slice(all[best].length))) return best + ':' + iri.slice(all[best].length);
+    return '<' + iri + '>';
+  }
+  function label(term, prefixes) {
+    if (term.t === 'iri') return compact(term.v, prefixes);
+    if (term.t === 'bn') return '';
+    var s = term.v;
+    if (term.lang) s = '"' + s + '"@' + term.lang;
+    else if (term.dt && !/XMLSchema#(integer|decimal|double|boolean|string)$/.test(term.dt)) s = '"' + s + '"^^' + compact(term.dt, prefixes);
+    return s;
+  }
+
+  // term → đúng cú pháp Turtle (dùng khi bảng vẽ xuất lại Turtle)
+  function ttlTerm(t, prefixes) {
+    if (t.t === 'iri') return compact(t.v, prefixes);
+    if (t.t === 'bn') return '[]';
+    if (!t.lang && t.dt && /XMLSchema#(integer|decimal|double|boolean)$/.test(t.dt)) return t.v;
+    var q = '"' + String(t.v).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+    if (t.lang) return q + '@' + t.lang;
+    if (t.dt && !/XMLSchema#string$/.test(t.dt)) return q + '^^' + compact(t.dt, prefixes);
+    return q;
+  }
+
+  function wrap(s, w) {
+    if (s.length <= w) return s;
+    var out = [], line = '';
+    s.split(/(?<=[\s_\-\/])/).forEach(function (part) {
+      if ((line + part).length > w && line) { out.push(line); line = ''; }
+      while (part.length > w) { out.push(part.slice(0, w)); part = part.slice(w); }
+      line += part;
+    });
+    if (line) out.push(line);
+    return out.join('\n');
+  }
+
+  // dựng dữ liệu nodes/edges theo quy ước vẽ của thầy
+  function toVis(parsed) {
+    var nodes = [], edges = [], seen = {}, litN = 0, pf = parsed.prefixes;
+    function nodeId(t) {
+      if (t.t === 'lit') {
+        var id = 'lit' + (++litN);
+        nodes.push({id: id, label: wrap(label(t, pf), 28), shape: 'box', kind: 'lit', ttl: ttlTerm(t, pf)});
+        return id;
+      }
+      var key = t.t + ':' + t.v;
+      if (!seen[key]) {
+        seen[key] = 1;
+        nodes.push(t.t === 'bn'
+          ? {id: key, label: ' ', shape: 'ellipse', kind: 'bn', widthConstraint: {minimum: 46}, heightConstraint: {minimum: 26}}
+          : {id: key, label: wrap(label(t, pf), 22), shape: 'ellipse', kind: 'iri', ttl: ttlTerm(t, pf)});
+      }
+      return key;
+    }
+    parsed.triples.forEach(function (tr) {
+      var a = nodeId(tr.s), b = nodeId(tr.o);
+      edges.push({from: a, to: b, label: label(tr.p, pf), ttl: ttlTerm(tr.p, pf)});
+    });
+    return {nodes: nodes, edges: edges};
+  }
+
+  var BW = {
+    nodes: {color: {background: '#ffffff', border: '#000000', highlight: {background: '#ffffff', border: '#000000'}},
+      font: {color: '#000000', face: 'Arial', size: 17}, borderWidth: 1.4, margin: 8},
+    edges: {color: {color: '#000000', highlight: '#000000'}, arrows: {to: {enabled: true, scaleFactor: 0.6}},
+      font: {color: '#000000', size: 14, face: 'Arial', strokeWidth: 4, strokeColor: '#ffffff', align: 'middle'},
+      smooth: {enabled: true, type: 'dynamic'}, width: 1.2}
+  };
+
+  function draw(container, ttl, opts) {
+    opts = opts || {};
+    var parsed = parse(ttl), data = toVis(parsed);
+    if (!data.nodes.length) throw new Error('Không có triple nào.');
+    var n = data.nodes.length;
+    container.style.height = (opts.height || Math.min(720, Math.max(260, 120 + n * 34))) + 'px';
+    var options = {
+      nodes: BW.nodes, edges: BW.edges,
+      layout: {randomSeed: 11, improvedLayout: true},
+      physics: {solver: 'forceAtlas2Based', forceAtlas2Based: {gravitationalConstant: -70, springLength: 95, springConstant: 0.08, avoidOverlap: 0.6},
+        stabilization: {iterations: 600, fit: true}},
+      interaction: {dragNodes: true, zoomView: !!opts.zoom, dragView: !opts.print, hover: false, keyboard: false}
+    };
+    var net = new vis.Network(container, {nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges)}, options);
+    var froze = false;
+    function freeze() { if (froze) return; froze = true; net.setOptions({physics: false}); net.fit(); if (opts.done) setTimeout(function () { opts.done(net); }, 60); }
+    net.once('stabilizationIterationsDone', freeze); net.once('stabilized', freeze); setTimeout(freeze, 3000);
+    return {net: net, parsed: parsed};
+  }
+
+  // dựng SVG đen trắng từ vị trí do vis tính (dùng cho bản in)
+  function svgOf(data, pos) {
+    var CW = 7.6, LH = 15, nodes = {}, out = [];
+    var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+    function xe(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    data.nodes.forEach(function (n) {
+      var p = pos[n.id], lines = n.kind === 'bn' ? [''] : String(n.label).split('\n');
+      var w = Math.max.apply(null, lines.map(function (l) { return l.length; })) * CW;
+      var g = {x: p.x, y: p.y, kind: n.kind, lines: lines};
+      if (n.kind === 'lit') { g.hw = w / 2 + 8; g.hh = lines.length * LH / 2 + 6; }
+      else if (n.kind === 'bn') { g.hw = 24; g.hh = 14; }
+      else { g.hw = w / 2 + 16; g.hh = lines.length * LH / 2 + 9; }
+      nodes[n.id] = g;
+      minX = Math.min(minX, p.x - g.hw); maxX = Math.max(maxX, p.x + g.hw);
+      minY = Math.min(minY, p.y - g.hh); maxY = Math.max(maxY, p.y + g.hh);
+    });
+    function edgePt(g, dx, dy) {
+      var f;
+      if (g.kind === 'lit') f = Math.min(g.hw / Math.max(Math.abs(dx), 1e-6), g.hh / Math.max(Math.abs(dy), 1e-6));
+      else f = 1 / Math.sqrt(Math.pow(dx / g.hw, 2) + Math.pow(dy / g.hh, 2));
+      return {x: g.x + dx * f, y: g.y + dy * f};
+    }
+    var pairCount = {};
+    data.edges.forEach(function (e) {
+      var a = nodes[e.from], b = nodes[e.to], dx = b.x - a.x, dy = b.y - a.y;
+      var key = [e.from, e.to].sort().join('|'), k = pairCount[key] = (pairCount[key] || 0) + 1;
+      var p1 = edgePt(a, dx, dy), p2 = edgePt(b, -dx, -dy);
+      var mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2, len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var off = (k - 1) * 18, ox = -dy / len * off, oy = dx / len * off;
+      out.push('<path d="M' + p1.x.toFixed(1) + ',' + p1.y.toFixed(1) + ' Q' + (mx + 2 * ox).toFixed(1) + ',' + (my + 2 * oy).toFixed(1) + ' ' + p2.x.toFixed(1) + ',' + p2.y.toFixed(1) + '" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>');
+      out.push('<text x="' + (mx + ox).toFixed(1) + '" y="' + (my + oy + 4).toFixed(1) + '" text-anchor="middle" font-size="12" font-family="Arial" fill="#000" stroke="#fff" stroke-width="4" paint-order="stroke">' + xe(e.label) + '</text>');
+    });
+    var shapes = [];
+    Object.keys(nodes).forEach(function (id) {
+      var g = nodes[id];
+      if (g.kind === 'lit') shapes.push('<rect x="' + (g.x - g.hw).toFixed(1) + '" y="' + (g.y - g.hh).toFixed(1) + '" width="' + (2 * g.hw).toFixed(1) + '" height="' + (2 * g.hh).toFixed(1) + '" fill="#fff" stroke="#000" stroke-width="1.3"/>');
+      else shapes.push('<ellipse cx="' + g.x.toFixed(1) + '" cy="' + g.y.toFixed(1) + '" rx="' + g.hw.toFixed(1) + '" ry="' + g.hh.toFixed(1) + '" fill="#fff" stroke="#000" stroke-width="1.3"/>');
+      g.lines.forEach(function (l, i) {
+        shapes.push('<text x="' + g.x.toFixed(1) + '" y="' + (g.y - (g.lines.length - 1) * LH / 2 + i * LH + 4.5).toFixed(1) + '" text-anchor="middle" font-size="13" font-family="Arial" fill="#000">' + xe(l) + '</text>');
+      });
+    });
+    var pad = 14, W = maxX - minX + 2 * pad, H = maxY - minY + 2 * pad;
+    return '<svg xmlns="http://www.w3.org/2000/svg" class="gsvg" viewBox="' + (minX - pad).toFixed(0) + ' ' + (minY - pad).toFixed(0) + ' ' + W.toFixed(0) + ' ' + H.toFixed(0) + '" width="' + Math.min(W, 660).toFixed(0) + '" style="max-width:100%;height:auto">' +
+      '<defs><marker id="ah" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>' +
+      shapes.join('') + out.join('') + '</svg>';
+  }
+  // vẽ thành SVG: dùng vis để tính bố cục (không cần vẽ canvas)
+  function drawSVG(container, ttl, cb) {
+    var parsed = parse(ttl), data = toVis(parsed);
+    container.style.width = '700px'; container.style.height = '600px';
+    var net = new vis.Network(container, {nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges)}, {
+      nodes: BW.nodes, edges: BW.edges, layout: {randomSeed: 11},
+      physics: {solver: 'forceAtlas2Based', forceAtlas2Based: {gravitationalConstant: -70, springLength: 95, springConstant: 0.08, avoidOverlap: 0.6}, stabilization: {iterations: 800, fit: false, updateInterval: 200}}
+    });
+    var fired = false;
+    function fin() { if (fired) return; fired = true; var svg = svgOf(data, net.getPositions()); net.destroy(); cb(svg); }
+    net.once('stabilizationIterationsDone', fin);
+    setTimeout(fin, 4000);
+  }
+
+  return {ttlTerm: ttlTerm, parse: parse, svgOf: svgOf, drawSVG: drawSVG, compact: compact, label: label, draw: draw, toVis: toVis, BW: BW, STD: STD, RDFNS: RDFNS};
+})();
+</script><script>
+(function(){
+  document.querySelectorAll('details').forEach(function(d){d.open=true;});
+  var list=[].slice.call(document.querySelectorAll('pre > code.language-turtle-graph'));
+  var i=0;
+  function next(){
+    if(i>=list.length){mm();return;}
+    var code=list[i++], pre=code.parentNode, box=document.createElement('div');
+    box.className='graph-box';
+    pre.parentNode.insertBefore(box, pre.nextSibling);
+    try{
+      RDF.drawSVG(box, code.textContent, function(svg){
+        var fig=document.createElement('div'); fig.className='gfig'; fig.innerHTML=svg;
+        box.parentNode.replaceChild(fig, box); next();
+      });
+    }catch(e){box.textContent='(không vẽ được đồ thị: '+e.message+')'; next();}
+  }
+  function done(){document.title='READY';window.__ready=true;}
+  function mm(){
+    var codes=[].slice.call(document.querySelectorAll('pre > code.language-mermaid'));
+    if(!window.mermaid||!codes.length){done();return;}
+    mermaid.initialize({startOnLoad:false,theme:'neutral',securityLevel:'loose',flowchart:{htmlLabels:false,useMaxWidth:true}});
+    var k=0;
+    (function one(){
+      if(k>=codes.length){done();return;}
+      var c=codes[k++], pre=c.parentNode;
+      mermaid.render('pm'+k, c.textContent).then(function(r){var fig=document.createElement('div'); fig.className='gfig mmfig'; fig.innerHTML=r.svg; pre.parentNode.replaceChild(fig, pre); one();}).catch(function(){one();});
+    })();
+  }
+  if(window.vis) next(); else mm();
+})();
+</script></body></html>
