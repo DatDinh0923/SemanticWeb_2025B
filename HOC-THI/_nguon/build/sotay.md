@@ -24,6 +24,10 @@
 | "Viết **biểu thức đại số** SPARQL, giải thích từng bước" | **D9** Đại số SPARQL | tr.@D9 |
 | "Tạo **khuôn hình (shape) SHACL**", "hình trạng", "kiểm duyệt dữ liệu", "nút nào được kiểm / vi phạm" | **D10** SHACL | tr.@D10 |
 | "**Chức năng của reasoner**", OWA, LOD, so sánh RDFS/OWL/SHACL… | **D11** Lý thuyết | tr.@D11 |
+| "Viết bằng cú pháp **Manchester**" (`Class:`, `SubClassOf:`, `some`, `only`) | **D5** cột Manchester + khung B2 | tr.@D5 |
+| "Chuyển sang **NNF**" (dạng chuẩn phủ định) | **D12** bảng B2 DL → NNF | tr.@D12 |
+| Gặp **từ khoá / cú pháp lạ** (`owl:hasKey`, `BIND`, `sh:or`, `rdf:Bag`…) | **TV** Tra từ vựng | tr.@TV |
+| Biết tên từ khoá, chưa biết nằm ở dạng nào | **Mục lục A–Z** (cuối sổ tay) | tr.@IDX |
 
 **Prefix chép đầu mọi bài** (đề cho prefix nào thì dùng đúng prefix đó):
 
@@ -425,33 +429,56 @@ Có thể ghi thêm các triple tầm thường: `:r a rdf:Property` (rdf1). Mu�
    - Câu kiểu "X **là một loại** Y", "X thì …" chỉ là điều kiện cần → `⊑` (`rdfs:subClassOf`).
    - Đề có câu "suy ra được Amphicar là…" thì **bắt buộc dùng ≡**.
 4. **Chọn lượng từ**: "có (ít nhất) một" → `∃` (`someValuesFrom`) · "chỉ / mọi … đều" → `∀` (`allValuesFrom`) · "có giá trị cụ thể là a" → `hasValue` · "tối thiểu / tối đa / đúng n" → `≥n` / `≤n` / `=n` · "chỉ có thể là a, b, c" → `oneOf`.
-5. **Dịch sang Turtle**. Khai báo `a owl:Class`, `a owl:ObjectProperty` / `owl:DatatypeProperty`.
+5. **Dịch sang Turtle**. Khai báo `a owl:Class`, `a owl:ObjectProperty` / `owl:DatatypeProperty`. Đề hỏi **Manchester** thì dịch DL sang Manchester theo cột Manchester ở bảng B, gom các tiên đề của cùng một lớp vào **một frame** `Class:` (khung B2, bài mẫu 1 và 2).
 6. **Giải thích lựa chọn** (vì sao ≡ chứ không ⊑, vì sao ∃ chứ không ∀) và nêu **một suy diễn** reasoner rút ra được. Phần này phân biệt bài khá với bài giỏi.
 
-## B. Bảng tra: câu tiếng Việt → DL → OWL Turtle
+## B. Bảng tra: câu tiếng Việt → DL → Manchester → OWL Turtle
 
-| Câu tiếng Việt | DL | OWL Turtle |
-|---|---|---|
-| C là **một loại** D | `C ⊑ D` | `:C rdfs:subClassOf :D` |
-| C **chính là / được định nghĩa là** D | `C ≡ D` | `:C owl:equivalentClass :D` |
-| không có cá thể nào **vừa** C **vừa** D | `C ⊓ D ⊑ ⊥` (slide viết `C ⊑ ¬D`) | `:C owl:disjointWith :D` |
-| vừa là C vừa là D | `C ⊓ D` | `[ owl:intersectionOf ( :C :D ) ]` |
-| X **gồm (có)** các loại A, B | `A ⊑ X`, `B ⊑ X` (+ `A ⊓ B ⊑ ⊥` nếu đề nói không vừa A vừa B) | `:A rdfs:subClassOf :X . :B rdfs:subClassOf :X` |
-| C hoặc D; W là "**tên gọi chung**" cho C, D | `W ≡ C ⊔ D` | `:W owl:equivalentClass [ owl:unionOf ( :C :D ) ]` |
-| không phải C | `¬C` | `[ owl:complementOf :C ]` |
-| chỉ có thể là a, b, c; "gồm có" + **cá thể cụ thể** | `{a, b, c}` | `[ owl:oneOf ( :a :b :c ) ]` |
-| có **ít nhất một** R là C | `∃R.C` | `[ a owl:Restriction ; owl:onProperty :R ; owl:someValuesFrom :C ]` |
-| **mọi** R (nếu có) đều là C | `∀R.C` | `[ a owl:Restriction ; owl:onProperty :R ; owl:allValuesFrom :C ]` |
-| có R là a (giá trị cụ thể) | `∃R.{a}` | `[ a owl:Restriction ; owl:onProperty :R ; owl:hasValue :a ]` |
-| tối thiểu / tối đa / đúng n R | `≥n R` / `≤n R` / `=n R` | `owl:minCardinality` / `owl:maxCardinality` / `owl:cardinality "n"^^xsd:nonNegativeInteger` |
-| tối thiểu / tối đa / đúng n R **là C** | `≥n R.C` / `≤n R.C` / `=n R.C` | `owl:minQualifiedCardinality` / `owl:maxQualifiedCardinality` / `owl:qualifiedCardinality`, cùng `"n"^^xsd:nonNegativeInteger ; owl:onClass :C` |
-| miền của R là C | `∃R.⊤ ⊑ C` | `:R rdfs:domain :C` |
-| khoảng của R là C | `⊤ ⊑ ∀R.C` | `:R rdfs:range :C` |
-| R là nghịch đảo của S | `R ≡ S⁻` | `:R owl:inverseOf :S` |
-| R bắc cầu / đối xứng / hàm | `Trans(R)` / `R ≡ R⁻` / `⊤ ⊑ ≤1 R` | `a owl:TransitiveProperty` / `owl:SymmetricProperty` / `owl:FunctionalProperty` |
-| R tương đương S; R là con của S | `R ≡ S`; `R ⊑ S` | `owl:equivalentProperty`; `rdfs:subPropertyOf` |
-| C gồm đúng A, B và A, B tách rời | `C ≡ A ⊔ B`, `A ⊓ B ⊑ ⊥` | `:C owl:disjointUnionOf ( :A :B )` |
-| thuộc **ít nhất 2 trong 3** lớp A, B, C | `(A⊓B) ⊔ (A⊓C) ⊔ (B⊓C)` | `owl:unionOf` của ba `owl:intersectionOf` |
+| Câu tiếng Việt | DL | Manchester | OWL Turtle |
+|---|---|---|---|
+| C là **một loại** D | `C ⊑ D` | `Class: C SubClassOf: D` | `:C rdfs:subClassOf :D` |
+| C **chính là / được định nghĩa là** D | `C ≡ D` | `Class: C EquivalentTo: D` | `:C owl:equivalentClass :D` |
+| không có cá thể nào **vừa** C **vừa** D | `C ⊓ D ⊑ ⊥` (slide viết `C ⊑ ¬D`) | `Class: C DisjointWith: D` | `:C owl:disjointWith :D` |
+| vừa là C vừa là D | `C ⊓ D` | `C and D` | `[ owl:intersectionOf ( :C :D ) ]` |
+| X **gồm (có)** các loại A, B | `A ⊑ X`, `B ⊑ X` (+ `A ⊓ B ⊑ ⊥` nếu đề nói không vừa A vừa B) | `Class: A SubClassOf: X` (+ `DisjointClasses: A, B`) | `:A rdfs:subClassOf :X . :B rdfs:subClassOf :X` |
+| C hoặc D; W là "**tên gọi chung**" cho C, D | `W ≡ C ⊔ D` | `Class: W EquivalentTo: C or D` | `:W owl:equivalentClass [ owl:unionOf ( :C :D ) ]` |
+| không phải C | `¬C` | `not C` | `[ owl:complementOf :C ]` |
+| chỉ có thể là a, b, c; "gồm có" + **cá thể cụ thể** | `{a, b, c}` | `{a, b, c}` | `[ owl:oneOf ( :a :b :c ) ]` |
+| có **ít nhất một** R là C | `∃R.C` | `R some C` | `[ a owl:Restriction ; owl:onProperty :R ; owl:someValuesFrom :C ]` |
+| **mọi** R (nếu có) đều là C | `∀R.C` | `R only C` | `[ a owl:Restriction ; owl:onProperty :R ; owl:allValuesFrom :C ]` |
+| có R là a (giá trị cụ thể) | `∃R.{a}` | `R value a` | `[ a owl:Restriction ; owl:onProperty :R ; owl:hasValue :a ]` |
+| tối thiểu / tối đa / đúng n R | `≥n R` / `≤n R` / `=n R` | `R min n` / `R max n` / `R exactly n` | `owl:minCardinality` / `owl:maxCardinality` / `owl:cardinality "n"^^xsd:nonNegativeInteger` |
+| tối thiểu / tối đa / đúng n R **là C** | `≥n R.C` / `≤n R.C` / `=n R.C` | `R min n C` / `R max n C` / `R exactly n C` | `owl:minQualifiedCardinality` / `owl:maxQualifiedCardinality` / `owl:qualifiedCardinality`, cùng `"n"^^xsd:nonNegativeInteger ; owl:onClass :C` |
+| miền của R là C | `∃R.⊤ ⊑ C` | `ObjectProperty: R Domain: C` | `:R rdfs:domain :C` |
+| khoảng của R là C | `⊤ ⊑ ∀R.C` | `ObjectProperty: R Range: C` | `:R rdfs:range :C` |
+| R là nghịch đảo của S | `R ≡ S⁻` | `ObjectProperty: R InverseOf: S` | `:R owl:inverseOf :S` |
+| R bắc cầu / đối xứng / hàm | `Trans(R)` / `R ≡ R⁻` / `⊤ ⊑ ≤1 R` | `Characteristics: Transitive` / `Symmetric` / `Functional` | `a owl:TransitiveProperty` / `owl:SymmetricProperty` / `owl:FunctionalProperty` |
+| R tương đương S; R là con của S | `R ≡ S`; `R ⊑ S` | `EquivalentTo: S`; `SubPropertyOf: S` | `owl:equivalentProperty`; `rdfs:subPropertyOf` |
+| C gồm đúng A, B và A, B tách rời | `C ≡ A ⊔ B`, `A ⊓ B ⊑ ⊥` | `Class: C DisjointUnionOf: A, B` | `:C owl:disjointUnionOf ( :A :B )` |
+| thuộc **ít nhất 2 trong 3** lớp A, B, C | `(A⊓B) ⊔ (A⊓C) ⊔ (B⊓C)` | `(A and B) or (A and C) or (B and C)` | `owl:unionOf` của ba `owl:intersectionOf` |
+| cá thể a thuộc C; a R b | `C(a)`; `R(a, b)` | `Individual: a Types: C Facts: R b` | `:a a :C ; :R :b` |
+
+Cấu trúc khác (Asymmetric, hasKey, propertyChain, AllDifferent…): bảng **TV2**, tr.@TV.
+
+**B2. Khung Manchester** (mỗi lớp / thuộc tính / cá thể là **một frame**; nhiều ý cùng mục cách nhau bằng dấu phẩy):
+
+```text
+Class: Assistant
+    SubClassOf: Teacher, teaches only LaboratoryCourse
+    EquivalentTo: …           DisjointWith: Professor
+ObjectProperty: teaches
+    Domain: Teacher           Range: Course           InverseOf: isTaughtBy
+    Characteristics: Asymmetric, Irreflexive …        SubPropertyOf: involvedIn
+ObjectProperty: hasAncestor   Characteristics: Transitive
+ObjectProperty: hasGrandparent   SubPropertyChain: hasParent o hasParent
+DataProperty: credits         Domain: Course          Range: xsd:integer
+Individual: hung              Types: Professor        Facts: teaches SW, not teaches ML
+DisjointClasses: Course, Teacher, Homework            DifferentIndividuals: hung, lan
+```
+
+**Dịch DL → Manchester:** `⊑` → `SubClassOf:` · `≡` → `EquivalentTo:` · `⊓` → `and` · `⊔` → `or` · `¬` → `not` · `∃R.C` → `R some C` · `∀R.C` → `R only C` · `⊤` → `owl:Thing` · `⊥` → `owl:Nothing` · `R⁻` → `inverse R`.
+**Ưu tiên** (lỏng → chặt): `or` < `and` < `not` < `some / only / value / min / max / exactly` ⇒ filler phức **phải có ngoặc**: `teaches only (LabCourse or Seminar)`; `not (R some C)` = `¬∃R.C`.
+**GCI** (vế trái là biểu thức phức): chuẩn Manchester không có cú pháp cho GCI; ghi như Protégé hiển thị: `Movie and (actor exactly 0) SubClassOf AnimalDoc or Animated` (không có dấu hai chấm).
 
 ## C. Bài mẫu (đề 6390, Câu 2)
 
@@ -466,6 +493,20 @@ Có thể ghi thêm các triple tầm thường: `:r a rdf:Property` (rdf1). Mu�
 | c | `TrinhBienDichCPP ≡ {gpp, clangpp, msvc}` | "gồm có" ba cá thể cụ thể |
 | d | `ChuongTrinhCPP ≡ ChuongTrinh ⊓ ∃vietBang.{CPP} ⊓ ∃bienDichBoi.TrinhBienDichCPP` | "là những… và…" là định nghĩa, nên dùng ≡ và ⊓; C++ là một giá trị cụ thể, nên dùng hasValue |
 | e | `ChuongTrinhDaNenTang ≡ ChuongTrinh ⊓ ≥2 hoatDongTren.HeDieuHanh` | "tối thiểu 2" hệ điều hành → qualified cardinality |
+
+**Manchester** (nếu đề hỏi):
+
+```text
+ObjectProperty: phuThuoc                                               # a, b
+    Domain: GoiPhanMem    Range: GoiPhanMem
+    Characteristics: Transitive    EquivalentTo: suDung
+Class: TrinhBienDichCPP    EquivalentTo: {gpp, clangpp, msvc}          # c
+Class: ChuongTrinhCPP                                                  # d
+    EquivalentTo: ChuongTrinh and (vietBang value CPP)
+                  and (bienDichBoi some TrinhBienDichCPP)
+Class: ChuongTrinhDaNenTang                                            # e
+    EquivalentTo: ChuongTrinh and (hoatDongTren min 2 HeDieuHanh)
+```
 
 **Bước 5. Turtle:**
 
@@ -505,6 +546,25 @@ Có thể ghi thêm các triple tầm thường: `:r a rdf:Property` (rdf1). Mu�
 | the assistant **only** teaches the practical courses | `Assistant ⊑ ∀teaches.LaboratoryCourse` | "**only**" → ∀ (allValuesFrom), **không** dùng range. Đây là ý mấu chốt |
 | Homework is part of the course | `Homework ⊑ ∃isPartOf.Course`; `∃isPartOf.⊤ ⊑ Homework`; `⊤ ⊑ ∀isPartOf.Course` | |
 | (thiết kế tốt) | Course, Teacher, Homework đôi một tách rời | để reasoner phát hiện dùng sai |
+
+**Manchester:**
+
+```text
+Class: Course              SubClassOf: isOrganizedBy some Teacher
+Class: LaboratoryCourse    SubClassOf: Course
+Class: Teacher             EquivalentTo: Professor or Assistant           # giả định
+Class: Professor           SubClassOf: Teacher, teaches some Course
+                           DisjointWith: Assistant                        # giả định
+Class: Assistant           SubClassOf: Teacher, teaches only LaboratoryCourse
+Class: Homework            SubClassOf: isPartOf some Course
+DisjointClasses: Course, Teacher, Homework
+ObjectProperty: organizes        Domain: Teacher     Range: Course
+ObjectProperty: isOrganizedBy    InverseOf: organizes
+ObjectProperty: teaches          Domain: Teacher     Range: Course
+ObjectProperty: isPartOf         Domain: Homework    Range: Course
+```
+
+**Turtle:**
 
 ```turtle
 :Course a owl:Class ;
@@ -546,6 +606,7 @@ Có thể ghi thêm các triple tầm thường: `:r a rdf:Property` (rdf1). Mu�
 - ☐ Các lớp anh em có cần `disjointWith` không?
 - ☐ Cardinality có kiểu `"n"^^xsd:nonNegativeInteger` (slide viết `^^xsd:integer`, cũng được chấp nhận); qualified thì có thêm `owl:onClass`.
 - ☐ Mỗi tiên đề có cả **DL** và **Turtle** nếu đề hỏi cả hai.
+- ☐ Manchester: filler phức có ngoặc; mỗi lớp một frame `Class:`; `only` / `some` đứng **sau** tên thuộc tính.
 
 # D6 · Suy diễn OWL / "RDFS hay OWL?"
 
@@ -650,8 +711,34 @@ Nghĩa: mọi cá thể có tất cả p-giá trị thuộc F thì thuộc D và
 | C ⊑ D? | `C(x)` và `NNF(¬D)(x)`, x là cá thể **mới** (ví dụ `¬∃R.E` → `∀R.¬E`) | C ⊑ D đúng |
 | C thỏa được? | `C(x)` | C **không** thỏa được |
 
-**B2. NNF** (¬ chỉ được đứng ngay trước tên lớp):
-`C ⊑ D` → `¬C ⊔ D` · `C ≡ D` → `¬C ⊔ D` **và** `¬D ⊔ C` · `C ⊓ D ⊑ ⊥` → `¬C ⊔ ¬D` · `¬¬C` → `C` · `¬(C ⊓ D)` → `¬C ⊔ ¬D` · `¬(C ⊔ D)` → `¬C ⊓ ¬D` · `¬∃R.C` → `∀R.¬C` · `¬∀R.C` → `∃R.¬C` · domain `∃R.⊤ ⊑ C` → `∀R.⊥ ⊔ C` · range `⊤ ⊑ ∀R.C` → `∀R.C`.
+**B2. DL → NNF** (¬ chỉ được đứng ngay trước tên lớp). Làm 2 bước: **(1)** bỏ ⊑ / ≡ ở mức tiên đề, **(2)** đẩy ¬ vào trong cho tới tên lớp.
+
+| Dạng gốc | NNF | Quy tắc |
+|---|---|---|
+| `C ⊑ D` | `¬C ⊔ D` | bỏ ⊑: C(x) → D(x) tương đương ¬C(x) ∨ D(x) |
+| `C ≡ D` | (a) `¬C ⊔ D` **và** (b) `¬D ⊔ C` | tách 2 chiều ⊑, đánh 2 nhãn |
+| `C ⊓ D ⊑ ⊥` hoặc `C ⊑ ¬D` (disjoint) | `¬C ⊔ ¬D` | |
+| `∃R.⊤ ⊑ C` (domain) | `∀R.⊥ ⊔ C` | `¬∃R.⊤` = `∀R.¬⊤` = `∀R.⊥` |
+| `⊤ ⊑ ∀R.C` (range) | `∀R.C` | `¬⊤` = `⊥`, bỏ khỏi phép ⊔ |
+| `C(a)`, `R(a, b)` (ABox) | giữ nguyên; C phức thì đưa C về NNF | dùng ở luật 1, 2 |
+| `¬¬C` | `C` | phủ định kép |
+| `¬(C ⊓ D)` | `¬C ⊔ ¬D` | De Morgan |
+| `¬(C ⊔ D)` | `¬C ⊓ ¬D` | De Morgan |
+| `¬∃R.C` | `∀R.¬C` | đổi lượng từ, ¬ đi vào filler |
+| `¬∀R.C` | `∃R.¬C` | đổi lượng từ |
+| `¬⊤` / `¬⊥` | `⊥` / `⊤` | |
+| `¬(≥n R.C)` / `¬(≤n R.C)` | `≤(n−1) R.C` (n ≥ 1; n = 0 thì ra `⊥`) / `≥(n+1) R.C` | 7 luật của slide (ALC) không có luật cho ≥, ≤; bài tableau thường chỉ có ⊓ ⊔ ¬ ∃ ∀ |
+
+**Ví dụ làm từng bước** (chép đủ các dòng vào bài, mỗi dòng ghi quy tắc):
+
+```text
+Person ⊓ ∃hasChild.Person ⊑ Parent
+⇒ ¬(Person ⊓ ∃hasChild.Person) ⊔ Parent        bỏ ⊑
+⇒ ¬Person ⊔ ¬∃hasChild.Person ⊔ Parent         De Morgan
+⇒ ¬Person ⊔ ∀hasChild.¬Person ⊔ Parent         ¬∃ → ∀¬
+Hỏi Professor ⊑ ∃supervises.Employee ?  ⇒ thêm Professor(x) và
+NNF(¬∃supervises.Employee)(x) = (∀supervises.¬Employee)(x),  x là cá thể mới
+```
 
 **B3. 7 luật** (đánh số như slide):
 
@@ -954,6 +1041,20 @@ GROUP BY ?pl  ORDER BY DESC(?n)
 
 Kết quả: CPP 5, C 3, Java 2, Lisp 1, Ruby 0. Phải dùng `COUNT(?f)` cùng `OPTIONAL`; dùng `COUNT(*)` thì Ruby bị đếm thành 1.
 
+## E. Bẫy hay gặp + thứ tự thực thi
+
+- **Thứ tự chạy:** WHERE → GROUP BY → HAVING → SELECT (tính `AS`) → DISTINCT → ORDER BY → OFFSET → LIMIT. Vì vậy FILTER lọc **dòng** trước khi gom nhóm, HAVING lọc **nhóm** sau khi gom. Lọc theo COUNT thì phải dùng HAVING.
+- **Kết quả trả về:** SELECT ra **bảng**, ASK ra **true/false**, CONSTRUCT và DESCRIBE ra **đồ thị RDF**.
+- **OPTIONAL không làm mất dòng**: không khớp thì biến unbound và ô để trống. Triple pattern thường (join) thì có làm mất dòng.
+- **MINUS và NOT EXISTS:** nếu hai vế **không có biến chung** thì MINUS **không loại dòng nào**, còn NOT EXISTS vẫn lọc. Có biến chung thì hai cách thường cho cùng kết quả.
+- FILTER đặt ở đâu trong `{ }` cũng có tác dụng lên **cả khối đó**.
+- `"25"` (chuỗi) ≠ `25` (số); `"Paris"@en` ≠ `"Paris"`, gỡ tag bằng `str(?x) = "Paris"`.
+- Biểu thức tổng hợp phải có ngoặc và tên: `(COUNT(?x) AS ?n)`.
+- **Update:** `INSERT DATA` / `DELETE DATA` **không được chứa biến**. Có biến thì viết `DELETE { … } INSERT { … } WHERE { … }`. Viết tắt: `DELETE WHERE { ?s :tmp ?o }`. Quản lý đồ thị: `LOAD <url>`, `CLEAR GRAPH <g>`, `DROP GRAPH <g>`, `CREATE GRAPH <g>`.
+- `FROM <g>` gộp g vào default graph; `FROM NAMED <g>` + `GRAPH ?g { … }` để biết triple nằm ở đồ thị nào.
+- **Truy vấn con** (ví dụ tìm người lớn tuổi nhất):
+  `SELECT ?p ?m WHERE { { SELECT (MAX(?a) AS ?m) WHERE { ?x :age ?a } } ?p :age ?m }`
+
 ## D. Kiểm trước khi nộp
 
 - ☐ Có đủ PREFIX; giữa các triple có dấu `.`; dùng `;` khi cùng subject.
@@ -1210,3 +1311,135 @@ Mi26 là Helicopter nên không được kiểm. **Đề xuất sửa:** sửa `
 **owl:sameAs.** Hai IRI chỉ **cùng một vật**: mọi phát biểu về IRI này áp cho IRI kia. Dùng sai (nối hai vật chỉ "giống nhau") sẽ lan truyền suy diễn sai khắp LOD. Khi chỉ liên quan thì dùng `skos:closeMatch` hoặc `rdfs:seeAlso`.
 
 **Knowledge Graph** (định nghĩa Paulheim, slide Intro): (1) chủ yếu mô tả thực thể thật và quan hệ giữa chúng, tổ chức thành đồ thị; (2) có schema định nghĩa lớp và quan hệ; (3) cho phép nối bất kỳ thực thể nào với nhau; (4) bao phủ nhiều lĩnh vực. Ví dụ: Wikidata, DBpedia, YAGO, Google KG.
+
+**Các cách viết (serialization) RDF.** **RDF/XML** (XML, cũ nhất) · **Turtle** (prefix, `;` `,`, gọn nhất) · **N-Triples** (mỗi dòng một triple, IRI viết đủ) · **N-Quads** (N-Triples thêm cột 4 = tên đồ thị) · **TriG** (Turtle có `GRAPH :g { … }`, viết named graph) · **JSON-LD** (JSON với `@context`, `@id`, `@type`; nút không có `@id` là blank node). Nhúng vào trang HTML: **RDFa** (thuộc tính `about`, `typeof`, `property`, `rel`), **Microdata** (`itemscope`, `itemtype`, `itemprop`; theo slide chỉ sinh ra cây, không chu trình, rất ít liên kết sang dữ liệu khác), **JSON-LD** trong `<script type="application/ld+json">`; thường dùng từ vựng **schema.org**.
+
+**Từ vựng chuẩn hay dùng.** **FOAF** (người: `foaf:Person`, `name`, `knows`, `homepage`, `mbox`) · **Dublin Core** (`dc:` / `dcterms:` cho tài liệu: `title`, `creator`, `publisher`, `date`) · **SKOS** (thesaurus, phân loại: `skos:Concept`, `prefLabel`, `broader`, `narrower`, `exactMatch`, `closeMatch`) · **schema.org** (dữ liệu nhúng web) · **WGS84** (`geo:lat`, `geo:long`) · **VoID** (mô tả bộ dữ liệu: nguồn, giấy phép, số triple, SPARQL endpoint). Tìm từ vựng: LOV, prefix.cc.
+
+**Knowledge graph công cộng.** **DBpedia**: trích từ **infobox** Wikipedia, IRI `dbpedia.org/resource/…`. **YAGO**: Wikipedia (dùng categories làm lớp) + **WordNet**; có thông tin thời gian. **Wikidata**: **cộng đồng** biên tập trực tiếp, mỗi phát biểu có **nguồn** (provenance). DBpedia và YAGO dùng heuristic nên độ phủ cao nhưng độ chính xác thấp hơn.
+
+**RDF và Labeled Property Graph (LPG, Neo4j).**
+- LPG: nút có nhiều **label** và các cặp key/value; cạnh có **một type** và **có thuộc tính**. RDF: mọi thứ là triple; muốn gắn thuộc tính cho cạnh phải dùng reification hoặc RDF-star.
+- RDF có IRI toàn cục, OWA, suy diễn RDFS/OWL. LPG dùng ID cục bộ, CWA, không có suy diễn chuẩn.
+- Truy vấn LPG bằng **Cypher**: `MATCH (p:Person)-[:ACTED_IN]->(m:Movie {title:"The Matrix"}) RETURN p.name`; đường đi độ dài biến thiên `-[:KNOWS*1..4]->`.
+
+**Luật: SWRL, RIF.** OWL không viết được luật nối biến giữa nhiều cá thể, ví dụ "x childOf y và x là Woman ⇒ x daughterOf y". Dùng **SWRL**: `childOf(?x, ?y) ∧ Woman(?x) → daughterOf(?x, ?y)`, hoặc **RIF** (chuẩn W3C để trao đổi luật). SWRL không giới hạn làm mất tính quyết định được, nên reasoner chỉ áp cho cá thể có tên (DL-safe). Mẹo OWL 2: `Woman ≡ ∃isWoman.Self` và chuỗi `isWoman ∘ childOf ⊑ daughterOf`.
+
+**TBox / ABox / RBox.** TBox: tiên đề về lớp (`C ⊑ D`). ABox: dữ kiện về cá thể (`C(a)`, `R(a, b)`). RBox: tiên đề về thuộc tính (`R ⊑ S`, `Trans(R)`, chuỗi `R ∘ S ⊑ T`).
+
+**Đặt tên logic mô tả.** **ALC** = ⊓ ⊔ ¬ ∃ ∀ (logic của 7 luật tableau trên slide). Thêm chữ là thêm khả năng: **S** = ALC + bắc cầu · **H** thuộc tính con · **R** chuỗi thuộc tính (không có trên slide) · **F** thuộc tính hàm (OWL Lite = SHIF(D), theo slide) · **O** lớp liệt kê `{a}` · **I** nghịch đảo · **N** đếm không điều kiện · **Q** đếm có điều kiện · **(D)** kiểu dữ liệu. OWL 1 DL = **SHOIN(D)**, OWL 2 DL = **SROIQ(D)**. Suy diễn OWL 2 DL có độ phức tạp **N2EXPTIME**, vì vậy mới có các profile EL / QL / RL chạy nhanh hơn.
+
+# TV · Tra từ vựng: RDF, OWL, SPARQL, SHACL
+
+<p class="nd"><b>Dùng khi:</b> gặp một từ khoá hay cú pháp chưa có trong bảng B của các dạng. Biết tên từ khoá thì tra trang ở <b>mục lục A–Z</b> (cuối sổ tay).</p>
+
+## TV1. RDF / RDFS
+
+| Từ khoá | Nghĩa | Ví dụ |
+|---|---|---|
+| `rdf:type` (viết tắt `a`) | cá thể thuộc lớp | `:an a :Student` |
+| `rdf:Property` | khai báo thuộc tính | `:teaches a rdf:Property` |
+| `rdf:Statement`, `rdf:subject` / `rdf:predicate` / `rdf:object` | reification: biến một triple thành tài nguyên để nói về nó | `[ a rdf:Statement ; rdf:subject :s ; rdf:predicate :p ; rdf:object :o ]` |
+| `rdf:List`, `rdf:first` / `rdf:rest` / `rdf:nil` | collection, danh sách **đóng** có thứ tự | Turtle `( :a :b )` = 4 triple first/rest, kết thúc bằng `rdf:nil` |
+| `rdf:Bag` / `rdf:Seq` / `rdf:Alt` | container **mở**: không thứ tự / có thứ tự / các lựa chọn; phần tử là `rdf:_1`, `rdf:_2`… | `:ds a rdf:Seq ; rdf:_1 :a ; rdf:_2 :b` |
+| `rdfs:Container`, `rdfs:member`, `rdfs:ContainerMembershipProperty` | lớp cha của Bag/Seq/Alt; mọi `rdf:_n` là thuộc tính con của `rdfs:member` | |
+| `rdf:value` | giá trị chính của một nút n-ngôi | `:w rdf:value 72 ; :unit :kg` |
+| `rdf:langString`, `rdf:XMLLiteral`, `rdf:HTML` | kiểu của literal có tag ngôn ngữ / XML / HTML | `"Hà Nội"@vi` có kiểu `rdf:langString` |
+| `rdfs:Class`, `rdfs:Resource` | lớp các lớp; lớp chứa mọi thứ | `:Student a rdfs:Class` |
+| `rdfs:Literal`, `rdfs:Datatype` | lớp mọi literal; lớp các kiểu dữ liệu | `xsd:integer a rdfs:Datatype` |
+| `rdfs:subClassOf`, `rdfs:subPropertyOf`, `rdfs:domain`, `rdfs:range` | lớp con, thuộc tính con, miền, khoảng | xem D3, luật ở D4 |
+| `rdfs:label`, `rdfs:comment` | tên hiển thị; mô tả | `:SW rdfs:label "Semantic Web"@en` |
+| `rdfs:seeAlso`, `rdfs:isDefinedBy` | tài nguyên liên quan; nơi định nghĩa term | `:SW rdfs:seeAlso <https://…>` |
+
+**Literal:** `"An"` (xsd:string) · `"An"@vi` · `"10"^^xsd:integer` = `10` · `1.5` = xsd:decimal · `1e3` = xsd:double · `true` = xsd:boolean · `"2026-10-17"^^xsd:date` · `"2026-10-17T08:00:00"^^xsd:dateTime`. Kiểu hay dùng: `xsd:string`, `integer`, `int`, `nonNegativeInteger`, `decimal`, `double`, `boolean`, `date`, `dateTime`, `gYear`.
+
+## TV2. OWL 2: cấu trúc ngoài bảng D5
+
+| Ý nghĩa | DL | Manchester | Turtle |
+|---|---|---|---|
+| R phi đối xứng (a R b thì không có b R a) | `Asym(R)` | `Characteristics: Asymmetric` | `:R a owl:AsymmetricProperty` |
+| R phản xạ (ai cũng R chính mình) | `⊤ ⊑ ∃R.Self` | `Characteristics: Reflexive` | `owl:ReflexiveProperty` |
+| R không phản xạ (không ai R chính mình) | `⊤ ⊑ ¬∃R.Self` | `Characteristics: Irreflexive` | `owl:IrreflexiveProperty` |
+| R hàm ngược (một object chỉ ứng với một subject, như email) | `⊤ ⊑ ≤1 R⁻` | `Characteristics: InverseFunctional` | `owl:InverseFunctionalProperty` |
+| chuỗi thuộc tính | `R ∘ S ⊑ T` | `ObjectProperty: T SubPropertyChain: R o S` | `:T owl:propertyChainAxiom ( :R :S )` |
+| R, S tách rời (không cặp nào vừa R vừa S) | `Dis(R, S)` | `ObjectProperty: R DisjointWith: S` | `:R owl:propertyDisjointWith :S` |
+| tự thân | `∃R.Self` | `R Self` | `[ a owl:Restriction ; owl:onProperty :R ; owl:hasSelf true ]` |
+| khoá (cùng giá trị khoá ⇒ cùng cá thể) | (ngoài DL) | `Class: Person HasKey: ssn` | `:Person owl:hasKey ( :ssn )` |
+| a, b, c đôi một khác nhau | `a ≠ b, a ≠ c, b ≠ c` | `DifferentIndividuals: a, b, c` | `[] a owl:AllDifferent ; owl:distinctMembers ( :a :b :c )` (slide; OWL 2 viết `owl:members`, cả hai đều được) |
+| a, b là một / khác nhau | `a = b` / `a ≠ b` | `SameAs: b` / `DifferentFrom: b` | `owl:sameAs` / `owl:differentFrom` |
+| nhiều lớp đôi một rời nhau | `A ⊓ B ⊑ ⊥`, … | `DisjointClasses: A, B, C` | `[] a owl:AllDisjointClasses ; owl:members ( :A :B :C )` |
+| a **không** R b | `¬R(a, b)` | `Individual: a Facts: not R b` | `[] a owl:NegativePropertyAssertion ; owl:sourceIndividual :a ; owl:assertionProperty :R ; owl:targetIndividual :b` |
+| lớp mọi thứ / lớp rỗng | `⊤` / `⊥` | `owl:Thing` / `owl:Nothing` | `owl:Thing` / `owl:Nothing` |
+| kiểu dữ liệu có ngưỡng | `∃age.int[≥18]` | `age some xsd:integer[>= 18]` | `[ a owl:Restriction ; owl:onProperty :age ; owl:someValuesFrom [ a rdfs:Datatype ; owl:onDatatype xsd:integer ; owl:withRestrictions ( [ xsd:minInclusive 18 ] ) ] ]` |
+| 3 loại thuộc tính: nối 2 cá thể / nối cá thể với literal / chú thích (không suy diễn) | | `ObjectProperty:` / `DataProperty:` / `AnnotationProperty:` | `owl:ObjectProperty` / `owl:DatatypeProperty` / `owl:AnnotationProperty` |
+| khai báo ontology, nhập ontology khác | | `Ontology: <iri> Import: <iri2>` | `<iri> a owl:Ontology ; owl:imports <iri2>` |
+| khai báo cá thể có tên | | `Individual: a` | `:a a owl:NamedIndividual` |
+
+## TV3. SPARQL 1.1
+
+| Từ khoá | Nghĩa | Ví dụ |
+|---|---|---|
+| `SELECT` / `ASK` / `CONSTRUCT` / `DESCRIBE` | trả bảng / true-false / đồ thị theo khuôn / mô tả RDF về tài nguyên (server tự chọn nội dung) | `DESCRIBE :hung` |
+| `DISTINCT` / `REDUCED` | bỏ dòng trùng / **cho phép** bỏ dòng trùng (không bắt buộc) | `SELECT DISTINCT ?x` |
+| `ORDER BY ASC(?x) DESC(?y)` | sắp xếp, mặc định tăng dần | `ORDER BY DESC(?total)` |
+| `LIMIT n` / `OFFSET k` | lấy n dòng / bỏ k dòng đầu (phân trang, nên kèm ORDER BY) | `ORDER BY ?n LIMIT 10 OFFSET 20` |
+| `OPTIONAL { }` | thêm nếu có (LeftJoin) | `OPTIONAL { ?p rdfs:label ?l }` |
+| `UNION` | hợp hai mẫu | `{ ?x a :A } UNION { ?x a :B }` |
+| `MINUS { }` | bỏ các lời giải khớp mẫu (chỉ có tác dụng khi có biến chung) | `{ ?s a :Person } MINUS { ?s a :Student }` |
+| `FILTER EXISTS { }` / `FILTER NOT EXISTS { }` | giữ dòng **có** / **không có** mẫu khớp | `FILTER NOT EXISTS { ?c a :Lab }` |
+| `BIND(expr AS ?v)` | gán giá trị cho biến mới | `BIND(2026 - ?y AS ?age)` |
+| `VALUES ?x { … }` | cho sẵn danh sách giá trị | `VALUES ?x { :a :b }` |
+| `FROM`, `FROM NAMED`, `GRAPH ?g { }` | chọn đồ thị; khớp mẫu trong named graph | `GRAPH ?g { ?s ?p ?o }` |
+| `SERVICE <endpoint> { }` | truy vấn liên kết (federation) tới endpoint khác | `SERVICE <https://dbpedia.org/sparql> { … }` |
+| truy vấn con `{ SELECT … WHERE … }` | tính trước, kết quả nối với phần ngoài | |
+| `GROUP BY ?x` + `HAVING (cond)` | gom nhóm; lọc **nhóm** (FILTER lọc dòng) | `HAVING (COUNT(?c) >= 2)` |
+| `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `GROUP_CONCAT`, `SAMPLE` | hàm tổng hợp; `SAMPLE` lấy một giá trị bất kỳ của nhóm | `GROUP_CONCAT(?n; separator=", ")`, `COUNT(DISTINCT ?x)` |
+| property path `/ \| ^ * + ? !` | nối tiếp / hoặc / ngược / 0+ lần / 1+ lần / 0–1 lần / mọi thuộc tính trừ | `?c rdfs:subClassOf* :Person`, `?x foaf:knows+ ?y`, `?b ^:wrote ?a` |
+| `str`, `lang`, `langMatches`, `datatype` | chuỗi của IRI/literal; tag ngôn ngữ; so tag; kiểu literal | `FILTER(langMatches(lang(?l), "en"))` |
+| `isIRI`, `isLiteral`, `isBlank`, `bound` | kiểm loại term; biến đã có giá trị chưa | `FILTER(!bound(?l))` |
+| `regex`, `CONTAINS`, `STRSTARTS`, `STRENDS` | khớp mẫu chuỗi; `"i"` = không phân biệt hoa thường | `FILTER(regex(?n, "^A", "i"))` |
+| `STRLEN`, `SUBSTR`, `UCASE`, `LCASE`, `CONCAT`, `REPLACE` | độ dài; chuỗi con (vị trí đầu là 1); hoa; thường; nối; thay | `SUBSTR(?s, 1, 3)` |
+| `COALESCE`, `IF`, `IN` / `NOT IN` | giá trị đầu tiên không lỗi; điều kiện; thuộc danh sách | `COALESCE(?l, "n/a")`, `?x IN (:a, :b)` |
+| `NOW()`, `YEAR`, `MONTH`, `DAY`, ép kiểu `xsd:integer(?s)` | ngày giờ; chuyển kiểu | `YEAR(?d) = 2026` |
+| `INSERT DATA { }` / `DELETE DATA { }` | UPDATE: thêm / xoá triple cố định (không dùng biến) | `INSERT DATA { :a :p :b }` |
+| `DELETE { } INSERT { } WHERE { }` | UPDATE theo mẫu: sửa mọi chỗ khớp WHERE | `DELETE { ?x :age ?o } INSERT { ?x :age 30 } WHERE { ?x :age ?o }` |
+
+## TV4. SHACL
+
+| Ràng buộc | Nghĩa | Ví dụ |
+|---|---|---|
+| `sh:targetClass` / `sh:targetNode` / `sh:targetSubjectsOf` / `sh:targetObjectsOf` | kiểm: mọi cá thể của lớp (kể cả lớp con) / một nút cụ thể / mọi subject có thuộc tính p / mọi object của p | `sh:targetSubjectsOf :teaches` |
+| `sh:NodeShape` / `sh:PropertyShape` | kiểm chính focus node / kiểm các giá trị đi theo `sh:path`; gắn bằng `sh:property [ … ]` | |
+| `sh:path` | `:p` · `( :p :q )` nối tiếp · `[ sh:inversePath :p ]` · `[ sh:alternativePath ( :p :q ) ]` · `[ sh:zeroOrMorePath :p ]` · `sh:oneOrMorePath` · `sh:zeroOrOnePath` | `sh:path [ sh:inversePath :teaches ]` |
+| `sh:minCount` / `sh:maxCount` | số giá trị tối thiểu / tối đa | `sh:minCount 1` |
+| `sh:class` / `sh:datatype` | giá trị phải `a :C` (tính cả `rdfs:subClassOf` có trong data) / có kiểu literal | `sh:datatype xsd:integer` |
+| `sh:nodeKind` | `sh:IRI`, `sh:Literal`, `sh:BlankNode`, `sh:BlankNodeOrIRI`, `sh:BlankNodeOrLiteral`, `sh:IRIOrLiteral` | `sh:nodeKind sh:IRI` |
+| `sh:minInclusive` / `sh:maxInclusive` / `sh:minExclusive` / `sh:maxExclusive` | ≥ / ≤ / > / < | `sh:minInclusive 0` |
+| `sh:minLength` / `sh:maxLength` / `sh:pattern` (+ `sh:flags`) | độ dài chuỗi; biểu thức chính quy | `sh:pattern "^[A-Z]"` |
+| `sh:languageIn` / `sh:uniqueLang` | chỉ các tag này / mỗi ngôn ngữ tối đa một giá trị | `sh:languageIn ( "en" "vi" )`, `sh:uniqueLang true` |
+| `sh:equals` / `sh:disjoint` / `sh:lessThan` / `sh:lessThanOrEquals` | so tập giá trị của path với giá trị của thuộc tính khác trên cùng focus node | `sh:path :start ; sh:lessThan :end` |
+| `sh:not` / `sh:and` / `sh:or` / `sh:xone` | phủ định / thỏa mọi / thỏa ít nhất một / thỏa **đúng một** shape | `sh:or ( [ sh:class :A ] [ sh:class :B ] )` |
+| `sh:node` / `sh:qualifiedValueShape` + `sh:qualifiedMinCount` / `sh:qualifiedMaxCount` | giá trị phải thỏa shape khác / đếm số giá trị thỏa shape | `sh:qualifiedValueShape [ sh:class :Lab ] ; sh:qualifiedMinCount 1` |
+| `sh:hasValue` / `sh:in` | phải có giá trị này / chỉ được là một trong danh sách | `sh:in ( :red :green )` |
+| `sh:closed true` + `sh:ignoredProperties` | không được có thuộc tính nào ngoài các path đã khai báo | `sh:ignoredProperties ( rdf:type )` |
+| `sh:sparql [ sh:select "…" ]` | ràng buộc viết bằng SPARQL (SHACL-SPARQL) | |
+| `sh:severity` / `sh:message` / `sh:deactivated` | mức độ `sh:Violation` (mặc định), `sh:Warning`, `sh:Info` / thông báo / tắt shape | `sh:severity sh:Warning` |
+| báo cáo | `sh:ValidationReport` có `sh:conforms` và các `sh:result`; mỗi `sh:ValidationResult` có `sh:focusNode`, `sh:resultPath`, `sh:value`, `sh:sourceShape`, `sh:sourceConstraintComponent`, `sh:resultSeverity`, `sh:resultMessage` | |
+
+## TV5. Thuật ngữ khác
+
+- **GCI** (general concept inclusion): tiên đề `C ⊑ D` có vế trái là biểu thức phức. Ví dụ `Movie ⊓ ¬∃actor.⊤ ⊑ AnimalDoc ⊔ Animated`; trong Turtle chủ ngữ là một blank node.
+- **clash**: trong một nhánh tableau có cả `X(a)` và `¬X(a)`, nên nhánh đóng.
+- **fixpoint (điểm cố định)**: tập dữ kiện không đổi nữa khi áp tiếp mọi luật (D7, forward chaining ở D4).
+- **proof tree (cây chứng minh)**: gốc là kết luận, nút con là tiền đề, lá là dữ kiện (D7).
+- **solution mapping (μ)**: ánh xạ từ biến sang giá trị, tức một dòng kết quả SPARQL. Hai μ **compatible** khi trùng giá trị trên mọi biến chung; chỉ μ compatible mới ghép được ở Join / LeftJoin (D9).
+- **validation report**: kết quả của SHACL (`sh:conforms` và các `sh:result`, xem TV4).
+- **rampant classism**: lỗi mô hình hoá, biến mọi thứ thành lớp, kể cả thứ thực ra là cá thể (lớp `Goethe` thay vì cá thể `:Goethe`).
+- **OBDA** (ontology-based data access): truy vấn cơ sở dữ liệu quan hệ thông qua ontology (ánh xạ bảng → lớp / thuộc tính), thường dùng OWL 2 QL.
+- **SROIQ**, **N2EXPTIME**: xem "Đặt tên logic mô tả" ở D11.
+
+# IDX · Mục lục từ khoá A–Z
+
+<p class="nd">Số in <b>đậm</b> là trang nói kỹ nhất về từ đó. Từ khoá có tiền tố (<code>owl:</code>, <code>sh:</code>, <code>rdfs:</code>…) xếp theo tên sau dấu hai chấm.</p>
+
+@INDEX@

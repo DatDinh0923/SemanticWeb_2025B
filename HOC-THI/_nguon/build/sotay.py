@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Sổ tay làm bài (bản in ≤ 20 trang) → HOC-THI/TAI-LIEU-IN.pdf.
+"""Sổ tay làm bài (bản in ≤ 32 trang) → HOC-THI/TAI-LIEU-IN.pdf.
 
 sotay.md: mỗi "# D… · tiêu đề" là một dạng. Các dạng chạy liền nhau; dạng nào có tiêu đề rơi xuống
 dưới 70% trang thì tự đẩy sang trang mới. In nhiều lượt cho tới khi số trang ổn định, điền số trang
-vào bảng tra ở trang 1, đóng dấu nhãn [mã dạng] ở mép ngoài (in 2 mặt), rồi audit cỡ chữ / font / màu.
+vào bảng tra ở trang 1, sinh mục lục từ khoá A–Z (phần IDX, quét chữ PDF), đóng dấu nhãn [mã dạng] ở mép ngoài (in 2 mặt), rồi audit cỡ chữ / font / màu.
 Chạy: PYTHONIOENCODING=utf-8 python sotay.py        (thêm --check để kiểm code bị xuống dòng)
 """
 import json
@@ -20,8 +20,8 @@ OUT = build.OUT
 SRC = build.HERE / "sotay.md"
 HTML = OUT / "sotay.html"
 TOPY = {}
-CODES = ["D1", "D2", "D3", "D4", "D5", "D6", "D12", "D7", "D8", "D9", "D10", "D11"]
-MAX_PAGES = 22
+CODES = ["D1", "D2", "D3", "D4", "D5", "D6", "D12", "D7", "D8", "D9", "D10", "D11", "TV", "IDX"]
+MAX_PAGES = 32
 
 # Consolas không có ký hiệu toán (⊑ ⊓ ∃ ∀ ⊤ …) → lấy từ DejaVu Sans Mono, co 91.3% cho bằng
 # độ rộng ký tự Consolas để các cây tableau / Datalog không lệch cột. Có bản đậm thật → không còn Type3.
@@ -69,6 +69,9 @@ th{overflow-wrap:normal;word-break:keep-all}
 .gfig svg{max-width:100%;height:auto}
 .gfig .legend{font-size:9pt;font-style:italic;margin:1pt 0 4pt}
 em{font-style:italic}
+.idx{column-count:3;column-gap:5mm;font-size:9pt;line-height:1.22}
+.idx div{break-inside:avoid}.idx .L{font:700 10.5pt Arial,sans-serif;border-bottom:0.8pt solid #000;margin:3pt 0 1pt}
+.idx code{font-size:9pt}
 @media screen{body{width:190mm;margin:0 auto}}
 """
 
@@ -130,16 +133,94 @@ def print_js():
     return MM_POST + js.replace(a, MM_INIT).replace(b, b + " window.__mmpost(fig);").replace("function done(){", "function done(){window.__legendfix();")
 
 
+# mục lục A–Z: từ khoá → các trang có từ đó (quét chữ PDF, trừ trang 1 và chính phần IDX)
+INDEX_TERMS = """
+rdf:type rdf:Property rdf:Statement rdf:subject rdf:first rdf:rest rdf:nil rdf:List rdf:Bag rdf:Seq rdf:Alt rdf:value
+rdf:langString rdf:nodeID rdf:resource rdf:about rdfs:Class rdfs:Resource rdfs:Literal rdfs:Datatype rdfs:subClassOf
+rdfs:subPropertyOf rdfs:domain rdfs:range rdfs:label rdfs:comment rdfs:seeAlso rdfs:isDefinedBy rdfs:member rdfs:Container
+rdfs2 rdfs3 rdfs5 rdfs7 rdfs9 rdfs11 @prefix xsd:integer xsd:nonNegativeInteger xsd:date
+owl:Class owl:ObjectProperty owl:DatatypeProperty owl:AnnotationProperty owl:equivalentClass owl:disjointWith
+owl:intersectionOf owl:unionOf owl:complementOf owl:oneOf owl:Restriction owl:onProperty owl:someValuesFrom
+owl:allValuesFrom owl:hasValue owl:minCardinality owl:maxCardinality owl:cardinality owl:qualifiedCardinality
+owl:minQualifiedCardinality owl:maxQualifiedCardinality owl:onClass owl:inverseOf owl:TransitiveProperty
+owl:SymmetricProperty owl:AsymmetricProperty owl:ReflexiveProperty owl:IrreflexiveProperty owl:FunctionalProperty
+owl:InverseFunctionalProperty owl:equivalentProperty owl:propertyChainAxiom owl:propertyDisjointWith owl:hasKey
+owl:hasSelf owl:disjointUnionOf owl:AllDisjointClasses owl:AllDifferent owl:sameAs owl:differentFrom
+owl:NegativePropertyAssertion owl:Thing owl:Nothing owl:imports owl:Ontology owl:NamedIndividual
+SubClassOf: EquivalentTo: DisjointWith: DisjointUnionOf: Characteristics: InverseOf: SubPropertyChain: HasKey:
+DisjointClasses: DifferentIndividuals: Individual: Facts:
+SELECT ASK CONSTRUCT DESCRIBE DISTINCT REDUCED ORDER|BY LIMIT OFFSET OPTIONAL UNION MINUS FILTER NOT|EXISTS BIND VALUES
+GRAPH SERVICE GROUP|BY HAVING COUNT SUM AVG GROUP_CONCAT SAMPLE regex langMatches isIRI isLiteral isBlank bound
+COALESCE CONTAINS STRSTARTS STRLEN SUBSTR UCASE CONCAT YEAR NOW INSERT|DATA DELETE|DATA PREFIX
+BGP Join LeftJoin Project Slice OrderBy Extend Group Distinct
+sh:NodeShape sh:PropertyShape sh:targetClass sh:targetNode sh:targetSubjectsOf sh:targetObjectsOf sh:path
+sh:inversePath sh:property sh:minCount sh:maxCount sh:class sh:datatype sh:nodeKind sh:minInclusive sh:maxInclusive
+sh:minExclusive sh:minLength sh:maxLength sh:pattern sh:languageIn sh:uniqueLang sh:equals sh:disjoint sh:lessThan
+sh:not sh:and sh:or sh:xone sh:node sh:qualifiedValueShape sh:hasValue sh:in sh:closed sh:severity sh:message
+sh:sparql sh:ValidationReport sh:ValidationResult sh:conforms sh:focusNode
+Manchester NNF GCI TBox ABox RBox clash blocking De|Morgan tableau ALC SHOIN SROIQ N2EXPTIME OWA CWA UNA
+subsumption consistency instantiation retrieval satisfiability classification Datalog fixpoint proof|tree
+forward|chaining backward|chaining solution|mapping compatible focus|node validation|report reification RDF-star
+named|graph blank|node literal IRI collection N-Triples N-Quads TriG Turtle RDF/XML JSON-LD RDFa Microdata
+schema.org FOAF Dublin|Core SKOS VoID DBpedia Wikidata YAGO LPG Cypher SWRL RIF OntoClean reasoner
+Linked|Data 5|sao Knowledge|Graph EL QL RL OBDA rampant|classism
+""".split()
+INDEX = {}
+
+
+def _key(t):
+    import unicodedata
+    k = t.split(":", 1)[1] if ":" in t[1:] and not t.endswith(":") else t
+    k = unicodedata.normalize("NFD", k.lstrip("@")).encode("ascii", "ignore").decode().lower()
+    return k
+
+
+def find_index(path):
+    """{từ: [(trang, số lần)]} trên các trang 2 … (trang đầu IDX − 1)"""
+    d = fitz.open(path)
+    texts = [" ".join(p.get_text().split()) for p in d]
+    end = next((i for i, t in enumerate(texts) if "IDX · Mục lục từ khoá" in t), len(d))
+    res = {}
+    for raw in INDEX_TERMS:
+        t = raw.replace("|", " ")
+        pat = re.compile(r"(?<![A-Za-z0-9_:@-])" + re.escape(t) + (r"(?![A-Za-z0-9_])" if t[-1].isalnum() else ""))
+        hits = [(i + 1, len(pat.findall(texts[i]))) for i in range(1, end)]
+        res[t] = [h for h in hits if h[1]]
+    d.close()
+    return res
+
+
+def index_html():
+    if not INDEX:
+        return '<div class="idx"><div>(số trang được điền ở lượt in cuối)</div></div>'
+    out, cur = [], None
+    for t in sorted(INDEX, key=_key):
+        hits = INDEX[t]
+        if not hits:
+            continue
+        L = _key(t)[:1].upper()
+        if L != cur:
+            out.append(f'<div class="L">{L}</div>')
+            cur = L
+        best = max(hits, key=lambda h: h[1])[0]
+        pages = sorted({h[0] for h in sorted(hits, key=lambda h: -h[1])[:4]})
+        ps = ", ".join(f"<b>{x}</b>" if x == best else str(x) for x in pages)
+        name = f"<code>{t}</code>" if (":" in t or t.isupper() or "_" in t) else t
+        out.append(f"<div>{name} {ps}</div>")
+    return '<div class="idx">' + "".join(out) + "</div>"
+
+
 def html(page_of=None, newpage=(), check=False):
     text = build.read(SRC)
     if page_of:
         for c, pg in page_of.items():
-            text = text.replace(f"tr.@{c} |", f"tr.{pg} |")
-    text = re.sub(r"tr\.@D\d+", "tr. …", text)
+            text = text.replace(f"tr.@{c} |", f"tr.{pg} |").replace(f"tr.@{c}.", f"tr.{pg}.")
+    text = re.sub(r"tr\.@[A-Z]+\d*", "tr. …", text)
+    text = text.replace("@INDEX@", index_html())
     secs = []
     for n, ch in enumerate(c for c in re.split(r"(?m)^# ", text) if c.strip()):
         code = ch.split(" · ")[0].strip()
-        cls = "dang np" if n == 1 or code in newpage else "dang"
+        cls = "dang np" if n == 1 or code in newpage or code == "IDX" else "dang"
         body = build.bw(build.render("# " + ch))
         body = body.replace("<li>☐", '<li class="ck"><span class="box">☐</span>')
         secs.append(f'<section class="{cls}">{body}</section>')
@@ -318,6 +399,21 @@ if __name__ == "__main__":
         page_of = po
     else:
         raise SystemExit("số trang không ổn định")
+    # lượt cuối: điền mục lục A–Z (chỉ đổi phần IDX ở cuối) cho tới khi ổn định
+    for it in range(3):
+        idx = find_index(tmp)
+        if idx == INDEX:
+            break
+        INDEX.clear()
+        INDEX.update(idx)
+        html(page_of, newpage)
+        pdf(tmp)
+        po, titles = starts(tmp)
+        assert po == page_of, ("mục lục A–Z làm lệch trang", po, page_of)
+    else:
+        raise SystemExit("mục lục A–Z không ổn định")
+    miss = [t for t, h in INDEX.items() if not h]
+    print("mục lục A–Z:", len(INDEX) - len(miss), "từ · không thấy:", miss or "không")
     assert not blanks(tmp), ("trang trắng", blanks(tmp))
     dst = OUT / "TAI-LIEU-IN.pdf"
     new = OUT / "_sotay_stamped.pdf"

@@ -924,6 +924,94 @@ def build_print(toc_pages=None):
 
 
 
+# ---------- BÀI TẬP + LỜI GIẢI (bản in thứ 2, chỉ mục ③ ④) ----------
+BAITAP_ORDER = ["D1", "D2", "D3", "D4", "D5", "D6", "D12", "D7", "D8", "D9", "D10"]
+BAITAP_DROP = {("D9", "④"), ("D12", "④")}
+BAITAP_GROUPS = [("Part 1 (RDF, RDFS)", r"Part 1 Ex"), ("Part 2 (RDFS)", r"Part 2 Ex"),
+                 ("Part 3 (OWL)", r"Part 3 Ex|P3 Ex|Pizza"), ("Tableau OWL2 (Exercises-OWL2)", r"^Ex\d"),
+                 ("Đề 2023-3", r"^2023-3"), ("Đề 2022-1", r"^2022-1"), ("Đề 6390", r"^6390"),
+                 ("Truy vấn SPARQL bài tập tuần", r"^Bộ \d"), ("Bài luyện thêm (D7, D9, D10, ví dụ slide)", r".")]
+
+
+def baitap_parts():
+    """[(code, title, desc, md)] chỉ giữ mục ③ / ④ của mỗi dạng"""
+    res = []
+    for pid in BAITAP_ORDER:
+        p = next(x for x in PAGES if x["id"] == pid)
+        keep = []
+        for b in re.split(r"(?m)^(?=## )", p["md"]):
+            h = b.split("\n", 1)[0]
+            if not h.startswith("## "):
+                continue
+            mark = h[3:4]
+            if mark in "③④" and (pid, mark) not in BAITAP_DROP:
+                keep.append(b)
+        md = "\n".join(keep)
+        md = re.sub(r" ?\((?:tự làm → mở đáp án|che phần lời giải, tự làm trước|tự làm trước, rồi mở đáp án)\)", "", md)
+        md = re.sub(r" \(chọn trong SPARQL Playground\)", "", md)
+        res.append((pid, p["title"], p["desc"].replace(" Mọi truy vấn chạy thật được ở Playground.", ""), md))
+    return res
+
+
+def baitap_index():
+    """các bài (tiêu đề ###, và #### Ex… của tableau) theo thứ tự xuất hiện: [(dạng, tiêu đề)]"""
+    out = []
+    for code, _, _, md in baitap_parts():
+        for lv, t in re.findall(r"<h([234])[^>]*>(.*?)</h\1>", render(md)):
+            t = html.unescape(re.sub(r"<[^>]+>", "", t)).strip()
+            if lv == "2":
+                if re.search(r"P\d Ex\d", t):
+                    out.append((code, t))
+                continue
+            if lv == "4" and not re.match(r"Ex\d", t):
+                continue
+            if lv == "3" and re.match(r"\d\. Lời giải bài tập trên lớp", t):
+                continue
+            out.append((code, t))
+    return out
+
+
+def plain(t):
+    return " ".join(bw(re.sub(r"[`*]", "", t)).split())
+
+
+def build_baitap(toc_pages=None, index_pages=None):
+    toc_pages, index_pages = toc_pages or {}, index_pages or {}
+    parts, toc = [], []
+    d8 = index_pages.get("2023-3 · Câu 4 — SPARQL + đại số (máy bay)", "…")
+    for code, title, desc, md in baitap_parts():
+        if code == "D9":
+            md += (f"\n\n## ④ Đề thi cũ dạng này\n\nCâu đại số SPARQL trong đề cũ luôn là **phần (b)** của câu SPARQL. "
+                   f"Lời giải đủ bảng từng bước nằm ở **[D8] ④, trang {d8}** (2023-3 Câu 4b, 2022-1 Câu 5b, 6390 Câu 4d).\n")
+        name = f"{code} · {title}"
+        toc.append(f'<div class="l1"><span>{esc(name)}</span><span class="d"></span><span>{toc_pages.get(name, "")}</span></div>')
+        parts.append(f'<section class="part"><div class="part-head"><span class=tag>{esc(code)}</span><h1>{esc(title)}</h1>'
+                     f'<p>{bw(esc(desc))}</p></div>{bw(render(md))}</section>')
+    rows, seen = [], set()
+    items = baitap_index()
+    for g, pat in BAITAP_GROUPS:
+        grp = [(c, t) for c, t in items if t not in seen and re.search(pat, t)]
+        if not grp:
+            continue
+        if g.startswith("Đề "):
+            grp.sort(key=lambda x: x[1])
+        rows.append(f'<tr><th colspan="3">{esc(g)}</th></tr>')
+        for c, t in grp:
+            seen.add(t)
+            rows.append(f'<tr><td>{esc(plain(t))}</td><td>{c}</td><td>{index_pages.get(t, "")}</td></tr>')
+    cover = f"""<section class="cover"><div class="part-head"><h1>BÀI TẬP + LỜI GIẢI CHI TIẾT · SEMANTIC WEB</h1>
+<p>Toàn bộ bài tập tuần (Part 1–3, tableau OWL2, bài về nhà 29.08 · 5.9 · 12.9, 25 truy vấn SPARQL) và 15 câu của 3 đề cũ. Đi kèm sổ tay TAI-LIEU-IN.pdf: nhận dạng câu bằng sổ tay → lật tới cùng mã [Dx] ở đây → chép theo bài giống nhất.</p></div>
+<h2>Mục lục theo dạng</h2><div class="toc">{''.join(toc)}</div>
+<h2>Bài → trang</h2><table class="bt-idx"><tr><th>Bài</th><th>Dạng</th><th>Trang</th></tr>{''.join(rows)}</table></section>"""
+    css = read(HERE / "print.css") + ".btn,a.btn{display:none !important}.bt-idx{width:100%;font-size:9.5pt}.bt-idx td:nth-child(2),.bt-idx td:nth-child(3){width:12mm;text-align:center}.bt-idx th[colspan]{text-align:left;padding-top:5pt}"
+    page = f"""<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Bai tap loi giai Semantic Web</title>
+<style>{css}</style>
+</head><body>{cover}{''.join(parts)}
+<script src="lib/vis-network.min.js"></script><script src="lib/mermaid.min.js"></script><script>{read(HERE / "rdf.js")}</script><script>{PRINT_JS}</script></body></html>"""
+    (OUT / "bai-tap.html").write_text(page, encoding="utf-8")
+
+
+
 # ---------- CHEATSHEET (bản in chính, ngắn) ----------
 CHEAT_CSS = """
 @page{size:A4;margin:9mm 8mm 11mm 8mm}
